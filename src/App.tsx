@@ -38,6 +38,7 @@ import AdminRhCandidates from './pages/dashboards/AdminRhCandidates'
 import AdminBilling from './pages/dashboards/AdminBilling'
 import Legal from './pages/Legal'
 import Support from './pages/Support'
+import FAQ from './pages/FAQ'
 import NotFound from './pages/NotFound'
 import ScrollToTop from './components/layout/ScrollToTop'
 
@@ -122,6 +123,7 @@ export default function App() {
         {/* System */}
         <Route path="/legal" element={<Legal />} />
         <Route path="/support" element={<Support />} />
+        <Route path="/faq" element={<FAQ />} />
         <Route path="/404" element={<NotFound />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
