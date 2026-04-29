@@ -215,7 +215,11 @@ export default function CVDatabase() {
 
       {filtered.length === 0 && (
         <div className="card p-16 text-center">
-          <div className="text-5xl mb-4">🔍</div>
+          <div className="flex justify-center mb-4">
+            <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+              <Search className="w-8 h-8" />
+            </div>
+          </div>
           <h3 className="font-semibold text-slate-900 text-lg mb-2">Aucun profil trouvé</h3>
           <p className="text-sm text-slate-500">Essayez de modifier vos critères de recherche</p>
         </div>

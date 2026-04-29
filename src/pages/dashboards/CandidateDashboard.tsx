@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import {
   Briefcase, FileText, TrendingUp, Eye, Bell, Star,
-  ChevronRight, Clock, MapPin, Building2, BookOpen, ArrowUpRight,
+  ChevronRight, Clock, MapPin, Building2, BookOpen, ArrowUpRight, Sparkles,
 } from 'lucide-react'
 import DashboardLayout from '../../components/layout/DashboardLayout'
 import StatCard from '../../components/ui/StatCard'
@@ -32,7 +32,7 @@ export default function CandidateDashboard() {
       {/* Welcome */}
       <div className="bg-gradient-to-r from-brand-600 to-brand-800 rounded-2xl p-6 text-white mb-6 relative overflow-hidden">
         <div className="absolute right-0 top-0 w-48 h-48 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-        <p className="text-blue-200 text-sm font-medium">Bonjour 👋</p>
+        <p className="text-blue-200 text-sm font-medium flex items-center gap-2">Bonjour <Sparkles className="w-3.5 h-3.5" /></p>
         <h1 className="text-2xl font-black mt-1 mb-2">Amadou Diallo</h1>
         <p className="text-blue-200 text-sm">Développeur Full Stack · Dakar, Sénégal</p>
         <div className="flex items-center gap-4 mt-4">

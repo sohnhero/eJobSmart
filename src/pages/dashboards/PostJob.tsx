@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import {
   ArrowLeft, Upload, Save, ChevronDown, Plus, X, AlertCircle,
   Eye, Send, CheckCircle, Briefcase, MapPin, Clock, DollarSign,
+  ClipboardList, Coins, FileText, Layout, Lightbulb, Zap, ArrowRight,
 } from 'lucide-react'
 import DashboardLayout from '../../components/layout/DashboardLayout'
 import Button from '../../components/ui/Button'
@@ -133,9 +134,9 @@ export default function PostJob() {
             Sauvegarder brouillon
           </Button>
           {step < totalSteps && (
-            <Button size="sm" onClick={() => setStep(s => s + 1 as typeof s)}>
-              Suivant →
-            </Button>
+              <Button size="sm" onClick={() => setStep(s => s + 1 as typeof s)} rightIcon={<ArrowRight className="w-3.5 h-3.5" />}>
+                Suivant
+              </Button>
           )}
         </div>
       </div>
@@ -157,7 +158,9 @@ export default function PostJob() {
           {/* Step 1: Basic info */}
           {step === 1 && (
             <div className="card p-6 space-y-5">
-              <h2 className="font-bold text-slate-900 text-lg mb-4">📋 Informations essentielles</h2>
+              <h2 className="font-bold text-slate-900 text-lg mb-4 flex items-center gap-2">
+                <ClipboardList className="w-5 h-5 text-brand-600" /> Informations essentielles
+              </h2>
 
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">Titre du poste *</label>
@@ -230,7 +233,9 @@ export default function PostJob() {
           {/* Step 2: Salary & Benefits */}
           {step === 2 && (
             <div className="card p-6 space-y-5">
-              <h2 className="font-bold text-slate-900 text-lg mb-4">💰 Rémunération & Avantages</h2>
+              <h2 className="font-bold text-slate-900 text-lg mb-4 flex items-center gap-2">
+                <Coins className="w-5 h-5 text-amber-600" /> Rémunération & Avantages
+              </h2>
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
@@ -291,7 +296,9 @@ export default function PostJob() {
           {/* Step 3: Description */}
           {step === 3 && (
             <div className="card p-6 space-y-6">
-              <h2 className="font-bold text-slate-900 text-lg mb-4">📝 Description du poste</h2>
+              <h2 className="font-bold text-slate-900 text-lg mb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-blue-600" /> Description du poste
+              </h2>
 
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">Description générale *</label>
@@ -382,7 +389,9 @@ export default function PostJob() {
           {/* Step 4: Preview & Publish */}
           {step === 4 && (
             <div className="card p-6">
-              <h2 className="font-bold text-slate-900 text-lg mb-6">👁️ Aperçu & Publication</h2>
+              <h2 className="font-bold text-slate-900 text-lg mb-6 flex items-center gap-2">
+                <Layout className="w-5 h-5 text-purple-600" /> Aperçu & Publication
+              </h2>
 
               {/* Preview card */}
               <div className="bg-slate-50 rounded-2xl p-5 mb-6 border-2 border-dashed border-slate-300">
@@ -478,7 +487,9 @@ export default function PostJob() {
 
           {/* Tips */}
           <div className="card p-5">
-            <h3 className="font-semibold text-slate-900 mb-3">💡 Conseils</h3>
+            <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+              <Lightbulb className="w-4 h-4 text-amber-500" /> Conseils
+            </h3>
             <ul className="space-y-2">
               {[
                 'Un titre précis attire 3× plus de candidats qualifiés',
@@ -497,7 +508,7 @@ export default function PostJob() {
           {/* Boost option */}
           <div className="card p-5 bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xl">⚡</span>
+              <Zap className="w-5 h-5 text-amber-500 fill-amber-500" />
               <h3 className="font-semibold text-slate-900">Booster l'offre</h3>
             </div>
             <p className="text-xs text-slate-600 mb-3">Mettez votre offre en avant pour 3× plus de visibilité. Disponible après publication.</p>

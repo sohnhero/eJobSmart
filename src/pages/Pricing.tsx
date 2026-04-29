@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Check, Zap, Star, Building2, Users, ArrowRight, HelpCircle } from 'lucide-react'
+import { Check, Zap, Star, Building2, Users, ArrowRight, HelpCircle, ShieldCheck, RefreshCw, CreditCard, Globe } from 'lucide-react'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import Button from '../components/ui/Button'
@@ -278,14 +278,14 @@ export default function Pricing() {
         {/* Trust badges */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-12 flex flex-wrap justify-center gap-8 text-center">
           {[
-            { emoji: '🔒', label: 'Paiement sécurisé SSL' },
-            { emoji: '🔄', label: 'Sans engagement' },
-            { emoji: '💳', label: 'Orange Money & Wave acceptés' },
-            { emoji: '🇸🇳', label: 'Hébergé en Afrique de l\'Ouest' },
+            { icon: <ShieldCheck className="w-5 h-5 text-emerald-600" />, label: 'Paiement sécurisé SSL' },
+            { icon: <RefreshCw className="w-5 h-5 text-blue-600" />, label: 'Sans engagement' },
+            { icon: <CreditCard className="w-5 h-5 text-purple-600" />, label: 'Orange Money & Wave acceptés' },
+            { icon: <Globe className="w-5 h-5 text-brand-600" />, label: 'Hébergé en Afrique de l\'Ouest' },
           ].map(t => (
-            <div key={t.label} className="flex items-center gap-2">
-              <span className="text-xl">{t.emoji}</span>
-              <span className="text-sm font-medium text-slate-600">{t.label}</span>
+            <div key={t.label} className="flex items-center gap-2.5">
+              {t.icon}
+              <span className="text-sm font-semibold text-slate-600">{t.label}</span>
             </div>
           ))}
         </div>

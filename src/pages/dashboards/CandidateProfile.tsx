@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import {
   User, Mail, Phone, MapPin, Upload, Plus, X, Save,
   CheckCircle, Briefcase, GraduationCap, Star, Globe,
-  Linkedin, Github, Eye, Edit3, Camera,
+  Linkedin, Github, Eye, Edit3, Camera, FileText, Zap,
 } from 'lucide-react'
 import DashboardLayout from '../../components/layout/DashboardLayout'
 import Button from '../../components/ui/Button'
@@ -68,11 +68,11 @@ export default function CandidateProfile() {
     setTimeout(() => setSaved(false), 2000)
   }
 
-  const tabs: { id: Tab; label: string }[] = [
-    { id: 'info', label: '👤 Informations' },
-    { id: 'experience', label: '💼 Parcours' },
-    { id: 'skills', label: '⚡ Compétences' },
-    { id: 'cv', label: '📄 CV & Documents' },
+  const tabs: { id: Tab; label: string; icon: typeof User }[] = [
+    { id: 'info', label: 'Informations', icon: User },
+    { id: 'experience', label: 'Parcours', icon: Briefcase },
+    { id: 'skills', label: 'Compétences', icon: Zap },
+    { id: 'cv', label: 'CV & Documents', icon: FileText },
   ]
 
   return (
@@ -138,7 +138,8 @@ export default function CandidateProfile() {
             <div className="flex border-b border-slate-100 overflow-x-auto">
               {tabs.map(tab => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                  className={`flex-shrink-0 px-4 py-3.5 text-xs font-semibold transition-colors ${activeTab === tab.id ? 'text-brand-600 border-b-2 border-brand-600' : 'text-slate-500 hover:text-slate-700'}`}>
+                  className={`flex-shrink-0 px-5 py-3.5 text-xs font-semibold transition-colors flex items-center gap-2 ${activeTab === tab.id ? 'text-brand-600 border-b-2 border-brand-600' : 'text-slate-500 hover:text-slate-700'}`}>
+                  <tab.icon className={`w-3.5 h-3.5 ${activeTab === tab.id ? 'text-brand-600' : 'text-slate-400'}`} />
                   {tab.label}
                 </button>
               ))}

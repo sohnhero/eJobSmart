@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import {
   Briefcase, Users, TrendingUp, Clock, Plus, ChevronRight,
   MoreVertical, Star, MessageSquare, Calendar, CheckCircle,
-  XCircle, Eye, Filter, Zap,
+  XCircle, Eye, Filter, Zap, List, LayoutGrid, Sparkles,
 } from 'lucide-react'
 import DashboardLayout from '../../components/layout/DashboardLayout'
 import StatCard from '../../components/ui/StatCard'
@@ -58,7 +58,9 @@ export default function CompanyDashboard() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-black text-slate-900">Tableau de bord</h1>
-          <p className="text-slate-500 text-sm mt-0.5">Bienvenue, Sonatel Digital · Compte Premium ✨</p>
+          <p className="text-slate-500 text-sm mt-0.5 flex items-center gap-1.5">
+            Bienvenue, Sonatel Digital · Compte Premium <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+          </p>
         </div>
         <Button onClick={() => navigate('/dashboard/company/jobs/new')} leftIcon={<Plus className="w-4 h-4" />}>
           Publier une offre
@@ -108,7 +110,7 @@ export default function CompanyDashboard() {
           <div className="card p-4">
             <p className="text-xs text-slate-400 mb-1">Délai moyen de traitement</p>
             <p className="text-2xl font-black text-slate-900">{stats.timeToFill}j</p>
-            <p className="text-xs text-emerald-600 font-medium">-6j vs mois précédent 🎉</p>
+            <p className="text-xs text-emerald-600 font-medium flex items-center gap-1">-6j vs mois précédent <TrendingUp className="w-3 h-3 rotate-180" /></p>
           </div>
           <div className="card p-4">
             <p className="text-xs text-slate-400 mb-1">Entretiens planifiés</p>
@@ -131,12 +133,14 @@ export default function CompanyDashboard() {
           <div className="flex items-center gap-2">
             <Button size="sm" variant="ghost" leftIcon={<Filter className="w-3.5 h-3.5" />}>Filtrer</Button>
             <div className="flex gap-1">
-              {['kanban', 'list'].map(v => (
-                <button key={v} onClick={() => setActiveJobTab(v as never)}
-                  className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-colors ${activeJobTab === v ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
-                  {v === 'kanban' ? '▦ Kanban' : '≡ Liste'}
-                </button>
-              ))}
+              <button onClick={() => setActiveJobTab('kanban')}
+                className={`p-1.5 rounded-lg transition-colors ${activeJobTab === 'kanban' ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
+                <LayoutGrid className="w-4 h-4" />
+              </button>
+              <button onClick={() => setActiveJobTab('list')}
+                className={`p-1.5 rounded-lg transition-colors ${activeJobTab === 'list' ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
+                <List className="w-4 h-4" />
+              </button>
             </div>
           </div>
         </div>

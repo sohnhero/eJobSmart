@@ -1,7 +1,7 @@
 import {
   Users, Briefcase, TrendingUp, DollarSign, AlertTriangle,
   CheckCircle, XCircle, Eye, MoreVertical, UserCheck, BookOpen,
-  Building2, Globe, ShieldCheck,
+  Building2, Globe, ShieldCheck, Sparkles,
 } from 'lucide-react'
 import DashboardLayout from '../../components/layout/DashboardLayout'
 import StatCard from '../../components/ui/StatCard'
@@ -11,11 +11,11 @@ import { dashboardStats, revenueData, topSectors } from '../../data/stats'
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 
 const recentUsers = [
-  { id: 1, name: 'Mamadou Kouyaté', email: 'mkouyate@gmail.com', role: 'Candidat', status: 'Vérifié', date: '2026-04-28', country: '🇸🇳' },
-  { id: 2, name: 'GIZ Sénégal', email: 'rh@giz.sn', role: 'Entreprise', status: 'En attente', date: '2026-04-28', country: '🇸🇳' },
-  { id: 3, name: 'Fatou Jallow', email: 'fjallow@freelance.gm', role: 'Freelance', status: 'Vérifié', date: '2026-04-27', country: '🇬🇲' },
-  { id: 4, name: 'Cabinet Talent+', email: 'contact@talentplus.ci', role: 'Cabinet RH', status: 'Vérifié', date: '2026-04-27', country: '🇨🇮' },
-  { id: 5, name: 'Boubacar Diallo', email: 'bdiallo@dev.sn', role: 'Candidat', status: 'Inactif', date: '2026-04-26', country: '🇸🇳' },
+  { id: 1, name: 'Mamadou Kouyaté', email: 'mkouyate@gmail.com', role: 'Candidat', status: 'Vérifié', date: '2026-04-28', country: 'SN' },
+  { id: 2, name: 'GIZ Sénégal', email: 'rh@giz.sn', role: 'Entreprise', status: 'En attente', date: '2026-04-28', country: 'SN' },
+  { id: 3, name: 'Fatou Jallow', email: 'fjallow@freelance.gm', role: 'Freelance', status: 'Vérifié', date: '2026-04-27', country: 'GM' },
+  { id: 4, name: 'Cabinet Talent+', email: 'contact@talentplus.ci', role: 'Cabinet RH', status: 'Vérifié', date: '2026-04-27', country: 'CI' },
+  { id: 5, name: 'Boubacar Diallo', email: 'bdiallo@dev.sn', role: 'Candidat', status: 'Inactif', date: '2026-04-26', country: 'SN' },
 ]
 
 const pendingModeration = [
@@ -154,7 +154,12 @@ export default function AdminDashboard() {
                       <div className="flex items-center gap-2">
                         <Avatar name={u.name} size="xs" />
                         <div>
-                          <p className="font-semibold text-slate-800">{u.country} {u.name}</p>
+                          <p className="font-semibold text-slate-800 flex items-center gap-1.5">
+                            <span className="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
+                              <Globe className="w-2.5 h-2.5" /> {u.country}
+                            </span>
+                            {u.name}
+                          </p>
                           <p className="text-slate-400">{u.email}</p>
                         </div>
                       </div>

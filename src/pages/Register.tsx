@@ -197,8 +197,8 @@ export default function Register() {
                   <Button fullWidth size="lg" loading={loading} onClick={handleSubmit}>
                     Créer mon compte gratuitement
                   </Button>
-                  <button onClick={() => setStep(2)} className="mt-3 text-sm text-slate-500 hover:text-brand-600 transition-colors">
-                    ← Modifier mes informations
+                  <button onClick={() => setStep(2)} className="mt-3 text-sm text-slate-500 hover:text-brand-600 transition-colors flex items-center justify-center gap-1.5 mx-auto">
+                    <ArrowLeft className="w-3.5 h-3.5" /> Modifier mes informations
                   </button>
                 </div>
               </>

@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Send, Search, Phone, Video, MoreVertical, Paperclip,
-  Smile, ArrowLeft, Circle, Star, Archive, Trash2, CheckCheck,
+  Smile, ArrowLeft, Circle, Star, Archive, Trash2, CheckCheck, Pin,
 } from 'lucide-react'
 import DashboardLayout from '../../components/layout/DashboardLayout'
 import Avatar from '../../components/ui/Avatar'
@@ -194,8 +194,13 @@ export default function Messages({ role = 'candidate' }: { role?: 'candidate' | 
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-sm text-slate-900">{activeConv.name}</p>
-                <p className="text-[10px] text-slate-400">
-                  {activeConv.online ? '🟢 En ligne' : 'Hors ligne'} · {activeConv.company}
+                <p className="text-[10px] text-slate-400 flex items-center gap-1">
+                  {activeConv.online ? (
+                    <>
+                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+                      <span className="text-emerald-600 font-medium">En ligne</span>
+                    </>
+                  ) : 'Hors ligne'} · {activeConv.company}
                 </p>
               </div>
               <div className="flex items-center gap-1">
@@ -213,7 +218,9 @@ export default function Messages({ role = 'candidate' }: { role?: 'candidate' | 
 
             {/* Job context */}
             <div className="px-4 py-2.5 bg-brand-50 border-b border-brand-100">
-              <p className="text-xs text-brand-600 font-medium">📌 Concernant : <span className="font-semibold">{activeConv.jobTitle}</span></p>
+              <p className="text-xs text-brand-600 font-medium flex items-center gap-2">
+                <Pin className="w-3 h-3" /> Concernant : <span className="font-semibold">{activeConv.jobTitle}</span>
+              </p>
             </div>
 
             {/* Messages */}
