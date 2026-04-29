@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__mcp-registry__search_mcp_registry",
+      "Read(//c/Users/NdiagaLO/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/b3b99209-0a90-43af-855a-4cc8529a0780/4dc20052-f526-461f-815f-add8e565dbb2/skills/docx/**)",
+      "Bash(extract-text \"C:\\\\Users\\\\NdiagaLO\\\\OneDrive - INENI\\\\Bureau\\\\eJobSmart_CahierDesCharges.docx\")",
+      "Bash(pandoc \"C:\\\\Users\\\\NdiagaLO\\\\OneDrive - INENI\\\\Bureau\\\\eJobSmart_CahierDesCharges.docx\" -t markdown)",
+      "Bash(pandoc \"C:/Users/NdiagaLO/OneDrive - INENI/Bureau/eJobSmart_CahierDesCharges.docx\" -t markdown)",
+      "Bash(npm create *)",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\NdiagaLO\\\\eJobSmart\"; echo \"eJobSmart\" | npm create vite@latest . -- --template react-ts 2>&1)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(npx tsc *)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(taskkill /F /IM node.exe)",
+      "PowerShell(Stop-Process -Name node -Force -ErrorAction SilentlyContinue)",
+      "PowerShell($desktop = [Environment]::GetFolderPath\\(\"Desktop\"\\); Write-Host $desktop; Test-Path $desktop)"
+    ]
+  }
+}
