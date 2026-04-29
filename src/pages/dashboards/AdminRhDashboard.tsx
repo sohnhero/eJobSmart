@@ -11,10 +11,10 @@ import Badge from '../../components/ui/Badge'
 
 export default function AdminRhDashboard() {
   const stats = [
-    { label: 'Talents au vivier', value: '12,450', icon: UserCheck, color: 'text-amber-600', trend: '+124 ce mois' },
-    { label: 'Candidats actifs', value: '3,842', icon: Users, color: 'text-blue-600' },
-    { label: 'Offres à modérer', value: '18', icon: Briefcase, color: 'text-purple-600', trend: 'Priorité haute' },
-    { label: 'Formations actives', value: '45', icon: BookOpen, color: 'text-emerald-600' },
+    { title: 'Talents au vivier', value: '12,450', icon: UserCheck, iconColor: 'text-amber-600', trend: 12, trendLabel: 'ce mois' },
+    { title: 'Candidats actifs', value: '3,842', icon: Users, iconColor: 'text-blue-600' },
+    { title: 'Offres à modérer', value: '18', icon: Briefcase, iconColor: 'text-purple-600' },
+    { title: 'Formations actives', value: '45', icon: BookOpen, iconColor: 'text-emerald-600' },
   ]
 
   const talentHighlights = [
@@ -36,9 +36,8 @@ export default function AdminRhDashboard() {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {stats.map(stat => <StatCard key={stat.label} {...stat} />)}
+        {stats.map(stat => <StatCard key={stat.title} {...stat} />)}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -84,7 +83,7 @@ export default function AdminRhDashboard() {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-xs font-medium text-slate-500">
-                        <Badge variant={t.status === 'Disponible' ? 'success' : 'secondary'}>{t.status}</Badge>
+                        <Badge variant={t.status === 'Disponible' ? 'green' : 'slate'}>{t.status}</Badge>
                       </td>
                       <td className="px-6 py-4 text-right">
                         <button className="text-xs font-bold text-brand-600 hover:underline">Proposer</button>

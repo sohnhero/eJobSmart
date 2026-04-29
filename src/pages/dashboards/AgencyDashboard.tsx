@@ -10,10 +10,10 @@ import Badge from '../../components/ui/Badge'
 
 export default function AgencyDashboard() {
   const stats = [
-    { label: 'Ressources actives', value: '42', icon: Users, color: 'text-emerald-600', trend: '+5 ce mois' },
-    { label: 'Placements réussis', value: '18', icon: CheckCircle, color: 'text-brand-600', trend: 'Taux 85%' },
-    { label: 'Offres en cours', value: '7', icon: Briefcase, color: 'text-purple-600' },
-    { label: 'Candidatures reçues', value: '156', icon: TrendingUp, color: 'text-blue-600' },
+    { title: 'Ressources actives', value: '42', icon: Users, iconColor: 'text-emerald-600', trend: 12, trendLabel: 'ce mois' },
+    { title: 'Placements réussis', value: '18', icon: CheckCircle, iconColor: 'text-brand-600', trend: 85, trendLabel: 'taux' },
+    { title: 'Offres en cours', value: '7', icon: Briefcase, iconColor: 'text-purple-600' },
+    { title: 'Candidatures reçues', value: '156', icon: TrendingUp, iconColor: 'text-blue-600' },
   ]
 
   const recentResources = [
@@ -35,9 +35,8 @@ export default function AgencyDashboard() {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {stats.map(stat => <StatCard key={stat.label} {...stat} />)}
+        {stats.map(stat => <StatCard key={stat.title} {...stat} />)}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -69,7 +68,7 @@ export default function AgencyDashboard() {
                         <p className="text-[10px] text-slate-400">{res.exp}</p>
                       </td>
                       <td className="px-6 py-4">
-                        <Badge variant={res.status === 'Disponible' ? 'success' : res.status === 'Placé' ? 'secondary' : 'warning'}>
+                        <Badge variant={res.status === 'Disponible' ? 'green' : res.status === 'Placé' ? 'slate' : 'amber'}>
                           {res.status}
                         </Badge>
                       </td>

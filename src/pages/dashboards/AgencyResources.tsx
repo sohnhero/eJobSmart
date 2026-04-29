@@ -100,7 +100,7 @@ export default function AgencyResources() {
                     {res.rate}
                   </td>
                   <td className="px-6 py-4">
-                    <Badge variant={res.status === 'Disponible' ? 'success' : res.status === 'Placé' ? 'secondary' : 'warning'}>
+                    <Badge variant={res.status === 'Disponible' ? 'green' : res.status === 'Placé' ? 'slate' : 'amber'}>
                       {res.status}
                     </Badge>
                   </td>

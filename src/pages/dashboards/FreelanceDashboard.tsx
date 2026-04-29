@@ -10,10 +10,10 @@ import Badge from '../../components/ui/Badge'
 
 export default function FreelanceDashboard() {
   const stats = [
-    { label: 'Missions en cours', value: '2', icon: Briefcase, color: 'text-blue-600' },
-    { label: 'Propositions envoyées', value: '12', icon: FileText, color: 'text-purple-600', trend: '+3 cette semaine' },
-    { label: 'Chiffre d\'affaires', value: '2.5M', icon: DollarSign, color: 'text-emerald-600', trend: 'FCFA' },
-    { label: 'Note moyenne', value: '4.9', icon: Star, color: 'text-amber-500', trend: '15 avis' },
+    { title: 'Missions en cours', value: '2', icon: Briefcase, iconColor: 'text-blue-600' },
+    { title: 'Propositions envoyées', value: '12', icon: FileText, iconColor: 'text-purple-600', trend: 25, trendLabel: 'cette semaine' },
+    { title: 'Chiffre d\'affaires', value: '2.5M', icon: DollarSign, iconColor: 'text-emerald-600', trend: 15, trendLabel: 'FCFA' },
+    { title: 'Note moyenne', value: '4.9', icon: Star, iconColor: 'text-amber-500', trend: 100, trendLabel: '15 avis' },
   ]
 
   const activeMissions = [
@@ -34,9 +34,8 @@ export default function FreelanceDashboard() {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {stats.map(stat => <StatCard key={stat.label} {...stat} />)}
+        {stats.map(stat => <StatCard key={stat.title} {...stat} />)}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -57,7 +56,7 @@ export default function FreelanceDashboard() {
                       <h3 className="font-bold text-slate-800 group-hover:text-blue-700 transition-colors">{mission.title}</h3>
                       <p className="text-xs text-slate-500">{mission.company}</p>
                     </div>
-                    <Badge variant={mission.status === 'In Progress' ? 'success' : 'warning'}>{mission.status}</Badge>
+                    <Badge variant={mission.status === 'In Progress' ? 'green' : 'amber'}>{mission.status}</Badge>
                   </div>
                   <div className="flex items-center gap-6 text-xs text-slate-400">
                     <div className="flex items-center gap-1.5 font-bold text-emerald-600">

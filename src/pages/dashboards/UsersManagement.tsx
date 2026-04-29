@@ -101,9 +101,9 @@ export default function UsersManagement() {
                   <td className="px-6 py-4 text-sm">
                     <Badge variant={
                       user.role === 'Entreprise' ? 'purple' :
-                      user.role === 'Cabinet RH' ? 'emerald' :
+                      user.role === 'Cabinet RH' ? 'green' :
                       user.role === 'Freelance' ? 'blue' :
-                      user.role === 'Admin RH' ? 'warning' : 'secondary'
+                      user.role === 'Admin RH' ? 'amber' : 'slate'
                     }>
                       {user.role}
                     </Badge>
