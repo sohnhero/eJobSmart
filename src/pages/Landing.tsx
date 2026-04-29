@@ -228,37 +228,75 @@ export default function Landing() {
       </section>
 
       {/* ========== SECTORS ========== */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <span className="text-sm font-semibold text-brand-600 tracking-wider uppercase">Secteurs</span>
-            <h2 className="section-title mt-2">Explorez par secteur d'activité</h2>
-            <p className="section-subtitle">18 secteurs d'activité couverts à travers toute l'Afrique de l'Ouest</p>
+      <section className="py-24 bg-white relative overflow-hidden">
+        {/* Decorative background element */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(37,99,235,0.03)_0%,transparent_50%)] pointer-events-none" />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <Badge variant="blue" className="mb-4">Secteurs d'activité</Badge>
+            <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">
+              Trouvez votre <span className="text-brand-600">voie</span>
+            </h2>
+            <p className="mt-4 text-slate-500 max-w-2xl mx-auto text-lg font-medium leading-relaxed">
+              Explorez des opportunités dans 18 secteurs d'activité couverts à travers toute l'Afrique de l'Ouest.
+            </p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {topSectors.map(sector => (
               <button
                 key={sector.id}
                 onClick={() => navigate(`/jobs?sector=${sector.slug}`)}
-                className="group card card-premium card-hover-premium p-4 text-center cursor-pointer"
+                className="group relative p-6 bg-white border border-slate-100 rounded-3xl text-center transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] hover:border-transparent flex flex-col items-center overflow-hidden"
               >
+                {/* Hover Glow */}
+                <div 
+                  className="absolute inset-0 opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500 pointer-events-none"
+                  style={{ backgroundColor: sector.color }}
+                />
+                <div 
+                  className="absolute -inset-1 opacity-0 group-hover:opacity-20 blur-2xl transition-opacity duration-500 pointer-events-none"
+                  style={{ backgroundColor: sector.color }}
+                />
+
                 <div
-                  className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform"
-                  style={{ backgroundColor: sector.color + '15' }}
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-sm border border-slate-50 relative z-10"
+                  style={{ backgroundColor: sector.color + '10' }}
                 >
-                  <SectorIcon name={sector.icon} className="w-6 h-6" style={{ color: sector.color }} />
+                  <SectorIcon name={sector.icon} className="w-8 h-8 transition-all duration-500" style={{ color: sector.color }} />
                 </div>
-                <p className="text-xs font-semibold text-slate-700 leading-tight">{sector.name}</p>
-                <p className="text-xs text-slate-400 mt-1">{sector.count} offres</p>
+                
+                <div className="relative z-10">
+                  <h3 className="text-sm font-bold text-slate-800 leading-tight group-hover:text-brand-700 transition-colors">
+                    {sector.name}
+                  </h3>
+                  <div className="mt-2 flex items-center justify-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: sector.color }} />
+                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                      {sector.count} offres
+                    </span>
+                  </div>
+                </div>
+
+                {/* Arrow indicator that appears on hover */}
+                <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                  <div className="w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center">
+                    <ArrowRight className="w-3 h-3 text-slate-400" />
+                  </div>
+                </div>
               </button>
             ))}
           </div>
 
-          <div className="text-center mt-8">
-            <Button variant="secondary" onClick={() => navigate('/jobs')}>
-              Voir toutes les offres <ArrowRight className="w-4 h-4" />
-            </Button>
+          <div className="text-center mt-12">
+            <button 
+              onClick={() => navigate('/jobs')}
+              className="inline-flex items-center gap-2 text-slate-500 font-bold hover:text-brand-600 transition-all group py-2 px-4 rounded-xl hover:bg-brand-50"
+            >
+              Voir tous les secteurs 
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </button>
           </div>
         </div>
       </section>
@@ -358,24 +396,48 @@ export default function Landing() {
       </section>
 
       {/* ========== FEATURES ========== */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <span className="text-sm font-semibold text-brand-600 tracking-wider uppercase">Pourquoi eJobSmart</span>
-            <h2 className="section-title mt-2">La plateforme conçue pour l'Afrique</h2>
-            <p className="section-subtitle max-w-2xl mx-auto">
-              Des fonctionnalités pensées pour les réalités du marché du travail africain, avec une technologie de niveau international.
+      <section className="py-24 bg-slate-50/50 relative overflow-hidden">
+        {/* Subtle background decoration */}
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-brand-100/40 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-amber-100/40 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <span className="text-sm font-bold text-brand-600 tracking-widest uppercase">L'Excellence eJobSmart</span>
+            <h2 className="text-3xl md:text-5xl font-black text-slate-900 mt-4 tracking-tight">
+              La plateforme conçue pour <span className="bg-gradient-to-r from-brand-600 to-brand-800 bg-clip-text text-transparent">l'Afrique</span>
+            </h2>
+            <p className="mt-4 text-slate-500 max-w-2xl mx-auto text-lg leading-relaxed">
+              Des fonctionnalités innovantes pensées pour les réalités du marché local, propulsées par une technologie de pointe.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature) => (
-              <div key={feature.title} className="card p-6 group hover:-translate-y-1 transition-all duration-200">
-                <div className={`w-12 h-12 rounded-2xl ${feature.bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                  <feature.icon className={`w-6 h-6 ${feature.color}`} />
+              <div 
+                key={feature.title} 
+                className="group relative bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08)] hover:border-brand-100 overflow-hidden cursor-pointer"
+              >
+                {/* Decorative background element on hover */}
+                <div className={`absolute top-0 right-0 w-32 h-32 ${feature.bg} opacity-0 group-hover:opacity-20 rounded-full -translate-y-1/2 translate-x-1/2 transition-opacity duration-500`} />
+                
+                <div className={`w-14 h-14 rounded-2xl ${feature.bg} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-sm`}>
+                  <feature.icon className={`w-7 h-7 ${feature.color}`} />
                 </div>
-                <h3 className="font-semibold text-slate-900 mb-2">{feature.title}</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">{feature.desc}</p>
+                
+                <h3 className="text-xl font-black text-slate-900 mb-3 group-hover:text-brand-700 transition-colors">
+                  {feature.title}
+                </h3>
+                
+                <p className="text-slate-500 leading-relaxed text-sm font-medium">
+                  {feature.desc}
+                </p>
+
+                <div className="mt-6 flex items-center gap-2 text-xs font-bold text-slate-400 group-hover:text-brand-600 transition-all">
+                  <span className="opacity-0 group-hover:opacity-100 transition-opacity">Découvrir</span>
+                  <div className="w-8 h-px bg-slate-200 group-hover:w-12 group-hover:bg-brand-600 transition-all duration-500" />
+                  <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-500" />
+                </div>
               </div>
             ))}
           </div>

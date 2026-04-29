@@ -112,7 +112,7 @@ export default function Companies() {
             <div
               key={company.id}
               className="card p-5 cursor-pointer hover:-translate-y-1 transition-all duration-200 group"
-              onClick={() => navigate(`/jobs?company=${company.name}`)}
+              onClick={() => navigate(`/companies/${company.id}`)}
             >
               <div className="flex items-start gap-3 mb-4">
                 <img src={company.logo} alt={company.name} className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />

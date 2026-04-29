@@ -9,6 +9,7 @@ import Register from './pages/Register'
 import Contact from './pages/Contact'
 import Pricing from './pages/Pricing'
 import Companies from './pages/Companies'
+import CompanyDetail from './pages/CompanyDetail'
 import CandidateDashboard from './pages/dashboards/CandidateDashboard'
 import CompanyDashboard from './pages/dashboards/CompanyDashboard'
 import AdminDashboard from './pages/dashboards/AdminDashboard'
@@ -54,6 +55,7 @@ export default function App() {
         <Route path="/trainings" element={<Trainings />} />
         <Route path="/trainings/:id" element={<TrainingDetail />} />
         <Route path="/companies" element={<Companies />} />
+        <Route path="/companies/:id" element={<CompanyDetail />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/pricing" element={<Pricing />} />
 
