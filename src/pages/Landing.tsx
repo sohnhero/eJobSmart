@@ -242,7 +242,7 @@ export default function Landing() {
               <button
                 key={sector.id}
                 onClick={() => navigate(`/jobs?sector=${sector.slug}`)}
-                className="group card p-4 text-center hover:border-brand-300 hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                className="group card card-premium card-hover-premium p-4 text-center cursor-pointer"
               >
                 <div
                   className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform"
@@ -283,51 +283,67 @@ export default function Landing() {
               <div
                 key={job.id}
                 onClick={() => navigate(`/jobs/${job.id}`)}
-                className="card p-5 cursor-pointer hover:-translate-y-1 transition-all duration-200 relative group"
+                className="card card-premium card-hover-premium p-6 cursor-pointer relative group"
               >
+                {/* Featured Badge */}
                 {job.isBoosted && (
-                  <div className="absolute top-3 right-3">
-                    <Badge variant="amber" size="sm" className="flex items-center gap-1">
-                      <Zap className="w-3 h-3" /> En vedette
+                  <div className="absolute top-4 right-4 z-10">
+                    <Badge variant="amber" size="sm" className="bg-amber-50 text-amber-700 border border-amber-100/50 backdrop-blur-sm flex items-center gap-1.5 px-3 shadow-sm">
+                      <Zap className="w-3 h-3 fill-amber-500" /> En vedette
                     </Badge>
                   </div>
                 )}
-                <div className="flex items-start gap-3 mb-4">
-                  <img src={job.companyLogo} alt={job.company} className="w-11 h-11 rounded-xl object-cover flex-shrink-0" />
-                  <div className="min-w-0">
-                    <h3 className="font-semibold text-slate-900 text-sm leading-tight line-clamp-2 group-hover:text-brand-600 transition-colors">
+
+                {/* Header */}
+                <div className="flex items-start gap-4 mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center p-2.5 flex-shrink-0 group-hover:shadow-md transition-shadow">
+                    <img src={job.companyLogo} alt={job.company} className="w-full h-full object-contain" />
+                  </div>
+                  <div className="min-w-0 pt-1">
+                    <h3 className="font-bold text-slate-900 text-base leading-tight line-clamp-2 group-hover:text-brand-600 transition-colors">
                       {job.title}
                     </h3>
-                    <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
-                      <Building2 className="w-3 h-3" /> {job.company}
+                    <p className="text-xs font-medium text-slate-500 mt-1.5 flex items-center gap-1.5">
+                      <Building2 className="w-3.5 h-3.5 text-slate-400" /> {job.company}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-1.5 mb-4">
+                {/* Badges */}
+                <div className="flex flex-wrap gap-2 mb-6">
                   <ContractBadge type={job.contractType} />
-                  <Badge variant="slate">{job.remoteType}</Badge>
-                  <Badge variant="blue">{job.experienceLevel}</Badge>
+                  <Badge variant="slate" className="bg-slate-50 text-slate-600 border border-slate-100">{job.remoteType}</Badge>
+                  <Badge variant="blue" className="bg-blue-50 text-blue-600 border border-blue-100">{job.experienceLevel}</Badge>
                 </div>
 
-                <div className="flex items-center gap-3 text-xs text-slate-500 mb-4">
-                  <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{job.city}</span>
-                  <span className="flex items-center gap-1"><Users className="w-3 h-3" />{job.applicants} candidats</span>
+                {/* Info */}
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="flex items-center gap-2 text-slate-500">
+                    <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-4 h-4" />
+                    </div>
+                    <span className="text-xs font-medium truncate">{job.city}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-slate-500">
+                    <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0">
+                      <Users className="w-4 h-4" />
+                    </div>
+                    <span className="text-xs font-medium">{job.applicants} candidats</span>
+                  </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                {/* Footer */}
+                <div className="flex items-center justify-between pt-5 border-t border-slate-50 relative">
                   <div>
-                    <p className="text-xs text-slate-400">Salaire</p>
-                    <p className="text-sm font-bold text-slate-800">
-                      {job.salaryMin.toLocaleString('fr-FR')} — {job.salaryMax.toLocaleString('fr-FR')}
-                      <span className="text-xs font-normal text-slate-400 ml-1">{job.currency}</span>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Salaire annuel</p>
+                    <p className="text-sm font-bold text-slate-900">
+                      {job.salaryMin.toLocaleString('fr-FR')} — {job.salaryMax.toLocaleString('fr-FR')} <span className="text-slate-400 text-[10px] font-medium">{job.currency}</span>
                     </p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xs text-slate-400">Publié</p>
-                    <p className="text-xs font-medium text-slate-600">
-                      {new Date(job.postedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
-                    </p>
+                  
+                  {/* Hover Arrow */}
+                  <div className="w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+                    <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>
               </div>
@@ -456,54 +472,71 @@ export default function Landing() {
               <div
                 key={training.id}
                 onClick={() => navigate(`/trainings/${training.id}`)}
-                className="card overflow-hidden cursor-pointer group hover:-translate-y-1 transition-all duration-200"
+                className="card card-premium card-hover-premium overflow-hidden cursor-pointer group"
               >
-                <div className="relative h-44 bg-gradient-to-br from-slate-200 to-slate-300 overflow-hidden">
+                <div className="relative h-48 bg-slate-200 overflow-hidden">
                   <div
-                    className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-300"
+                    className="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-700"
                     style={{ backgroundImage: `url(${training.thumbnail})` }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                  <div className="absolute top-3 left-3 flex gap-2">
-                    <Badge variant={training.format === 'En ligne' ? 'blue' : training.format === 'Hybride' ? 'purple' : 'amber'}>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                  
+                  <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+                    <Badge variant={training.format === 'En ligne' ? 'blue' : training.format === 'Hybride' ? 'purple' : 'amber'} className="backdrop-blur-md bg-white/20 text-white border-white/30">
                       {training.format}
                     </Badge>
-                    {training.price === 0 && <Badge variant="green">Gratuit</Badge>}
+                    {training.price === 0 && (
+                      <Badge variant="green" className="backdrop-blur-md bg-emerald-500/80 text-white border-emerald-400/50">
+                        Gratuit
+                      </Badge>
+                    )}
                   </div>
-                  <div className="absolute bottom-3 left-3">
-                    <Badge variant="slate" className="bg-white/20 text-white border-white/30">
-                      {training.level}
-                    </Badge>
+
+                  <div className="absolute bottom-4 left-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full border-2 border-white/50 overflow-hidden shadow-md">
+                        <img src={`https://ui-avatars.com/api/?name=${training.instructor}&background=random`} alt={training.instructor} className="w-full h-full object-cover" />
+                      </div>
+                      <span className="text-xs font-bold text-white drop-shadow-md">{training.instructor}</span>
+                    </div>
                   </div>
+
                   {training.hasCertificate && (
-                    <div className="absolute bottom-3 right-3">
-                      <Award className="w-5 h-5 text-amber-400" />
+                    <div className="absolute bottom-4 right-4 bg-white/20 backdrop-blur-md p-1.5 rounded-lg border border-white/30 shadow-lg">
+                      <Award className="w-4 h-4 text-amber-400" />
                     </div>
                   )}
                 </div>
 
-                <div className="p-5">
-                  <h3 className="font-semibold text-slate-900 text-sm leading-snug mb-3 group-hover:text-brand-600 transition-colors">
+                <div className="p-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Badge variant="slate" size="sm" className="bg-slate-50 text-slate-500 uppercase tracking-wider text-[10px]">
+                      {training.level}
+                    </Badge>
+                    <span className="text-[10px] font-bold text-slate-300">•</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">RH & Management</span>
+                  </div>
+
+                  <h3 className="font-bold text-slate-900 text-base leading-snug mb-4 group-hover:text-brand-600 transition-colors line-clamp-2">
                     {training.title}
                   </h3>
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold`}
-                      style={{ backgroundColor: training.instructorAvatar.includes('7c3aed') ? '#7c3aed' : '#2563eb' }}>
-                      {training.instructor.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                    </div>
-                    <p className="text-xs text-slate-500">{training.instructor}</p>
-                  </div>
-                  <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                      <span className="text-sm font-semibold text-slate-800">{training.rating}</span>
+
+                  <div className="flex items-center justify-between pt-4 border-t border-slate-50">
+                    <div className="flex items-center gap-1.5">
+                      <div className="flex items-center">
+                        <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                        <span className="text-sm font-bold text-slate-900 ml-1">{training.rating}</span>
+                      </div>
                       <span className="text-xs text-slate-400">({training.reviewCount})</span>
                     </div>
                     <div className="text-right">
-                      {training.price === 0
-                        ? <span className="text-sm font-bold text-emerald-600">Gratuit</span>
-                        : <span className="text-sm font-bold text-slate-900">{training.price.toLocaleString('fr-FR')} {training.currency}</span>
-                      }
+                      {training.price === 0 ? (
+                        <span className="text-sm font-black text-emerald-600">Gratuit</span>
+                      ) : (
+                        <span className="text-sm font-black text-slate-900">
+                          {training.price.toLocaleString('fr-FR')} <span className="text-[10px] font-bold text-slate-400">FCFA</span>
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
