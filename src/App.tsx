@@ -16,10 +16,12 @@ import CVDatabase from './pages/dashboards/CVDatabase'
 import Messages from './pages/dashboards/Messages'
 import PostJob from './pages/dashboards/PostJob'
 import CandidateProfile from './pages/dashboards/CandidateProfile'
+import ScrollToTop from './components/layout/ScrollToTop'
 
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         {/* Public */}
         <Route path="/" element={<Landing />} />
