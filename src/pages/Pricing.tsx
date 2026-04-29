@@ -113,6 +113,56 @@ const plans = {
       missing: [],
     },
   ],
+  agency: [
+    {
+      name: 'Standard',
+      price: { monthly: 45000, annual: 450000 },
+      currency: 'FCFA',
+      desc: 'Idéal pour les petits cabinets de recrutement',
+      color: 'border-slate-200',
+      btnVariant: 'secondary' as const,
+      features: [
+        '20 ressources actives',
+        '5 offres/mois',
+        'Gestion de portefeuille RH',
+        'Messagerie candidats',
+      ],
+      missing: ['Analytics avancés', 'Matching AI', 'Exports Excel'],
+    },
+    {
+      name: 'Avancé',
+      price: { monthly: 120000, annual: 1200000 },
+      currency: 'FCFA',
+      desc: 'Pour les cabinets en pleine croissance',
+      color: 'border-brand-500',
+      popular: true,
+      btnVariant: 'primary' as const,
+      features: [
+        'Ressources illimitées',
+        'Offres illimitées',
+        'Analytics de placement',
+        'Matching AI ressources/offres',
+        'Exportation de données',
+      ],
+      missing: [],
+    },
+    {
+      name: 'Partenaire',
+      price: { monthly: 250000, annual: 2500000 },
+      currency: 'FCFA',
+      desc: 'L\'offre ultime pour les grands cabinets',
+      color: 'border-slate-900',
+      btnVariant: 'secondary' as const,
+      features: [
+        'Tout le plan Avancé',
+        'Accès direct au vivier Admin RH',
+        'Co-branding sur la plateforme',
+        'Account Manager dédié',
+        'Support 24/7',
+      ],
+      missing: [],
+    },
+  ],
 }
 
 const faqs = [
@@ -137,7 +187,7 @@ const faqs = [
 export default function Pricing() {
   const navigate = useNavigate()
   const [billing, setBilling] = useState<Billing>('monthly')
-  const [audience, setAudience] = useState<'candidate' | 'company'>('company')
+  const [audience, setAudience] = useState<'candidate' | 'company' | 'agency'>('company')
   const [openFaq, setOpenFaq] = useState<number | null>(null)
 
   const currentPlans = plans[audience]
@@ -164,7 +214,7 @@ export default function Pricing() {
 
         {/* Toggle audience */}
         <div className="flex justify-center mb-8">
-          <div className="bg-white rounded-2xl p-1.5 border border-slate-200 flex gap-1">
+          <div className="bg-white rounded-2xl p-1.5 border border-slate-200 flex flex-wrap justify-center gap-1">
             <button
               onClick={() => setAudience('candidate')}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${audience === 'candidate' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-800'}`}
@@ -175,7 +225,13 @@ export default function Pricing() {
               onClick={() => setAudience('company')}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${audience === 'company' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-800'}`}
             >
-              <Building2 className="w-4 h-4" /> Entreprises & Cabinets
+              <Building2 className="w-4 h-4" /> Entreprises
+            </button>
+            <button
+              onClick={() => setAudience('agency')}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${audience === 'agency' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-800'}`}
+            >
+              <Star className="w-4 h-4" /> Cabinets RH
             </button>
           </div>
         </div>

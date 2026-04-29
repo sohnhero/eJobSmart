@@ -26,6 +26,16 @@ const candidateNav: NavItem[] = [
   { icon: Bell, label: 'Alertes emploi', href: '/dashboard/candidate/alerts' },
 ]
 
+const freelanceNav: NavItem[] = [
+  { icon: LayoutDashboard, label: 'Tableau de bord', href: '/dashboard/freelance' },
+  { icon: Search, label: 'Rechercher missions', href: '/dashboard/freelance/jobs' },
+  { icon: FileText, label: 'Mes propositions', href: '/dashboard/freelance/proposals', badge: 2 },
+  { icon: Users, label: 'Mon portfolio & CV', href: '/dashboard/freelance/profile' },
+  { icon: BookOpen, label: 'Formations RH', href: '/dashboard/freelance/trainings' },
+  { icon: MessageSquare, label: 'Messagerie', href: '/dashboard/freelance/messages', badge: 4 },
+  { icon: CreditCard, label: 'Mes factures', href: '/dashboard/freelance/billing' },
+]
+
 const companyNav: NavItem[] = [
   { icon: LayoutDashboard, label: 'Tableau de bord', href: '/dashboard/company' },
   { icon: Briefcase, label: 'Mes offres', href: '/dashboard/company/jobs' },
@@ -37,29 +47,47 @@ const companyNav: NavItem[] = [
   { icon: Settings, label: 'Paramètres', href: '/dashboard/company/settings' },
 ]
 
+const agencyNav: NavItem[] = [
+  { icon: LayoutDashboard, label: 'Tableau de bord', href: '/dashboard/agency' },
+  { icon: Users, label: 'Portefeuille RH', href: '/dashboard/agency/resources' },
+  { icon: Briefcase, label: 'Offres placement', href: '/dashboard/agency/jobs' },
+  { icon: BarChart3, label: 'Stats placement', href: '/dashboard/agency/analytics' },
+  { icon: BookOpen, label: 'Formations', href: '/dashboard/agency/trainings' },
+  { icon: MessageSquare, label: 'Messagerie', href: '/dashboard/agency/messages' },
+  { icon: CreditCard, label: 'Facturation', href: '/dashboard/agency/billing' },
+]
+
+const adminRhNav: NavItem[] = [
+  { icon: LayoutDashboard, label: 'Tableau de bord', href: '/dashboard/admin-rh' },
+  { icon: UserCheck, label: 'Vivier de talents', href: '/dashboard/admin-rh/cv-database' },
+  { icon: Users, label: 'Candidats inscrits', href: '/dashboard/admin-rh/candidates' },
+  { icon: Briefcase, label: 'Modération offres', href: '/dashboard/admin-rh/jobs' },
+  { icon: BookOpen, label: 'Gestion formations', href: '/dashboard/admin-rh/trainings' },
+  { icon: MessageSquare, label: 'Messagerie Interne', href: '/dashboard/admin-rh/messages' },
+]
+
 const adminNav: NavItem[] = [
   { icon: LayoutDashboard, label: 'Vue globale', href: '/dashboard/admin' },
   { icon: Users, label: 'Utilisateurs', href: '/dashboard/admin/users' },
-  { icon: Briefcase, label: 'Offres', href: '/dashboard/admin/jobs' },
-  { icon: UserCheck, label: 'Base CV', href: '/dashboard/admin/cv-database' },
-  { icon: BookOpen, label: 'Formations', href: '/dashboard/admin/trainings' },
-  { icon: BarChart3, label: 'Analytics', href: '/dashboard/admin/analytics' },
-  { icon: CreditCard, label: 'Revenus', href: '/dashboard/admin/revenue' },
-  { icon: Settings, label: 'Paramètres', href: '/dashboard/admin/settings' },
+  { icon: BarChart3, label: 'Analytics Plateforme', href: '/dashboard/admin/analytics' },
+  { icon: CreditCard, label: 'Revenus & Plans', href: '/dashboard/admin/billing' },
+  { icon: Settings, label: 'Paramétrage système', href: '/dashboard/admin/settings' },
 ]
 
 interface DashboardLayoutProps {
   children: React.ReactNode
-  role?: 'candidate' | 'company' | 'agency' | 'admin'
+  role?: 'candidate' | 'freelance' | 'company' | 'agency' | 'admin-rh' | 'admin'
   userName?: string
   userTitle?: string
 }
 
 const roleConfig = {
   candidate: { nav: candidateNav, title: 'Espace Candidat', color: 'text-brand-600', badge: 'Candidat' },
+  freelance: { nav: freelanceNav, title: 'Espace Freelance', color: 'text-blue-600', badge: 'Freelance' },
   company: { nav: companyNav, title: 'Espace Entreprise', color: 'text-purple-600', badge: 'Entreprise' },
-  agency: { nav: companyNav, title: 'Espace Cabinet RH', color: 'text-emerald-600', badge: 'Cabinet RH' },
-  admin: { nav: adminNav, title: 'Administration', color: 'text-slate-900', badge: 'Admin' },
+  agency: { nav: agencyNav, title: 'Espace Cabinet RH', color: 'text-emerald-600', badge: 'Cabinet RH' },
+  'admin-rh': { nav: adminRhNav, title: 'Admin RH Intern', color: 'text-amber-600', badge: 'Admin RH' },
+  admin: { nav: adminNav, title: 'Super Admin', color: 'text-slate-900', badge: 'Super Admin' },
 }
 
 export default function DashboardLayout({ children, role = 'candidate', userName = 'Amadou Diallo', userTitle }: DashboardLayoutProps) {
@@ -116,10 +144,6 @@ export default function DashboardLayout({ children, role = 'candidate', userName
 
       {/* Bottom */}
       <div className="px-3 py-4 border-t border-slate-100 space-y-1">
-        <Link to="/settings" className="sidebar-link">
-          <Settings className="w-4 h-4" />
-          Paramètres
-        </Link>
         <button
           onClick={() => navigate('/')}
           className="sidebar-link w-full text-red-600 hover:bg-red-50 hover:text-red-700"

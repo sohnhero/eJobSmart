@@ -78,7 +78,7 @@ const messageHistory: Record<number, Message[]> = {
   ],
 }
 
-export default function Messages({ role = 'candidate' }: { role?: 'candidate' | 'company' }) {
+export default function Messages({ role = 'candidate' }: { role?: 'candidate' | 'company' | 'freelance' | 'agency' | 'admin-rh' | 'admin' }) {
   const navigate = useNavigate()
   const [activeConv, setActiveConv] = useState<Conversation>(conversations[0])
   const [message, setMessage] = useState('')
@@ -116,7 +116,22 @@ export default function Messages({ role = 'candidate' }: { role?: 'candidate' | 
   const totalUnread = conversations.reduce((a, c) => a + c.unread, 0)
 
   return (
-    <DashboardLayout role={role} userName={role === 'company' ? 'Sonatel Digital' : 'Amadou Diallo'} userTitle={role === 'company' ? 'Compte Entreprise' : 'Candidat'}>
+    <DashboardLayout 
+      role={role} 
+      userName={
+        role === 'company' ? 'Sonatel Digital' : 
+        role === 'agency' ? 'Cabinet Excellence RH' :
+        role === 'admin' || role === 'admin-rh' ? 'Administrateur' :
+        'Amadou Diallo'
+      } 
+      userTitle={
+        role === 'company' ? 'Compte Entreprise' : 
+        role === 'agency' ? 'Cabinet RH' :
+        role === 'admin' ? 'Super Admin' :
+        role === 'admin-rh' ? 'Admin RH Interne' :
+        'Candidat'
+      }
+    >
       <div className="mb-4">
         <h1 className="text-2xl font-black text-slate-900">Messagerie</h1>
         <p className="text-slate-500 text-sm mt-0.5">

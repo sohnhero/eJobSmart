@@ -138,7 +138,6 @@ export default function Landing() {
 
       {/* ========== HERO ========== */}
       <section className="relative bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 overflow-hidden">
-        <div className="absolute inset-0 bg-hero-pattern opacity-30" />
         {/* Decorative blobs */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-600/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
