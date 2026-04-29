@@ -299,7 +299,7 @@ export default function Landing() {
                   <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center p-2.5 flex-shrink-0 group-hover:shadow-md transition-shadow">
                     <img src={job.companyLogo} alt={job.company} className="w-full h-full object-contain" />
                   </div>
-                  <div className="min-w-0 pt-1">
+                  <div className={`min-w-0 pt-1 ${job.isBoosted ? 'pr-20' : ''}`}>
                     <h3 className="font-bold text-slate-900 text-base leading-tight line-clamp-2 group-hover:text-brand-600 transition-colors">
                       {job.title}
                     </h3>
