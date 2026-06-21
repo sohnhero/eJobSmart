@@ -172,11 +172,59 @@ export default function Landing() {
         <div className="absolute top-20 right-0 w-[500px] h-[500px] rounded-full opacity-10 blur-3xl" style={{ background: '#39D5F4' }} />
         <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full opacity-5 blur-3xl" style={{ background: '#2563EB' }} />
 
-        {/* Animated wave top-right decoration */}
-        <div className="absolute top-0 right-0 w-1/2 h-full pointer-events-none overflow-hidden opacity-20">
-          <svg viewBox="0 0 500 800" preserveAspectRatio="none" className="w-full h-full">
-            <path d="M500 0 Q300 200 500 400 Q300 600 500 800 L500 0Z" fill="#39D5F4" />
-            <path d="M500 0 Q350 150 500 350 Q350 550 500 750 L500 0Z" fill="#2563EB" />
+        {/* Neon Strings Background Overlay */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-50 z-0">
+          <svg className="w-full h-full" viewBox="0 0 1440 800" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <defs>
+              <filter id="neon-glow-cyan" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="6" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <filter id="neon-glow-blue" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="4" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            
+            {/* Glowing neon strings */}
+            <path
+              d="M-100,200 C300,50 600,600 1600,100"
+              stroke="#39D5F4"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              filter="url(#neon-glow-cyan)"
+              className="animate-neon-string-1"
+            />
+            <path
+              d="M-100,450 C400,150 850,700 1600,300"
+              stroke="#39D5F4"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              filter="url(#neon-glow-cyan)"
+              className="animate-neon-string-2"
+            />
+            <path
+              d="M-100,100 C500,500 900,100 1600,550"
+              stroke="#2563EB"
+              strokeWidth="3"
+              strokeLinecap="round"
+              filter="url(#neon-glow-blue)"
+              className="animate-neon-string-3"
+            />
+            <path
+              d="M-100,580 C350,700 900,300 1600,450"
+              stroke="#39D5F4"
+              strokeWidth="2"
+              strokeLinecap="round"
+              filter="url(#neon-glow-cyan)"
+              className="animate-neon-string-1"
+            />
           </svg>
         </div>
 

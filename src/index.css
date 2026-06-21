@@ -165,4 +165,49 @@
   .font-heading {
     font-family: 'Poppins', system-ui, sans-serif;
   }
+
+  /* Neon Glowing Strings for Landing Hero */
+  @keyframes neon-pulse {
+    0%, 100% {
+      opacity: 0.5;
+      stroke-width: 2px;
+    }
+    50% {
+      opacity: 0.9;
+      stroke-width: 3.5px;
+    }
+  }
+
+  @keyframes neon-drift-1 {
+    0%, 100% {
+      transform: translateY(0px) scaleY(1);
+    }
+    50% {
+      transform: translateY(-20px) scaleY(1.03);
+    }
+  }
+
+  @keyframes neon-drift-2 {
+    0%, 100% {
+      transform: translateY(0px) scaleY(1);
+    }
+    50% {
+      transform: translateY(15px) scaleY(0.97);
+    }
+  }
+
+  .animate-neon-string-1 {
+    animation: neon-pulse 6s ease-in-out infinite, neon-drift-1 12s ease-in-out infinite;
+    transform-origin: center;
+  }
+
+  .animate-neon-string-2 {
+    animation: neon-pulse 8s ease-in-out infinite, neon-drift-2 16s ease-in-out infinite;
+    transform-origin: center;
+  }
+
+  .animate-neon-string-3 {
+    animation: neon-pulse 5s ease-in-out infinite, neon-drift-1 14s ease-in-out infinite reverse;
+    transform-origin: center;
+  }
 }
