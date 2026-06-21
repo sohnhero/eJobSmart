@@ -7,7 +7,6 @@ import {
 } from 'lucide-react'
 import clsx from 'clsx'
 import Avatar from '../ui/Avatar'
-import Logo from '../ui/Logo'
 
 interface NavItem {
   icon: React.ElementType
@@ -101,7 +100,7 @@ export default function DashboardLayout({ children, role = 'candidate', userName
       {/* Logo */}
       <div className="px-4 py-5 border-b border-slate-100">
         <Link to="/" className="flex items-center">
-          <Logo variant="full" size={32} />
+          <img src="/eurekaLogo.png" alt="Eureka Job" className="h-9 w-auto object-contain" />
         </Link>
       </div>
 

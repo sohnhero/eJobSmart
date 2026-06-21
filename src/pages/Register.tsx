@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Check, User, Building2, Users } from 'lucide-react'
 import Button from '../components/ui/Button'
-import Logo from '../components/ui/Logo'
 
 type Role = 'candidate' | 'company' | 'agency'
 type Step = 1 | 2 | 3
@@ -40,7 +39,7 @@ export default function Register() {
       {/* Top bar */}
       <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center">
-          <Logo variant="full" size={32} />
+          <img src="/eurekaLogo.png" alt="Eureka Job" className="h-9 w-auto object-contain" />
         </Link>
         <Link to="/login" className="text-sm text-slate-500 hover:text-brand-600 transition-colors">
           Déjà un compte ? <span className="font-semibold">Se connecter</span>
@@ -55,11 +54,10 @@ export default function Register() {
               {steps.map((s, i) => (
                 <div key={s.label} className="flex items-center">
                   <div className="flex flex-col items-center">
-                    <div className={`w-9 h-9 rounded-full flex items-center justify-center border-2 font-bold text-sm transition-all ${
-                      step > i + 1 ? 'bg-brand-600 border-brand-600 text-white'
-                      : step === i + 1 ? 'border-brand-600 text-brand-600'
-                      : 'border-slate-200 text-slate-400'
-                    }`}>
+                    <div className={`w-9 h-9 rounded-full flex items-center justify-center border-2 font-bold text-sm transition-all ${step > i + 1 ? 'bg-brand-600 border-brand-600 text-white'
+                        : step === i + 1 ? 'border-brand-600 text-brand-600'
+                          : 'border-slate-200 text-slate-400'
+                      }`}>
                       {step > i + 1 ? <Check className="w-4 h-4" /> : i + 1}
                     </div>
                     <p className="text-[10px] font-medium mt-1 text-slate-500">{s.label}</p>
@@ -75,18 +73,17 @@ export default function Register() {
           <div className="card p-8">
             {step === 1 && (
               <>
-                <h2 className="text-2xl font-bold text-slate-900 mb-1">Créer un compte</h2>
-                <p className="text-slate-500 text-sm mb-6">Quel est votre profil ?</p>
+                <h2 className="text-2xl font-heading font-bold text-slate-900 mb-1">Créer un compte</h2>
+                <p className="text-slate-500 text-sm mb-6">Bienvenue sur Eureka Job. Quel est votre profil ?</p>
                 <div className="space-y-3">
                   {roles.map(r => (
                     <button
                       key={r.id}
                       onClick={() => setRole(r.id)}
-                      className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all text-left ${
-                        role === r.id
+                      className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all text-left ${role === r.id
                           ? 'border-brand-500 bg-brand-50'
                           : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                      }`}
+                        }`}
                     >
                       <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${role === r.id ? 'bg-brand-600' : 'bg-slate-100'}`}>
                         <r.icon className={`w-5 h-5 ${role === r.id ? 'text-white' : 'text-slate-500'}`} />
@@ -120,33 +117,33 @@ export default function Register() {
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="block text-sm font-semibold text-slate-700 mb-1.5">Prénom *</label>
-                        <input value={form.firstName} onChange={e => setForm({...form, firstName: e.target.value})} placeholder="Amadou" className="input-field" required />
+                        <input value={form.firstName} onChange={e => setForm({ ...form, firstName: e.target.value })} placeholder="Amadou" className="input-field" required />
                       </div>
                       <div>
                         <label className="block text-sm font-semibold text-slate-700 mb-1.5">Nom *</label>
-                        <input value={form.lastName} onChange={e => setForm({...form, lastName: e.target.value})} placeholder="Diallo" className="input-field" required />
+                        <input value={form.lastName} onChange={e => setForm({ ...form, lastName: e.target.value })} placeholder="Diallo" className="input-field" required />
                       </div>
                     </div>
                   )}
                   {(role === 'company' || role === 'agency') && (
                     <div>
                       <label className="block text-sm font-semibold text-slate-700 mb-1.5">{role === 'company' ? 'Nom de l\'entreprise' : 'Nom du cabinet'} *</label>
-                      <input value={form.company} onChange={e => setForm({...form, company: e.target.value})} placeholder={role === 'company' ? 'Sonatel S.A.' : 'Cabinet Excellence RH'} className="input-field" required />
+                      <input value={form.company} onChange={e => setForm({ ...form, company: e.target.value })} placeholder={role === 'company' ? 'Sonatel S.A.' : 'Cabinet Excellence RH'} className="input-field" required />
                     </div>
                   )}
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-1.5">Email professionnel *</label>
-                    <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} placeholder="votre@email.com" className="input-field" required />
+                    <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="votre@email.com" className="input-field" required />
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-1.5">Mot de passe *</label>
-                    <input type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} placeholder="Minimum 8 caractères" className="input-field" required minLength={8} />
+                    <input type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Minimum 8 caractères" className="input-field" required minLength={8} />
                     <p className="text-xs text-slate-400 mt-1">Utilisez au moins 8 caractères avec chiffres et lettres</p>
                   </div>
                   {role === 'company' && (
                     <div>
                       <label className="block text-sm font-semibold text-slate-700 mb-1.5">Secteur d'activité</label>
-                      <select value={form.sector} onChange={e => setForm({...form, sector: e.target.value})} className="input-field">
+                      <select value={form.sector} onChange={e => setForm({ ...form, sector: e.target.value })} className="input-field">
                         <option value="">Sélectionner un secteur</option>
                         {['Technologie & Numérique', 'Banque & Finance', 'Santé', 'BTP', 'Industrie', 'Commerce'].map(s => (
                           <option key={s} value={s}>{s}</option>
@@ -158,8 +155,8 @@ export default function Register() {
                     <label className="flex items-start gap-2.5 cursor-pointer">
                       <input type="checkbox" required className="mt-0.5" />
                       <span className="text-xs text-slate-500">
-                        J'accepte les <Link to="/terms" className="text-brand-600 hover:underline">Conditions d'utilisation</Link> et la{' '}
-                        <Link to="/privacy" className="text-brand-600 hover:underline">Politique de confidentialité</Link> d'eJobSmart *
+                        J'accepte les <Link to="/legal" className="text-brand-600 hover:underline">Conditions d'utilisation</Link> et la{' '}
+                        <Link to="/legal" className="text-brand-600 hover:underline">Politique de confidentialité</Link> d'Eureka Job *
                       </span>
                     </label>
                   </div>
@@ -187,7 +184,7 @@ export default function Register() {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-500">Email</span>
-                      <span className="font-semibold text-slate-800">{form.email || 'demo@ejobsmart.sn'}</span>
+                      <span className="font-semibold text-slate-800">{form.email || 'demo@eurekajob.africa'}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-500">Plan</span>

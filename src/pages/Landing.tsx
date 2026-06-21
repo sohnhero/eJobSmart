@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import {
   Search, MapPin, TrendingUp, Users, Briefcase, Award,
   ArrowRight, CheckCircle, Star, Building2, GraduationCap,
-  Zap, Shield, Clock, ChevronRight, Play, Laptop, Landmark,
+  Zap, Shield, Clock, ChevronRight, Laptop, Landmark,
   Stethoscope, HardHat, Sprout, Hotel, Truck, Megaphone,
-  ShoppingCart, Scale, Palette, Home, Leaf, Building, User
+  ShoppingCart, Scale, Palette, Home, Leaf, Building, User,
+  Handshake, BarChart3, Globe, BookOpen
 } from 'lucide-react'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
@@ -47,10 +48,10 @@ function AnimatedStat({ value, label, suffix = '' }: { value: number; label: str
 
   return (
     <div ref={ref} className="text-center">
-      <p className="text-3xl md:text-4xl font-black text-white">
+      <p className="text-3xl md:text-4xl font-heading font-black text-white">
         {count.toLocaleString('fr-FR')}{suffix}
       </p>
-      <p className="text-sm text-blue-200 mt-1 font-medium">{label}</p>
+      <p className="text-sm mt-1 font-medium" style={{ color: '#39D5F4' }}>{label}</p>
     </div>
   )
 }
@@ -58,50 +59,78 @@ function AnimatedStat({ value, label, suffix = '' }: { value: number; label: str
 const testimonials = [
   {
     name: 'Fatou Mbaye', role: 'DRH, Sonatel', avatar: 'FM',
-    text: 'eJobSmart a transformé notre processus de recrutement. Nous avons réduit notre délai moyen d\'embauche de 45 à 18 jours grâce au matching intelligent.',
+    text: 'Eureka Job a transformé notre processus de recrutement. Nous avons réduit notre délai moyen d\'embauche de 45 à 18 jours grâce au matching intelligent.',
     stars: 5, color: 'bg-brand-600',
   },
   {
-    name: 'Ibrahima Diop', role: 'Développeur Senior', avatar: 'ID',
+    name: 'Ibrahima Diop', role: 'Développeur Senior, Dakar', avatar: 'ID',
     text: 'J\'ai trouvé mon poste actuel en moins de 2 semaines. Les recommandations personnalisées sont vraiment pertinentes par rapport à mon profil.',
-    stars: 5, color: 'bg-purple-600',
+    stars: 5, color: 'bg-blue-700',
   },
   {
     name: 'Aminata Sow', role: 'Directrice, Cabinet RH Excellence', avatar: 'AS',
-    text: 'La plateforme nous permet de gérer efficacement notre portefeuille de 200+ candidats et de répondre rapidement aux offres de nos clients entreprises.',
+    text: 'La plateforme nous permet de gérer efficacement notre portefeuille de 200+ candidats et de répondre rapidement aux besoins de nos clients entreprises.',
     stars: 5, color: 'bg-emerald-600',
   },
 ]
 
 const features = [
   {
-    icon: Zap, title: 'Matching Intelligent', color: 'text-amber-500', bg: 'bg-amber-50',
-    desc: 'Notre algorithme analyse 6 critères pour calculer un score de compatibilité entre votre profil et les offres.',
+    icon: Zap, title: 'Matching Intelligent', color: 'text-brand-600', bg: 'bg-brand-50', borderColor: 'border-brand-100',
+    desc: 'Notre algorithme analyse 6 critères pour calculer un score de compatibilité entre votre profil et les offres disponibles.',
   },
   {
-    icon: Shield, title: 'Profils vérifiés', color: 'text-brand-600', bg: 'bg-brand-50',
-    desc: 'Chaque entreprise et cabinet RH est vérifié manuellement (NINEA, RC, agréments) avant de pouvoir publier.',
+    icon: Shield, title: 'Profils vérifiés', color: 'text-emerald-600', bg: 'bg-emerald-50', borderColor: 'border-emerald-100',
+    desc: 'Chaque entreprise et cabinet RH est vérifié manuellement (NINEA, RC, agréments) avant de pouvoir publier des offres.',
   },
   {
-    icon: Clock, title: 'Recrutement rapide', color: 'text-emerald-600', bg: 'bg-emerald-50',
-    desc: 'Délai moyen de placement de 18 jours. Notifications en temps réel à chaque étape du processus.',
+    icon: Clock, title: 'Recrutement rapide', color: 'text-purple-600', bg: 'bg-purple-50', borderColor: 'border-purple-100',
+    desc: 'Délai moyen de placement de 18 jours. Notifications en temps réel à chaque étape du processus de recrutement.',
   },
   {
-    icon: GraduationCap, title: 'Formations certifiantes', color: 'text-purple-600', bg: 'bg-purple-50',
-    desc: 'Un catalogue de formations RH et métiers pour booster votre employabilité ou former vos équipes.',
+    icon: Handshake, title: 'Conseil RH Expert', color: 'text-amber-600', bg: 'bg-amber-50', borderColor: 'border-amber-100',
+    desc: 'Des experts RH vous accompagnent : audit, stratégie de recrutement, conformité droit du travail sénégalais.',
+  },
+]
+
+// 6 lignes de service prioritaires Eureka Job
+const services = [
+  {
+    icon: Briefcase, title: 'Agence Intérim', desc: 'Placement de travailleurs temporaires dans le BTP, hôtellerie, industrie et services.',
+    badge: 'Priorité haute', badgeColor: 'bg-emerald-100 text-emerald-700', gradient: 'from-emerald-500 to-teal-600',
+  },
+  {
+    icon: Globe, title: 'Marketplace RH', desc: 'Plateforme multi-acteurs : entreprises, cabinets, freelances et candidats sur un seul espace.',
+    badge: 'Priorité haute', badgeColor: 'bg-brand-100 text-brand-700', gradient: 'from-brand-500 to-blue-700',
+  },
+  {
+    icon: Search, title: 'Offres d\'Emploi', desc: 'CDI, CDD, interim, freelance, stage et alternance. La source d\'offres la plus complète du Sénégal.',
+    badge: 'Priorité haute', badgeColor: 'bg-brand-100 text-brand-700', gradient: 'from-blue-500 to-brand-700',
+  },
+  {
+    icon: Users, title: 'Base CV & Talents', desc: 'Vivier de 500 000+ profils vérifiés. Recherche et filtrage avancés pour les recruteurs.',
+    badge: 'Priorité haute', badgeColor: 'bg-brand-100 text-brand-700', gradient: 'from-violet-500 to-purple-700',
+  },
+  {
+    icon: BookOpen, title: 'Formation & E-Learning', desc: 'Programmes certifiants en RH, management et compétences numériques pour booster l\'employabilité.',
+    badge: 'An 2', badgeColor: 'bg-amber-100 text-amber-700', gradient: 'from-amber-500 to-orange-600',
+  },
+  {
+    icon: BarChart3, title: 'Conseil RH', desc: 'Missions de conseil, audit organisationnel et accompagnement stratégique des DRH.',
+    badge: 'An 1', badgeColor: 'bg-slate-100 text-slate-600', gradient: 'from-slate-500 to-slate-700',
   },
 ]
 
 const howItWorks = {
   candidate: [
-    { step: '01', title: 'Créez votre profil', desc: 'Inscription en 3 minutes, importez votre LinkedIn ou CV PDF' },
-    { step: '02', title: 'Recevez des recommandations', desc: 'L\'algorithme vous propose les offres les plus adaptées à votre profil' },
-    { step: '03', title: 'Postulez en 1 clic', desc: 'Suivez vos candidatures en temps réel et échangez avec les recruteurs' },
+    { step: '01', title: 'Créez votre profil', desc: 'Inscription en 3 minutes, importez votre LinkedIn ou CV PDF. Identité vérifiée.' },
+    { step: '02', title: 'Recevez des recommandations', desc: 'L\'algorithme vous propose les offres les plus adaptées à votre profil et vos critères.' },
+    { step: '03', title: 'Postulez en 1 clic', desc: 'Suivez vos candidatures en temps réel et échangez directement avec les recruteurs.' },
   ],
   company: [
-    { step: '01', title: 'Publiez votre offre', desc: 'Formulaire complet en 10 minutes, diffusion immédiate sur la plateforme' },
-    { step: '02', title: 'Recevez les meilleurs profils', desc: 'Les candidats sont scorés automatiquement selon vos critères' },
-    { step: '03', title: 'Gérez le recrutement', desc: 'Kanban des candidatures, messagerie intégrée, planification d\'entretiens' },
+    { step: '01', title: 'Publiez votre offre', desc: 'Formulaire complet en 10 minutes, diffusion immédiate sur toute la plateforme.' },
+    { step: '02', title: 'Recevez les meilleurs profils', desc: 'Les candidats sont scorés automatiquement selon vos critères de recrutement.' },
+    { step: '03', title: 'Gérez le recrutement', desc: 'Kanban des candidatures, messagerie intégrée, planification d\'entretiens simplifiée.' },
   ],
 }
 
@@ -137,31 +166,38 @@ export default function Landing() {
       <Navbar />
 
       {/* ========== HERO ========== */}
-      <section className="relative bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 overflow-hidden">
-        {/* Decorative blobs */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-600/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+      <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0F1E3A 0%, #0F3B95 60%, #2563EB 100%)' }}>
+        {/* Decorative elements */}
+        <div className="absolute inset-0 bg-hero-pattern opacity-30" />
+        <div className="absolute top-20 right-0 w-[500px] h-[500px] rounded-full opacity-10 blur-3xl" style={{ background: '#39D5F4' }} />
+        <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full opacity-5 blur-3xl" style={{ background: '#2563EB' }} />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-28">
+        {/* Animated wave top-right decoration */}
+        <div className="absolute top-0 right-0 w-1/2 h-full pointer-events-none overflow-hidden opacity-20">
+          <svg viewBox="0 0 500 800" preserveAspectRatio="none" className="w-full h-full">
+            <path d="M500 0 Q300 200 500 400 Q300 600 500 800 L500 0Z" fill="#39D5F4" />
+            <path d="M500 0 Q350 150 500 350 Q350 550 500 750 L500 0Z" fill="#2563EB" />
+          </svg>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
           {/* Badge */}
-          <div className="flex justify-center mb-6">
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm text-blue-200 border border-white/10">
-              La plateforme RH #1 en Afrique de l'Ouest
+          <div className="flex justify-center mb-8">
+            <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-heading font-medium border" style={{ backgroundColor: 'rgba(57,213,244,0.1)', borderColor: 'rgba(57,213,244,0.3)', color: '#39D5F4' }}>
+              <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#39D5F4' }} />
+              La marketplace RH #1 en Afrique de l'Ouest
             </span>
           </div>
 
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-white leading-tight">
-              Connectez talents &amp;
-              <br />
-              <span className="bg-gradient-to-r from-amber-400 to-amber-500 bg-clip-text text-transparent">
-                opportunités
-              </span>
-              {' '}en Afrique
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-black text-white leading-tight tracking-tight">
+              Révélateur de talents.{' '}
+              <br className="hidden sm:block" />
+              <span style={{ color: '#39D5F4' }}>Créateur de valeurs.</span>
             </h1>
-            <p className="mt-5 text-lg text-blue-200 max-w-2xl mx-auto leading-relaxed">
-              Marketplace RH qui réunit entreprises, cabinets de recrutement et talents.
-              Trouvez le bon poste ou le bon profil en quelques clics.
+            <p className="mt-6 text-lg text-blue-200 max-w-2xl mx-auto leading-relaxed">
+              Connectez entreprises, cabinets de recrutement et talents africains sur une plateforme
+              numérique intelligente. Recrutez mieux. Évoluez plus vite.
             </p>
           </div>
 
@@ -176,7 +212,7 @@ export default function Landing() {
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && handleSearch()}
-                  className="flex-1 text-slate-800 placeholder-slate-400 outline-none text-sm"
+                  className="flex-1 text-slate-800 placeholder-slate-400 outline-none text-sm font-sans"
                 />
               </div>
               <div className="hidden sm:flex items-center gap-3 px-4 py-2 border-l border-slate-200">
@@ -186,7 +222,7 @@ export default function Landing() {
                   placeholder="Ville ou pays..."
                   value={searchLocation}
                   onChange={e => setSearchLocation(e.target.value)}
-                  className="w-36 text-slate-800 placeholder-slate-400 outline-none text-sm"
+                  className="w-36 text-slate-800 placeholder-slate-400 outline-none text-sm font-sans"
                 />
               </div>
               <Button onClick={handleSearch} size="lg" className="rounded-xl">
@@ -197,12 +233,13 @@ export default function Landing() {
 
             {/* Quick filters */}
             <div className="flex items-center gap-2 mt-4 flex-wrap justify-center">
-              <span className="text-xs text-blue-300">Tendances :</span>
-              {['React Developer', 'DRH', 'Data Analyst', 'Chef de projet', 'Télétravail'].map(tag => (
+              <span className="text-xs" style={{ color: 'rgba(57,213,244,0.8)' }}>Tendances :</span>
+              {['DRH', 'Data Analyst', 'Chef de projet', 'Ingénieur BTP', 'Télétravail'].map(tag => (
                 <button
                   key={tag}
                   onClick={() => { setSearchQuery(tag); handleSearch() }}
-                  className="text-xs px-3 py-1.5 bg-white/10 text-blue-200 rounded-full hover:bg-white/20 transition-colors border border-white/10"
+                  className="text-xs px-3 py-1.5 rounded-full hover:bg-white/20 transition-colors border"
+                  style={{ backgroundColor: 'rgba(255,255,255,0.08)', color: '#C7DEFF', borderColor: 'rgba(255,255,255,0.12)' }}
                 >
                   {tag}
                 </button>
@@ -227,18 +264,64 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ========== SECTORS ========== */}
+      {/* ========== SERVICES (nouvelles lignes Eureka Job) ========== */}
       <section className="py-24 bg-white relative overflow-hidden">
-        {/* Decorative background element */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(37,99,235,0.03)_0%,transparent_50%)] pointer-events-none" />
-        
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(37,99,235,0.025)_0%,transparent_60%)] pointer-events-none" />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
-            <Badge variant="blue" className="mb-4">Secteurs d'activité</Badge>
-            <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">
-              Trouvez votre <span className="text-brand-600">voie</span>
+            <span className="inline-block px-4 py-1.5 rounded-full text-xs font-heading font-bold uppercase tracking-widest mb-4" style={{ backgroundColor: '#E6F2FF', color: '#2563EB' }}>
+              Nos Services
+            </span>
+            <h2 className="text-3xl md:text-5xl font-heading font-black text-slate-900 tracking-tight">
+              L'écosystème RH{' '}
+              <span style={{ color: '#2563EB' }}>Eureka Job</span>
             </h2>
-            <p className="mt-4 text-slate-500 max-w-2xl mx-auto text-lg font-medium leading-relaxed">
+            <p className="mt-4 text-slate-500 max-w-2xl mx-auto text-lg leading-relaxed">
+              10 lignes de service pour couvrir tous vos besoins en ressources humaines, du recrutement à la formation en passant par le conseil.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {services.map((service) => (
+              <div key={service.title} className="group service-card cursor-pointer relative overflow-hidden">
+                {/* Gradient accent top */}
+                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${service.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+
+                <div className="flex items-start gap-4 mb-4">
+                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
+                    <service.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <span className={`inline-block text-[10px] font-heading font-bold px-2 py-0.5 rounded-full mb-1.5 ${service.badgeColor}`}>
+                      {service.badge}
+                    </span>
+                    <h3 className="font-heading font-bold text-slate-900 text-base leading-tight group-hover:text-brand-700 transition-colors">
+                      {service.title}
+                    </h3>
+                  </div>
+                </div>
+                <p className="text-sm text-slate-500 leading-relaxed">{service.desc}</p>
+                <div className="mt-4 flex items-center gap-1 text-xs font-heading font-semibold text-brand-600 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300">
+                  En savoir plus <ArrowRight className="w-3 h-3" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ========== SECTORS ========== */}
+      <section className="py-20" style={{ backgroundColor: '#F2F4F7' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <span className="inline-block px-4 py-1.5 rounded-full text-xs font-heading font-bold uppercase tracking-widest mb-4" style={{ backgroundColor: '#E6F2FF', color: '#2563EB' }}>
+              Secteurs d'activité
+            </span>
+            <h2 className="text-3xl md:text-5xl font-heading font-black text-slate-900 tracking-tight">
+              Trouvez votre <span style={{ color: '#2563EB' }}>voie</span>
+            </h2>
+            <p className="mt-4 text-slate-500 max-w-2xl mx-auto text-lg leading-relaxed">
               Explorez des opportunités dans 18 secteurs d'activité couverts à travers toute l'Afrique de l'Ouest.
             </p>
           </div>
@@ -248,53 +331,30 @@ export default function Landing() {
               <button
                 key={sector.id}
                 onClick={() => navigate(`/jobs?sector=${sector.slug}`)}
-                className="group relative p-6 bg-white border border-slate-100 rounded-3xl text-center transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] hover:border-transparent flex flex-col items-center overflow-hidden"
+                className="group relative p-5 bg-white rounded-3xl text-center transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_16px_40px_-12px_rgba(37,99,235,0.15)] flex flex-col items-center border border-slate-100 hover:border-brand-100"
               >
-                {/* Hover Glow */}
-                <div 
-                  className="absolute inset-0 opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500 pointer-events-none"
-                  style={{ backgroundColor: sector.color }}
-                />
-                <div 
-                  className="absolute -inset-1 opacity-0 group-hover:opacity-20 blur-2xl transition-opacity duration-500 pointer-events-none"
-                  style={{ backgroundColor: sector.color }}
-                />
-
                 <div
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-sm border border-slate-50 relative z-10"
-                  style={{ backgroundColor: sector.color + '10' }}
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-3 transition-all duration-300 group-hover:scale-110"
+                  style={{ backgroundColor: sector.color + '15' }}
                 >
-                  <SectorIcon name={sector.icon} className="w-8 h-8 transition-all duration-500" style={{ color: sector.color }} />
+                  <SectorIcon name={sector.icon} className="w-7 h-7" style={{ color: sector.color }} />
                 </div>
-                
-                <div className="relative z-10">
-                  <h3 className="text-sm font-bold text-slate-800 leading-tight group-hover:text-brand-700 transition-colors">
-                    {sector.name}
-                  </h3>
-                  <div className="mt-2 flex items-center justify-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: sector.color }} />
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                      {sector.count} offres
-                    </span>
-                  </div>
-                </div>
-
-                {/* Arrow indicator that appears on hover */}
-                <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                  <div className="w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center">
-                    <ArrowRight className="w-3 h-3 text-slate-400" />
-                  </div>
-                </div>
+                <h3 className="text-xs font-heading font-bold text-slate-700 leading-tight group-hover:text-brand-700 transition-colors">
+                  {sector.name}
+                </h3>
+                <span className="mt-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                  {sector.count} offres
+                </span>
               </button>
             ))}
           </div>
 
-          <div className="text-center mt-12">
-            <button 
+          <div className="text-center mt-10">
+            <button
               onClick={() => navigate('/jobs')}
-              className="inline-flex items-center gap-2 text-slate-500 font-bold hover:text-brand-600 transition-all group py-2 px-4 rounded-xl hover:bg-brand-50"
+              className="inline-flex items-center gap-2 font-heading font-semibold text-brand-600 hover:text-brand-800 transition-all group py-2 px-4 rounded-xl hover:bg-brand-50"
             >
-              Voir tous les secteurs 
+              Voir tous les secteurs
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
@@ -302,11 +362,11 @@ export default function Landing() {
       </section>
 
       {/* ========== FEATURED JOBS ========== */}
-      <section className="py-20 bg-slate-50">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-10">
             <div>
-              <span className="text-sm font-semibold text-brand-600 tracking-wider uppercase">Offres vedettes</span>
+              <span className="text-xs font-heading font-bold uppercase tracking-widest" style={{ color: '#2563EB' }}>Offres vedettes</span>
               <h2 className="section-title mt-2">Opportunités en vedette</h2>
               <p className="section-subtitle">Sélectionnées par notre équipe pour leur qualité et leur pertinence</p>
             </div>
@@ -325,19 +385,20 @@ export default function Landing() {
                 {/* Featured Badge */}
                 {job.isBoosted && (
                   <div className="absolute top-4 right-4 z-10">
-                    <Badge variant="amber" size="sm" className="bg-amber-50 text-amber-700 border border-amber-100/50 backdrop-blur-sm flex items-center gap-1.5 px-3 shadow-sm">
-                      <Zap className="w-3 h-3 fill-amber-500" /> En vedette
-                    </Badge>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-heading font-bold shadow-sm" style={{ backgroundColor: '#FEF3C7', color: '#92400E', border: '1px solid #FDE68A' }}>
+                      <Zap className="w-3 h-3" style={{ fill: '#F59E0B', color: '#F59E0B' }} />
+                      En vedette
+                    </span>
                   </div>
                 )}
 
                 {/* Header */}
-                <div className="flex items-start gap-4 mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center p-2.5 flex-shrink-0 group-hover:shadow-md transition-shadow">
+                <div className="flex items-start gap-4 mb-5">
+                  <div className="w-13 h-13 w-14 h-14 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center p-2.5 flex-shrink-0 group-hover:shadow-md transition-shadow">
                     <img src={job.companyLogo} alt={job.company} className="w-full h-full object-contain" />
                   </div>
                   <div className={`min-w-0 pt-1 ${job.isBoosted ? 'pr-20' : ''}`}>
-                    <h3 className="font-bold text-slate-900 text-base leading-tight line-clamp-2 group-hover:text-brand-600 transition-colors">
+                    <h3 className="font-heading font-bold text-slate-900 text-base leading-tight line-clamp-2 group-hover:text-brand-600 transition-colors">
                       {job.title}
                     </h3>
                     <p className="text-xs font-medium text-slate-500 mt-1.5 flex items-center gap-1.5">
@@ -347,39 +408,37 @@ export default function Landing() {
                 </div>
 
                 {/* Badges */}
-                <div className="flex flex-wrap gap-2 mb-6">
+                <div className="flex flex-wrap gap-2 mb-5">
                   <ContractBadge type={job.contractType} />
                   <Badge variant="slate" className="bg-slate-50 text-slate-600 border border-slate-100">{job.remoteType}</Badge>
                   <Badge variant="blue" className="bg-blue-50 text-blue-600 border border-blue-100">{job.experienceLevel}</Badge>
                 </div>
 
                 {/* Info */}
-                <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="grid grid-cols-2 gap-3 mb-5">
                   <div className="flex items-center gap-2 text-slate-500">
-                    <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-4 h-4" />
+                    <div className="w-7 h-7 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-3.5 h-3.5" />
                     </div>
                     <span className="text-xs font-medium truncate">{job.city}</span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-500">
-                    <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0">
-                      <Users className="w-4 h-4" />
+                    <div className="w-7 h-7 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0">
+                      <Users className="w-3.5 h-3.5" />
                     </div>
                     <span className="text-xs font-medium">{job.applicants} candidats</span>
                   </div>
                 </div>
 
                 {/* Footer */}
-                <div className="flex items-center justify-between pt-5 border-t border-slate-50 relative">
+                <div className="flex items-center justify-between pt-4 border-t border-slate-50">
                   <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Salaire annuel</p>
-                    <p className="text-sm font-bold text-slate-900">
+                    <p className="text-[10px] font-heading font-bold text-slate-400 uppercase tracking-wider mb-0.5">Salaire annuel</p>
+                    <p className="text-sm font-heading font-bold text-slate-900">
                       {job.salaryMin.toLocaleString('fr-FR')} — {job.salaryMax.toLocaleString('fr-FR')} <span className="text-slate-400 text-[10px] font-medium">{job.currency}</span>
                     </p>
                   </div>
-                  
-                  {/* Hover Arrow */}
-                  <div className="w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300" style={{ backgroundColor: '#E6F2FF', color: '#2563EB' }}>
                     <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>
@@ -396,47 +455,50 @@ export default function Landing() {
       </section>
 
       {/* ========== FEATURES ========== */}
-      <section className="py-24 bg-slate-50/50 relative overflow-hidden">
-        {/* Subtle background decoration */}
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-brand-100/40 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-amber-100/40 rounded-full blur-3xl pointer-events-none" />
+      <section className="py-24 relative overflow-hidden" style={{ backgroundColor: '#F2F4F7' }}>
+        <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full blur-3xl opacity-30 pointer-events-none" style={{ backgroundColor: '#E6F2FF' }} />
+        <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full blur-3xl opacity-20 pointer-events-none" style={{ backgroundColor: '#C7E8FF' }} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
-            <span className="text-sm font-bold text-brand-600 tracking-widest uppercase">L'Excellence eJobSmart</span>
-            <h2 className="text-3xl md:text-5xl font-black text-slate-900 mt-4 tracking-tight">
-              La plateforme conçue pour <span className="bg-gradient-to-r from-brand-600 to-brand-800 bg-clip-text text-transparent">l'Afrique</span>
+            <span className="inline-block px-4 py-1.5 rounded-full text-xs font-heading font-bold uppercase tracking-widest mb-4" style={{ backgroundColor: '#E6F2FF', color: '#2563EB' }}>
+              L'Excellence Eureka Job
+            </span>
+            <h2 className="text-3xl md:text-5xl font-heading font-black text-slate-900 mt-2 tracking-tight">
+              La plateforme conçue pour{' '}
+              <span style={{ background: 'linear-gradient(90deg, #2563EB, #39D5F4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                l'Afrique
+              </span>
             </h2>
             <p className="mt-4 text-slate-500 max-w-2xl mx-auto text-lg leading-relaxed">
               Des fonctionnalités innovantes pensées pour les réalités du marché local, propulsées par une technologie de pointe.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature) => (
-              <div 
-                key={feature.title} 
-                className="group relative bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08)] hover:border-brand-100 overflow-hidden cursor-pointer"
+              <div
+                key={feature.title}
+                className="group relative bg-white p-8 rounded-[28px] border transition-all duration-400 hover:-translate-y-2 hover:shadow-[0_24px_48px_-12px_rgba(37,99,235,0.12)] cursor-pointer overflow-hidden"
+                style={{ borderColor: '#E6F2FF' }}
               >
-                {/* Decorative background element on hover */}
-                <div className={`absolute top-0 right-0 w-32 h-32 ${feature.bg} opacity-0 group-hover:opacity-20 rounded-full -translate-y-1/2 translate-x-1/2 transition-opacity duration-500`} />
-                
-                <div className={`w-14 h-14 rounded-2xl ${feature.bg} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-sm`}>
+                <div className={`absolute top-0 right-0 w-32 h-32 ${feature.bg} opacity-0 group-hover:opacity-30 rounded-full -translate-y-1/2 translate-x-1/2 transition-opacity duration-500`} />
+
+                <div className={`w-14 h-14 rounded-2xl ${feature.bg} border ${feature.borderColor} flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
                   <feature.icon className={`w-7 h-7 ${feature.color}`} />
                 </div>
-                
-                <h3 className="text-xl font-black text-slate-900 mb-3 group-hover:text-brand-700 transition-colors">
+
+                <h3 className="text-lg font-heading font-black text-slate-900 mb-3 group-hover:text-brand-700 transition-colors">
                   {feature.title}
                 </h3>
-                
-                <p className="text-slate-500 leading-relaxed text-sm font-medium">
+                <p className="text-slate-500 leading-relaxed text-sm">
                   {feature.desc}
                 </p>
 
-                <div className="mt-6 flex items-center gap-2 text-xs font-bold text-slate-400 group-hover:text-brand-600 transition-all">
+                <div className="mt-5 flex items-center gap-2 text-xs font-heading font-semibold text-slate-300 group-hover:text-brand-600 transition-all">
                   <span className="opacity-0 group-hover:opacity-100 transition-opacity">Découvrir</span>
-                  <div className="w-8 h-px bg-slate-200 group-hover:w-12 group-hover:bg-brand-600 transition-all duration-500" />
-                  <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-500" />
+                  <div className="w-8 h-px bg-slate-200 group-hover:w-12 transition-all duration-400" style={{ '--tw-bg-opacity': 1 } as any} />
+                  <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-400" />
                 </div>
               </div>
             ))}
@@ -445,10 +507,10 @@ export default function Landing() {
       </section>
 
       {/* ========== HOW IT WORKS ========== */}
-      <section className="py-20 bg-gradient-to-b from-slate-50 to-white">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <span className="text-sm font-semibold text-brand-600 tracking-wider uppercase">Fonctionnement</span>
+            <span className="text-xs font-heading font-bold uppercase tracking-widest" style={{ color: '#2563EB' }}>Fonctionnement</span>
             <h2 className="section-title mt-2">Simple, rapide, efficace</h2>
           </div>
 
@@ -458,10 +520,11 @@ export default function Landing() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-sm transition-all ${activeTab === tab
-                  ? 'bg-brand-600 text-white shadow-md'
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-heading font-semibold text-sm transition-all ${activeTab === tab
+                  ? 'text-white shadow-md'
                   : 'bg-white text-slate-600 border border-slate-200 hover:border-brand-300'
                   }`}
+                style={activeTab === tab ? { backgroundColor: '#2563EB' } : {}}
               >
                 {tab === 'candidate' ? <User className="w-4 h-4" /> : <Building2 className="w-4 h-4" />}
                 {tab === 'candidate' ? 'Je cherche un emploi' : 'Je recrute'}
@@ -475,11 +538,11 @@ export default function Landing() {
                 {i < 2 && (
                   <div className="hidden md:block absolute top-6 left-full w-full h-px bg-gradient-to-r from-brand-200 to-transparent -translate-x-4 z-0" />
                 )}
-                <div className="card p-6 relative z-10">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 flex items-center justify-center text-white font-black text-lg mb-4">
+                <div className="card p-6 relative z-10 hover:shadow-card-hover transition-shadow">
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-heading font-black text-lg mb-4" style={{ background: 'linear-gradient(135deg, #2563EB, #0F1E3A)' }}>
                     {step.step}
                   </div>
-                  <h3 className="font-semibold text-slate-900 mb-2">{step.title}</h3>
+                  <h3 className="font-heading font-semibold text-slate-900 mb-2">{step.title}</h3>
                   <p className="text-sm text-slate-500 leading-relaxed">{step.desc}</p>
                 </div>
               </div>
@@ -498,8 +561,10 @@ export default function Landing() {
       </section>
 
       {/* ========== STATS BAND ========== */}
-      <section className="py-16 bg-gradient-to-r from-brand-700 to-brand-900 relative overflow-hidden">
-        <div className="absolute inset-0 bg-hero-pattern opacity-20" />
+      <section className="py-16 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0F1E3A 0%, #1A4FC0 100%)' }}>
+        <div className="absolute inset-0 bg-hero-pattern" />
+        {/* Cyan wave decoration */}
+        <div className="absolute bottom-0 left-0 right-0 h-1" style={{ background: 'linear-gradient(90deg, transparent, #39D5F4, transparent)' }} />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
@@ -519,7 +584,7 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-10">
             <div>
-              <span className="text-sm font-semibold text-brand-600 tracking-wider uppercase">Formations</span>
+              <span className="text-xs font-heading font-bold uppercase tracking-widest" style={{ color: '#2563EB' }}>Formations</span>
               <h2 className="section-title mt-2">Formations RH & Métiers</h2>
               <p className="section-subtitle">Développez vos compétences avec nos experts certifiés</p>
             </div>
@@ -541,7 +606,7 @@ export default function Landing() {
                     style={{ backgroundImage: `url(${training.thumbnail})` }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                  
+
                   <div className="absolute top-4 left-4 flex flex-wrap gap-2">
                     <Badge variant={training.format === 'En ligne' ? 'blue' : training.format === 'Hybride' ? 'purple' : 'amber'} className="backdrop-blur-md bg-white/20 text-white border-white/30">
                       {training.format}
@@ -558,7 +623,7 @@ export default function Landing() {
                       <div className="w-8 h-8 rounded-full border-2 border-white/50 overflow-hidden shadow-md">
                         <img src={`https://ui-avatars.com/api/?name=${training.instructor}&background=random`} alt={training.instructor} className="w-full h-full object-cover" />
                       </div>
-                      <span className="text-xs font-bold text-white drop-shadow-md">{training.instructor}</span>
+                      <span className="text-xs font-heading font-bold text-white drop-shadow-md">{training.instructor}</span>
                     </div>
                   </div>
 
@@ -571,30 +636,28 @@ export default function Landing() {
 
                 <div className="p-6">
                   <div className="flex items-center gap-2 mb-3">
-                    <Badge variant="slate" size="sm" className="bg-slate-50 text-slate-500 uppercase tracking-wider text-[10px]">
+                    <span className="px-2 py-0.5 rounded-full bg-slate-50 text-slate-500 text-[10px] font-heading font-bold uppercase tracking-wider border border-slate-100">
                       {training.level}
-                    </Badge>
+                    </span>
                     <span className="text-[10px] font-bold text-slate-300">•</span>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">RH & Management</span>
+                    <span className="text-[10px] font-heading font-bold text-slate-400 uppercase tracking-wider">RH & Management</span>
                   </div>
 
-                  <h3 className="font-bold text-slate-900 text-base leading-snug mb-4 group-hover:text-brand-600 transition-colors line-clamp-2">
+                  <h3 className="font-heading font-bold text-slate-900 text-base leading-snug mb-4 group-hover:text-brand-600 transition-colors line-clamp-2">
                     {training.title}
                   </h3>
 
                   <div className="flex items-center justify-between pt-4 border-t border-slate-50">
                     <div className="flex items-center gap-1.5">
-                      <div className="flex items-center">
-                        <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                        <span className="text-sm font-bold text-slate-900 ml-1">{training.rating}</span>
-                      </div>
+                      <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                      <span className="text-sm font-heading font-bold text-slate-900">{training.rating}</span>
                       <span className="text-xs text-slate-400">({training.reviewCount})</span>
                     </div>
                     <div className="text-right">
                       {training.price === 0 ? (
-                        <span className="text-sm font-black text-emerald-600">Gratuit</span>
+                        <span className="text-sm font-heading font-black text-emerald-600">Gratuit</span>
                       ) : (
-                        <span className="text-sm font-black text-slate-900">
+                        <span className="text-sm font-heading font-black text-slate-900">
                           {training.price.toLocaleString('fr-FR')} <span className="text-[10px] font-bold text-slate-400">FCFA</span>
                         </span>
                       )}
@@ -608,16 +671,16 @@ export default function Landing() {
       </section>
 
       {/* ========== TESTIMONIALS ========== */}
-      <section className="py-20 bg-slate-50">
+      <section className="py-20" style={{ backgroundColor: '#F2F4F7' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <span className="text-sm font-semibold text-brand-600 tracking-wider uppercase">Témoignages</span>
+            <span className="text-xs font-heading font-bold uppercase tracking-widest" style={{ color: '#2563EB' }}>Témoignages</span>
             <h2 className="section-title mt-2">Ils nous font confiance</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonials.map((t) => (
-              <div key={t.name} className="card p-6">
+              <div key={t.name} className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-card-hover transition-shadow">
                 <div className="flex items-center gap-1 mb-4">
                   {Array.from({ length: t.stars }).map((_, i) => (
                     <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
@@ -625,11 +688,11 @@ export default function Landing() {
                 </div>
                 <p className="text-sm text-slate-600 leading-relaxed mb-5 italic">"{t.text}"</p>
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full ${t.color} flex items-center justify-center text-white font-bold text-sm`}>
+                  <div className={`w-10 h-10 rounded-full ${t.color} flex items-center justify-center text-white font-heading font-bold text-sm`}>
                     {t.avatar}
                   </div>
                   <div>
-                    <p className="font-semibold text-slate-900 text-sm">{t.name}</p>
+                    <p className="font-heading font-semibold text-slate-900 text-sm">{t.name}</p>
                     <p className="text-xs text-slate-400">{t.role}</p>
                   </div>
                 </div>
@@ -640,15 +703,18 @@ export default function Landing() {
       </section>
 
       {/* ========== CTA ========== */}
-      <section className="py-20 bg-gradient-to-br from-brand-600 to-brand-900 relative overflow-hidden">
+      <section className="py-20 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #2563EB 0%, #0F1E3A 100%)' }}>
         <div className="absolute inset-0 bg-hero-pattern opacity-20" />
-        <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute top-0 right-0 w-72 h-72 rounded-full opacity-10 -translate-y-1/2 translate-x-1/2" style={{ backgroundColor: '#39D5F4' }} />
+        <div className="absolute bottom-0 left-0 h-1 right-0" style={{ background: 'linear-gradient(90deg, #39D5F4, transparent)' }} />
+
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
-            Prêt à transformer votre parcours professionnel ?
+          <h2 className="text-3xl md:text-5xl font-heading font-black text-white mb-4">
+            Bâtissons l'avenir du travail{' '}
+            <span style={{ color: '#39D5F4' }}>en Afrique</span>
           </h2>
           <p className="text-lg text-blue-200 mb-10 max-w-2xl mx-auto">
-            Rejoignez 34 000+ professionnels qui font confiance à eJobSmart pour leurs recrutements et leur développement de carrière.
+            Rejoignez 34 000+ professionnels qui font confiance à Eureka Job pour leurs recrutements et leur développement de carrière.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
@@ -659,14 +725,14 @@ export default function Landing() {
               <GraduationCap className="w-5 h-5" />
               Je cherche un emploi
             </Button>
-            <Button
-              size="xl"
-              className="bg-white/10 text-white border-2 border-white/30 hover:bg-white/20"
+            <button
               onClick={() => navigate('/register?type=company')}
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-heading font-semibold text-white transition-all duration-200 hover:bg-white/20 border-2"
+              style={{ borderColor: 'rgba(57,213,244,0.5)', backgroundColor: 'rgba(57,213,244,0.1)' }}
             >
               <Briefcase className="w-5 h-5" />
               Je recrute
-            </Button>
+            </button>
           </div>
           <div className="mt-8 flex items-center justify-center gap-5 text-sm text-blue-200">
             {['Inscription gratuite', 'Aucune carte requise', 'Accès immédiat'].map(item => (

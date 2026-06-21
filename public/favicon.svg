@@ -1,19 +1,13 @@
-<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="40" height="40" rx="10" fill="#2563eb" />
-  <rect x="7" y="15" width="26" height="18" rx="3" fill="white" />
-  <path
-    d="M15 15V13C15 11.3 16.3 10 18 10H22C23.7 10 25 11.3 25 13V15"
-    stroke="white"
-    stroke-width="2.2"
-    stroke-linecap="round"
-    fill="none"
-  />
-  <rect x="7" y="21" width="26" height="2" fill="#2563eb30" />
-  <path
-    d="M22 14L15.5 23H20L18 33L26.5 21H22L24.5 14Z"
-    fill="#f59e0b"
-    stroke="white"
-    stroke-width="0.6"
-    stroke-linejoin="round"
-  />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#2563EB"/>
+  <text
+    x="32" y="42"
+    font-family="'Poppins', Arial, sans-serif"
+    font-weight="700"
+    font-size="26"
+    fill="white"
+    text-anchor="middle"
+    letter-spacing="-1"
+  >Job</text>
+  <path d="M10 52 Q32 57 54 52" stroke="#39D5F4" stroke-width="4" stroke-linecap="round" fill="none"/>
 </svg>

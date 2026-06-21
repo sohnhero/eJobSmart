@@ -4,7 +4,6 @@ import { Menu, X, Bell, ChevronDown, LogOut, User, LayoutDashboard } from 'lucid
 import clsx from 'clsx'
 import Button from '../ui/Button'
 import Avatar from '../ui/Avatar'
-import Logo from '../ui/Logo'
 
 const navLinks = [
   { label: 'Offres d\'emploi', href: '/jobs' },
@@ -34,12 +33,16 @@ export default function Navbar({ isLoggedIn, userRole, userName = 'Amadou Diallo
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 bg-white border-b border-slate-200">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Navigation principale Eureka Job">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center flex-shrink-0">
-            <Logo variant="full" size={34} />
+          <Link to="/" className="flex items-center flex-shrink-0" aria-label="Accueil Eureka Job">
+            <img
+              src="/eurekaLogo.png"
+              alt="Eureka Job | Talents & Advisory"
+              className="h-14 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop Nav */}
@@ -106,7 +109,7 @@ export default function Navbar({ isLoggedIn, userRole, userName = 'Amadou Diallo
             ) : (
               <>
                 <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>Se connecter</Button>
-                <Button size="sm" onClick={() => navigate('/register')}>Créer un compte</Button>
+                <Button size="sm" onClick={() => navigate('/register')} className="bg-brand-600 hover:bg-brand-700">Créer un compte</Button>
               </>
             )}
           </div>
