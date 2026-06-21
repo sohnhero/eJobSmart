@@ -142,33 +142,52 @@ export default function Jobs() {
       <Navbar />
 
       {/* Header */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-2xl font-bold text-slate-900 mb-5">Offres d'emploi</h1>
+      <section className="relative overflow-hidden py-16 mb-6" style={{ background: 'linear-gradient(135deg, #0F1E3A 0%, #0F3B95 60%, #2563EB 100%)' }}>
+        <div className="absolute inset-0 bg-hero-pattern opacity-10" />
+        <div className="absolute top-20 right-0 w-[400px] h-[400px] rounded-full opacity-10 blur-3xl" style={{ background: '#39D5F4' }} />
+        <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full opacity-5 blur-3xl" style={{ background: '#2563EB' }} />
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center z-10">
+          <div className="max-w-3xl mb-8 mx-auto">
+            <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[10px] font-heading font-black tracking-widest uppercase border border-cyan-400/30" style={{ backgroundColor: 'rgba(57,213,244,0.1)', color: '#39D5F4' }}>
+              Offres d'emploi
+            </span>
+            <h1 className="text-3xl md:text-4xl font-heading font-black text-white mt-4 tracking-tight">
+              Trouvez l'opportunité de vos rêves
+            </h1>
+          </div>
 
           {/* Search bar */}
-          <div className="bg-white rounded-2xl border-2 border-slate-200 p-2 flex flex-col sm:flex-row gap-2 focus-within:border-brand-400 transition-colors">
-            <div className="flex-1 flex items-center gap-3 px-3 py-2">
-              <Search className="w-5 h-5 text-slate-400 flex-shrink-0" />
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl p-2 flex flex-col sm:flex-row gap-2 w-full max-w-4xl mx-auto shadow-xl shadow-brand-900/10 border border-white/20 text-left">
+            <div className="flex-1 flex items-center gap-3 px-3 py-1.5">
+              <Search className="w-4 h-4 text-slate-400 flex-shrink-0" />
               <input
                 type="text" placeholder="Poste, compétences, entreprise..."
                 value={query} onChange={e => setQuery(e.target.value)}
-                className="flex-1 outline-none text-sm text-slate-800 placeholder-slate-400"
+                className="flex-1 outline-none text-sm bg-transparent text-slate-800 placeholder-slate-400"
               />
-              {query && <button onClick={() => setQuery('')}><X className="w-4 h-4 text-slate-400 hover:text-slate-600" /></button>}
+              {query && <button onClick={() => setQuery('')} className="p-1"><X className="w-3.5 h-3.5 text-slate-400 hover:text-slate-600" /></button>}
             </div>
-            <div className="flex items-center gap-3 px-3 py-2 border-t sm:border-t-0 sm:border-l border-slate-200">
-              <MapPin className="w-5 h-5 text-slate-400 flex-shrink-0" />
+            <div className="flex items-center gap-3 px-3 py-1.5 border-t sm:border-t-0 sm:border-l border-slate-200/60">
+              <MapPin className="w-4 h-4 text-slate-400 flex-shrink-0" />
               <input
                 type="text" placeholder="Ville ou pays..."
                 value={location} onChange={e => setLocation(e.target.value)}
-                className="flex-1 sm:w-36 outline-none text-sm text-slate-800 placeholder-slate-400"
+                className="flex-1 sm:w-44 outline-none text-sm bg-transparent text-slate-800 placeholder-slate-400"
               />
+              {location && <button onClick={() => setLocation('')} className="p-1"><X className="w-3.5 h-3.5 text-slate-400 hover:text-slate-600" /></button>}
             </div>
-            <Button className="rounded-xl">Rechercher</Button>
+            <Button className="rounded-xl bg-gradient-to-r from-brand-600 to-blue-600 px-6 h-11">Rechercher</Button>
           </div>
         </div>
-      </div>
+
+        {/* Wave divider */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 60L1440 60L1440 0C1200 40 960 60 720 60C480 60 240 40 0 0L0 60Z" fill="#F8FAFC" />
+          </svg>
+        </div>
+      </section>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex gap-6">

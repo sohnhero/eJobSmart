@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Linkedin, Trophy, Building2, Zap, User, Settings } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, ArrowLeft, ArrowRight, Linkedin, Trophy, Building2, Zap, User, Settings } from 'lucide-react'
 import Button from '../components/ui/Button'
 
 export default function Login() {
@@ -22,8 +22,8 @@ export default function Login() {
       {/* Left panel */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-700 relative overflow-hidden p-12 flex-col justify-between">
         <div className="absolute inset-0 bg-hero-pattern opacity-20" />
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-amber-500/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full -translate-y-1/2 translate-x-1/2" style={{ backgroundColor: '#011847' }} />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-white rounded-full translate-y-1/2 -translate-x-1/2" />
 
         <div className="relative">
           <Link to="/" className="flex items-center mb-12">
@@ -37,66 +37,123 @@ export default function Login() {
             La marketplace RH qui connecte les meilleurs talents aux meilleures opportunités en Afrique — Révélateur de talents, créateur de valeurs.
           </p>
 
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md relative overflow-hidden mt-8 shadow-2xl">
-            {/* Ambient glows inside the card */}
-            <div className="absolute -top-10 -right-10 w-24 h-24 bg-cyan-400/10 rounded-full blur-2xl" />
-            <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl" />
-
-            <h3 className="text-xs font-heading font-bold uppercase tracking-widest text-blue-200 mb-6 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-              L'impact Eureka Job en chiffres
-            </h3>
-
-            {/* Grid for candidates & companies */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="bg-white/5 border border-white/5 rounded-2xl p-4 hover:bg-white/10 transition-all duration-300">
-                <div className="w-9 h-9 rounded-xl bg-amber-400/10 flex items-center justify-center mb-3">
-                  <Trophy className="w-5 h-5 text-amber-400" />
+          {/* Organic Dashboard Preview (Replaces the stats card) */}
+          <div className="relative mt-12 w-full h-[340px] flex items-center justify-center">
+            {/* Glowing background circles for visual depth */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full opacity-35 blur-3xl bg-gradient-to-tr from-cyan-400 to-brand-500 pointer-events-none" />
+            
+            {/* Interactive Element 1: Candidate Card */}
+            <div className="absolute left-0 top-4 z-20 w-64 bg-white/10 backdrop-blur-lg border border-white/15 rounded-2xl p-4 shadow-2xl -rotate-3 hover:-rotate-1 hover:scale-[1.02] transition-all duration-300 select-none">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-400 to-blue-500 flex items-center justify-center font-heading font-bold text-white text-sm shadow-md">
+                  AD
                 </div>
-                <p className="text-2xl font-black text-white leading-none font-heading">+34k</p>
-                <p className="text-xs font-bold text-slate-100 mt-1.5">Candidats</p>
-                <p className="text-[10px] text-blue-200 mt-0.5 leading-tight">Profils vérifiés & qualifiés</p>
+                <div className="flex-1">
+                  <h4 className="text-xs font-bold text-white leading-none">Amadou Diallo</h4>
+                  <p className="text-[10px] text-cyan-200 mt-1">Développeur Fullstack React/Node</p>
+                </div>
+                {/* Match Ring */}
+                <div className="relative w-8 h-8 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-full h-full transform -rotate-90">
+                    <circle cx="16" cy="16" r="13" className="text-white/10" strokeWidth="2.5" stroke="currentColor" fill="transparent" />
+                    <circle cx="16" cy="16" r="13" className="text-cyan-400" strokeWidth="2.5" strokeDasharray="81.6" strokeDashoffset="8.1" strokeLinecap="round" stroke="currentColor" fill="transparent" />
+                  </svg>
+                  <span className="absolute text-[8px] font-black text-white">90%</span>
+                </div>
               </div>
-
-              <div className="bg-white/5 border border-white/5 rounded-2xl p-4 hover:bg-white/10 transition-all duration-300">
-                <div className="w-9 h-9 rounded-xl bg-cyan-400/10 flex items-center justify-center mb-3">
-                  <Building2 className="w-5 h-5 text-cyan-400" />
-                </div>
-                <p className="text-2xl font-black text-white leading-none font-heading">+847</p>
-                <p className="text-xs font-bold text-slate-100 mt-1.5">Entreprises</p>
-                <p className="text-[10px] text-blue-200 mt-0.5 leading-tight">Recrutent activement</p>
+              
+              <div className="mt-4 pt-3 border-t border-white/10 flex flex-wrap gap-1.5">
+                <span className="text-[8px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-200 font-sans font-medium">TypeScript</span>
+                <span className="text-[8px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-200 font-sans font-medium">React</span>
+                <span className="text-[8px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-200 font-sans font-medium">Node.js</span>
               </div>
             </div>
 
-            {/* Highlighted speed stat banner */}
-            <div className="bg-gradient-to-r from-cyan-500/10 to-brand-500/10 border border-cyan-400/20 rounded-2xl p-4 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-cyan-400 flex items-center justify-center shadow-lg shadow-cyan-400/20">
-                  <Zap className="w-5 h-5 text-brand-900 fill-brand-900" />
+            {/* Interactive Element 2: Job Match Card */}
+            <div className="absolute right-0 bottom-6 z-10 w-64 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 shadow-xl rotate-3 hover:rotate-1 hover:scale-[1.02] transition-all duration-300 select-none">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center font-heading font-black text-xs text-white">
+                    SD
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-white leading-tight">Sonatel Digital</h4>
+                    <p className="text-[10px] text-blue-200">Dakar, Sénégal · Hybride</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs font-bold text-white">Délai moyen de recrutement</p>
-                  <p className="text-[10px] text-cyan-200 leading-tight mt-0.5">Pour finaliser un placement</p>
-                </div>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-400 text-[8px] font-heading font-bold uppercase tracking-wider">
+                  Actif
+                </span>
               </div>
-              <div className="text-right">
-                <p className="text-2xl font-black text-cyan-400 leading-none font-heading">18 j</p>
-                <p className="text-[9px] font-bold text-cyan-300 uppercase tracking-wide mt-1">Moyenne</p>
+              <h5 className="text-xs font-heading font-black text-white mt-3 leading-snug">Tech Lead JavaScript / Cloud</h5>
+              <div className="mt-3 flex items-center justify-between text-[10px] text-slate-300">
+                <span className="font-semibold text-white">1.2M - 1.8M FCFA</span>
+                <span className="text-[9px] text-slate-400">il y a 2h</span>
+              </div>
+            </div>
+
+            {/* Interactive Element 3: Floating Stats Pill 1 (Top Right) */}
+            <div className="absolute right-6 top-0 z-30 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-full px-3 py-1.5 flex items-center gap-2 shadow-lg hover:scale-105 transition-transform duration-300">
+              <div className="w-5 h-5 rounded-full bg-amber-400/20 flex items-center justify-center flex-shrink-0">
+                <Trophy className="w-3 h-3 text-amber-400" />
+              </div>
+              <div>
+                <p className="text-[10px] font-black text-white leading-none">+34k</p>
+                <p className="text-[8px] text-slate-300 leading-none mt-0.5">Candidats</p>
+              </div>
+            </div>
+
+            {/* Interactive Element 4: Floating Stats Pill 2 (Left Bottom) */}
+            <div className="absolute left-6 bottom-0 z-30 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-full px-3 py-1.5 flex items-center gap-2 shadow-lg hover:scale-105 transition-transform duration-300">
+              <div className="w-5 h-5 rounded-full bg-cyan-400/20 flex items-center justify-center flex-shrink-0">
+                <Building2 className="w-3 h-3 text-cyan-400" />
+              </div>
+              <div>
+                <p className="text-[10px] font-black text-white leading-none">+847</p>
+                <p className="text-[8px] text-slate-300 leading-none mt-0.5">Recruteurs</p>
+              </div>
+            </div>
+
+            {/* Interactive Element 5: Floating Speed Stat Banner (Center overlapping) */}
+            <div className="absolute top-[42%] left-[45%] -translate-x-1/2 -translate-y-1/2 z-30 bg-gradient-to-r from-cyan-500 to-brand-600 border border-cyan-400/30 rounded-2xl p-2.5 flex items-center gap-3 shadow-2xl hover:scale-105 transition-transform duration-300 max-w-[180px]">
+              <div className="w-7 h-7 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+                <Zap className="w-3.5 h-3.5 text-white fill-white" />
+              </div>
+              <div className="flex-1">
+                <p className="text-[8px] font-bold text-cyan-100 uppercase tracking-widest leading-none">Délai moyen</p>
+                <p className="text-xs font-black text-white leading-tight mt-0.5">18 jours</p>
               </div>
             </div>
           </div>
         </div>
 
-        <p className="relative text-xs text-blue-300">© 2026 Eureka Job | Talents & Advisory</p>
+        <p className="relative text-xs text-blue-300 text-right">© 2026 Eureka Job | Talents & Advisory</p>
       </div>
 
       {/* Right panel */}
       <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md">
-          {/* Mobile logo */}
-          <Link to="/" className="flex items-center mb-8 lg:hidden">
-            <img src="/logo-eureka-job.png" alt="Eureka Job" className="h-10 w-auto object-contain" />
-          </Link>
+          {/* Mobile header */}
+          <div className="flex items-center justify-between mb-8 lg:hidden">
+            <Link to="/" className="flex items-center gap-1.5 text-slate-500 hover:text-brand-600 transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+              <span className="text-xs font-semibold">Retour à l'accueil</span>
+            </Link>
+            <Link to="/register" className="text-xs text-slate-500 hover:text-brand-600 transition-colors">
+              Nouveau ? <span className="font-semibold">S'inscrire</span>
+            </Link>
+          </div>
+
+          {/* Desktop Top Link */}
+          <div className="hidden lg:flex justify-between items-center mb-8 text-xs sm:text-sm text-slate-500">
+            <Link to="/" className="flex items-center gap-1.5 text-slate-500 hover:text-brand-600 transition-colors font-medium">
+              <ArrowLeft className="w-4 h-4" /> Retour à l'accueil
+            </Link>
+            <span>
+              Nouveau ? &nbsp;
+              <Link to="/register" className="font-semibold text-brand-600 hover:underline">S'inscrire</Link>
+            </span>
+          </div>
 
           <h2 className="text-2xl font-bold text-slate-900 mb-1">Connexion</h2>
           <p className="text-slate-500 text-sm mb-8">Accédez à votre espace personnel</p>

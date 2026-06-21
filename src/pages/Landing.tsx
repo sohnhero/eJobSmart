@@ -183,7 +183,7 @@ export default function Landing() {
     const centerY = rect.height / 2
     const rotateX = ((y - centerY) / centerY) * -5 // subtle 5-deg tilt
     const rotateY = ((x - centerX) / centerX) * 5
-    
+
     card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.01)`
     card.style.transition = 'transform 0.05s ease-out'
     card.style.setProperty('--mouse-x', `${x}px`)
@@ -221,7 +221,7 @@ export default function Landing() {
     }
 
     const observer = new IntersectionObserver(handleIntersect, observerOptions)
-    
+
     // Select elements we want to animate on scroll
     const revealElements = document.querySelectorAll('.scroll-reveal')
     revealElements.forEach(el => observer.observe(el))
@@ -337,7 +337,6 @@ export default function Landing() {
           {/* Badge */}
           <div className="flex justify-center mb-8 scroll-reveal reveal-fade-down">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-5 sm:py-2 rounded-full text-[10px] sm:text-sm font-heading font-medium border" style={{ backgroundColor: 'rgba(57,213,244,0.1)', borderColor: 'rgba(57,213,244,0.3)', color: '#39D5F4' }}>
-              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full animate-pulse" style={{ backgroundColor: '#39D5F4' }} />
               La marketplace RH #1 en Afrique de l'Ouest
             </span>
           </div>
@@ -474,14 +473,14 @@ export default function Landing() {
           <path className="draw-path" d="M-100,200 C300,500 800,100 1600,400" stroke="#2563EB" strokeWidth="2" />
           <path className="draw-path reveal-delay-100" d="M-100,215 C300,515 800,115 1600,415" stroke="#2563EB" strokeWidth="1" />
           <path className="draw-path reveal-delay-200" d="M-100,230 C300,530 800,130 1600,430" stroke="#2563EB" strokeWidth="1.5" strokeDasharray="5, 10" />
-          
+
           <path className="draw-path reveal-delay-50" d="M-100,500 C400,200 1000,550 1600,150" stroke="#2563EB" strokeWidth="2.5" />
           <path className="draw-path reveal-delay-150" d="M-100,515 C400,215 1000,565 1600,165" stroke="#2563EB" strokeWidth="1" />
 
           {/* Connection Nodes (representing companies, candidates and cabinets) */}
           <circle cx="250" cy="380" r="6" fill="#2563EB" />
           <circle cx="250" cy="380" r="16" stroke="#2563EB" strokeWidth="1" opacity="0.5" />
-          
+
           <circle cx="850" cy="240" r="8" fill="#2563EB" />
           <circle cx="850" cy="240" r="22" stroke="#2563EB" strokeWidth="1.5" opacity="0.3" strokeDasharray="3 6" />
 
@@ -888,8 +887,8 @@ export default function Landing() {
 
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8">
             {testimonials.map((t, index) => (
-              <div 
-                key={t.name} 
+              <div
+                key={t.name}
                 className={`group relative bg-white border border-slate-100 rounded-2xl sm:rounded-[32px] p-3.5 sm:p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(15,30,58,0.08)] flex flex-col justify-between ${index >= 2 ? 'hidden sm:flex' : 'flex'} scroll-reveal reveal-fade-up reveal-delay-${(index % 3) * 150}`}
               >
                 {/* Large decorative quotation mark */}

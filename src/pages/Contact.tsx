@@ -70,17 +70,28 @@ export default function Contact() {
       <Navbar />
 
       {/* Hero */}
-      <section className="bg-gradient-to-br from-brand-900 via-brand-800 to-brand-700 py-16 relative overflow-hidden">
-        <div className="absolute inset-0 bg-hero-pattern opacity-20" />
-        <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <span className="text-sm font-semibold text-blue-300 tracking-wider uppercase">Contact</span>
-          <h1 className="text-3xl md:text-4xl font-black text-white mt-2 mb-3">
+      <section className="relative overflow-hidden py-20" style={{ background: 'linear-gradient(135deg, #0F1E3A 0%, #0F3B95 60%, #2563EB 100%)' }}>
+        <div className="absolute inset-0 bg-hero-pattern opacity-10" />
+        <div className="absolute top-20 right-0 w-[400px] h-[400px] rounded-full opacity-10 blur-3xl" style={{ background: '#39D5F4' }} />
+        <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full opacity-5 blur-3xl" style={{ background: '#2563EB' }} />
+        
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+          <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[10px] font-heading font-black tracking-widest uppercase border border-cyan-400/30" style={{ backgroundColor: 'rgba(57,213,244,0.1)', color: '#39D5F4' }}>
+            Contact
+          </span>
+          <h1 className="text-4xl md:text-5xl font-heading font-black text-white mt-4 mb-4 tracking-tight">
             Comment pouvons-nous vous aider ?
           </h1>
-          <p className="text-blue-200 text-lg max-w-2xl mx-auto">
+          <p className="text-blue-200 text-base md:text-lg max-w-xl mx-auto leading-relaxed font-sans">
             Notre équipe est disponible du lundi au vendredi, de 8h à 18h (GMT). Choisissez le canal qui vous convient.
           </p>
+        </div>
+
+        {/* Wave divider */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 60L1440 60L1440 0C1200 40 960 60 720 60C480 60 240 40 0 0L0 60Z" fill="#F8FAFC" />
+          </svg>
         </div>
       </section>
 

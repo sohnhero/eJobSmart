@@ -28,19 +28,34 @@ export default function Support() {
       <Navbar />
 
       {/* Hero */}
-      <section className="bg-gradient-to-br from-brand-900 to-brand-700 py-20 text-white text-center relative overflow-hidden">
-        <div className="relative z-10 max-w-4xl mx-auto px-4">
-          <h1 className="text-3xl md:text-5xl font-black mb-6">Comment pouvons-nous vous aider ?</h1>
+      <section className="relative overflow-hidden pt-20 pb-28" style={{ background: 'linear-gradient(135deg, #0F1E3A 0%, #0F3B95 60%, #2563EB 100%)' }}>
+        <div className="absolute inset-0 bg-hero-pattern opacity-10" />
+        <div className="absolute top-20 right-0 w-[400px] h-[400px] rounded-full opacity-10 blur-3xl" style={{ background: '#39D5F4' }} />
+        <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full opacity-5 blur-3xl" style={{ background: '#2563EB' }} />
+        
+        <div className="relative max-w-4xl mx-auto px-4 text-center z-10">
+          <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[10px] font-heading font-black tracking-widest uppercase border border-cyan-400/30" style={{ backgroundColor: 'rgba(57,213,244,0.1)', color: '#39D5F4' }}>
+            Support Technique
+          </span>
+          <h1 className="text-4xl md:text-5xl font-heading font-black text-white mt-4 mb-6 tracking-tight">
+            Comment pouvons-nous vous aider ?
+          </h1>
           <div className="relative max-w-2xl mx-auto">
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-400" />
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input
               type="text"
               placeholder="Rechercher une solution, un article..."
-              className="w-full pl-14 pr-6 py-5 rounded-3xl bg-white text-slate-900 text-lg shadow-2xl shadow-black/20 outline-none focus:ring-4 focus:ring-brand-500/20 transition-all"
+              className="w-full pl-14 pr-6 py-4.5 rounded-2xl bg-white text-slate-900 text-base shadow-xl outline-none focus:ring-4 focus:ring-brand-500/20 transition-all placeholder-slate-400"
             />
           </div>
         </div>
-        <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-hero-pattern" />
+
+        {/* Wave divider */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 60L1440 60L1440 0C1200 40 960 60 720 60C480 60 240 40 0 0L0 60Z" fill="#F8FAFC" />
+          </svg>
+        </div>
       </section>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -translate-y-10 relative z-20">

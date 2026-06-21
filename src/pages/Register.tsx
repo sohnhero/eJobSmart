@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Check, User, Building2, Users } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, User, Building2, Users, Trophy, Zap } from 'lucide-react'
 import Button from '../components/ui/Button'
 
 type Role = 'candidate' | 'company' | 'agency'
@@ -35,19 +35,31 @@ export default function Register() {
   ]
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      {/* Top bar */}
-      <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
-        <Link to="/" className="flex items-center">
-          <img src="/logo-eureka-job.png" alt="Eureka Job" className="h-9 w-auto object-contain" />
-        </Link>
-        <Link to="/login" className="text-sm text-slate-500 hover:text-brand-600 transition-colors">
-          Déjà un compte ? <span className="font-semibold">Se connecter</span>
-        </Link>
-      </div>
+    <div className="h-screen bg-slate-50 flex overflow-hidden">
+      {/* Right panel (now on the left) */}
+      <div className="flex-1 flex flex-col justify-center items-center p-4 sm:p-6 overflow-y-auto h-full my-auto">
+        <div className="w-full max-w-lg my-auto py-4">
+          {/* Mobile logo & Top Link */}
+          <div className="flex items-center justify-between mb-6 lg:hidden">
+            <Link to="/" className="flex items-center gap-1.5 text-slate-500 hover:text-brand-600 transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+              <span className="text-xs font-semibold">Retour à l'accueil</span>
+            </Link>
+            <Link to="/login" className="text-xs text-slate-500 hover:text-brand-600 transition-colors">
+              Déjà inscrit ? <span className="font-semibold">Se connecter</span>
+            </Link>
+          </div>
 
-      <div className="flex-1 flex items-center justify-center p-6">
-        <div className="w-full max-w-lg">
+          {/* Desktop Top Link */}
+          <div className="hidden lg:flex justify-between items-center mb-4 text-xs sm:text-sm text-slate-500">
+            <Link to="/" className="flex items-center gap-1.5 text-slate-500 hover:text-brand-600 transition-colors font-medium">
+              <ArrowLeft className="w-4 h-4" /> Retour à l'accueil
+            </Link>
+            <span>
+              Déjà inscrit ? &nbsp;<Link to="/login" className="font-semibold text-brand-600 hover:underline">Se connecter</Link>
+            </span>
+          </div>
+
           {/* Progress */}
           <div className="mb-8">
             <div className="flex items-center justify-center gap-0">
@@ -112,45 +124,87 @@ export default function Register() {
                 <h2 className="text-2xl font-bold text-slate-900 mb-1">Vos informations</h2>
                 <p className="text-slate-500 text-sm mb-6">Compte {roles.find(r => r.id === role)?.title}</p>
 
-                <form className="space-y-4" onSubmit={e => { e.preventDefault(); setStep(3) }}>
-                  {(role === 'candidate') && (
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">Prénom *</label>
-                        <input value={form.firstName} onChange={e => setForm({ ...form, firstName: e.target.value })} placeholder="Amadou" className="input-field" required />
+                 <form className="space-y-4" onSubmit={e => { e.preventDefault(); setStep(3) }}>
+                  {/* Candidate Fields (Prénom & Nom side-by-side, Email & Mot de passe side-by-side) */}
+                  {role === 'candidate' && (
+                    <>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-1.5">Prénom *</label>
+                          <input value={form.firstName} onChange={e => setForm({ ...form, firstName: e.target.value })} placeholder="Amadou" className="input-field" required />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-1.5">Nom *</label>
+                          <input value={form.lastName} onChange={e => setForm({ ...form, lastName: e.target.value })} placeholder="Diallo" className="input-field" required />
+                        </div>
                       </div>
-                      <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">Nom *</label>
-                        <input value={form.lastName} onChange={e => setForm({ ...form, lastName: e.target.value })} placeholder="Diallo" className="input-field" required />
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-1.5">Email professionnel *</label>
+                          <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="votre@email.com" className="input-field" required />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-1.5">Mot de passe *</label>
+                          <input type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Minimum 8 caractères" className="input-field" required minLength={8} />
+                          <p className="text-xs text-slate-400 mt-1">Utilisez au moins 8 caractères avec chiffres et lettres</p>
+                        </div>
                       </div>
-                    </div>
+                    </>
                   )}
-                  {(role === 'company' || role === 'agency') && (
-                    <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-1.5">{role === 'company' ? 'Nom de l\'entreprise' : 'Nom du cabinet'} *</label>
-                      <input value={form.company} onChange={e => setForm({ ...form, company: e.target.value })} placeholder={role === 'company' ? 'Sonatel S.A.' : 'Cabinet Excellence RH'} className="input-field" required />
-                    </div>
-                  )}
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">Email professionnel *</label>
-                    <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="votre@email.com" className="input-field" required />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">Mot de passe *</label>
-                    <input type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Minimum 8 caractères" className="input-field" required minLength={8} />
-                    <p className="text-xs text-slate-400 mt-1">Utilisez au moins 8 caractères avec chiffres et lettres</p>
-                  </div>
+
+                  {/* Company Fields (Nom & Secteur side-by-side, Email & Mot de passe side-by-side) */}
                   {role === 'company' && (
-                    <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-1.5">Secteur d'activité</label>
-                      <select value={form.sector} onChange={e => setForm({ ...form, sector: e.target.value })} className="input-field">
-                        <option value="">Sélectionner un secteur</option>
-                        {['Technologie & Numérique', 'Banque & Finance', 'Santé', 'BTP', 'Industrie', 'Commerce'].map(s => (
-                          <option key={s} value={s}>{s}</option>
-                        ))}
-                      </select>
-                    </div>
+                    <>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-1.5">Nom de l'entreprise *</label>
+                          <input value={form.company} onChange={e => setForm({ ...form, company: e.target.value })} placeholder="Sonatel S.A." className="input-field" required />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-1.5">Secteur d'activité</label>
+                          <select value={form.sector} onChange={e => setForm({ ...form, sector: e.target.value })} className="input-field">
+                            <option value="">Sélectionner un secteur</option>
+                            {['Technologie & Numérique', 'Banque & Finance', 'Santé', 'BTP', 'Industrie', 'Commerce'].map(s => (
+                              <option key={s} value={s}>{s}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-1.5">Email professionnel *</label>
+                          <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="votre@email.com" className="input-field" required />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-1.5">Mot de passe *</label>
+                          <input type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Minimum 8 caractères" className="input-field" required minLength={8} />
+                          <p className="text-xs text-slate-400 mt-1">Utilisez au moins 8 caractères avec chiffres et lettres</p>
+                        </div>
+                      </div>
+                    </>
                   )}
+
+                  {/* Agency Fields (Nom & Email side-by-side, Mot de passe full-width) */}
+                  {role === 'agency' && (
+                    <>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-1.5">Nom du cabinet *</label>
+                          <input value={form.company} onChange={e => setForm({ ...form, company: e.target.value })} placeholder="Cabinet Excellence RH" className="input-field" required />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-1.5">Email professionnel *</label>
+                          <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="votre@email.com" className="input-field" required />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">Mot de passe *</label>
+                        <input type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Minimum 8 caractères" className="input-field" required minLength={8} />
+                        <p className="text-xs text-slate-400 mt-1">Utilisez au moins 8 caractères avec chiffres et lettres</p>
+                      </div>
+                    </>
+                  )}
+
                   <div className="pt-2">
                     <label className="flex items-start gap-2.5 cursor-pointer">
                       <input type="checkbox" required className="mt-0.5" />
@@ -202,6 +256,117 @@ export default function Register() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Left panel (now on the right) */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-700 relative overflow-hidden p-12 flex-col justify-between h-full">
+        <div className="absolute inset-0 bg-hero-pattern opacity-20" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full translate-y-1/2 -translate-x-1/2" style={{ backgroundColor: '#011847' }} />
+
+        <div className="relative">
+          <Link to="/" className="flex items-center mb-12">
+            <img src="/logo-eureka-job.png" alt="Eureka Job" className="h-12 w-auto object-contain brightness-0 invert" />
+          </Link>
+
+          <h1 className="text-4xl font-heading font-black text-white leading-tight mb-4">
+            Révélez votre<br />potentiel sur Eureka Job
+          </h1>
+          <p className="text-blue-200 text-lg leading-relaxed mb-10">
+            Créez votre profil en quelques clics et rejoignez la marketplace RH leader en Afrique de l'Ouest. Accédez aux meilleures opportunités de recrutement et formations certifiantes.
+          </p>
+
+          {/* Organic Dashboard Preview */}
+          <div className="relative mt-12 w-full h-[340px] flex items-center justify-center">
+            {/* Glowing background circles for visual depth */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full opacity-35 blur-3xl bg-gradient-to-tr from-cyan-400 to-brand-500 pointer-events-none" />
+            
+            {/* Interactive Element 1: Candidate Card */}
+            <div className="absolute left-0 top-4 z-20 w-64 bg-white/10 backdrop-blur-lg border border-white/15 rounded-2xl p-4 shadow-2xl -rotate-3 hover:-rotate-1 hover:scale-[1.02] transition-all duration-300 select-none">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-400 to-blue-500 flex items-center justify-center font-heading font-bold text-white text-sm shadow-md">
+                  AD
+                </div>
+                <div className="flex-1">
+                  <h4 className="text-xs font-bold text-white leading-none">Amadou Diallo</h4>
+                  <p className="text-[10px] text-cyan-200 mt-1">Développeur Fullstack React/Node</p>
+                </div>
+                {/* Match Ring */}
+                <div className="relative w-8 h-8 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-full h-full transform -rotate-90">
+                    <circle cx="16" cy="16" r="13" className="text-white/10" strokeWidth="2.5" stroke="currentColor" fill="transparent" />
+                    <circle cx="16" cy="16" r="13" className="text-cyan-400" strokeWidth="2.5" strokeDasharray="81.6" strokeDashoffset="8.1" strokeLinecap="round" stroke="currentColor" fill="transparent" />
+                  </svg>
+                  <span className="absolute text-[8px] font-black text-white">90%</span>
+                </div>
+              </div>
+              
+              <div className="mt-4 pt-3 border-t border-white/10 flex flex-wrap gap-1.5">
+                <span className="text-[8px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-200 font-sans font-medium">TypeScript</span>
+                <span className="text-[8px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-200 font-sans font-medium">React</span>
+                <span className="text-[8px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-200 font-sans font-medium">Node.js</span>
+              </div>
+            </div>
+
+            {/* Interactive Element 2: Job Match Card */}
+            <div className="absolute right-0 bottom-6 z-10 w-64 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 shadow-xl rotate-3 hover:rotate-1 hover:scale-[1.02] transition-all duration-300 select-none">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center font-heading font-black text-xs text-white">
+                    SD
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-white leading-tight">Sonatel Digital</h4>
+                    <p className="text-[10px] text-blue-200">Dakar, Sénégal · Hybride</p>
+                  </div>
+                </div>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-400 text-[8px] font-heading font-bold uppercase tracking-wider">
+                  Actif
+                </span>
+              </div>
+              <h5 className="text-xs font-heading font-black text-white mt-3 leading-snug">Tech Lead JavaScript / Cloud</h5>
+              <div className="mt-3 flex items-center justify-between text-[10px] text-slate-300">
+                <span className="font-semibold text-white">1.2M - 1.8M FCFA</span>
+                <span className="text-[9px] text-slate-400">il y a 2h</span>
+              </div>
+            </div>
+
+            {/* Interactive Element 3: Floating Stats Pill 1 (Top Right) */}
+            <div className="absolute right-6 top-0 z-30 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-full px-3 py-1.5 flex items-center gap-2 shadow-lg hover:scale-105 transition-transform duration-300">
+              <div className="w-5 h-5 rounded-full bg-amber-400/20 flex items-center justify-center flex-shrink-0">
+                <Trophy className="w-3 h-3 text-amber-400" />
+              </div>
+              <div>
+                <p className="text-[10px] font-black text-white leading-none">+34k</p>
+                <p className="text-[8px] text-slate-300 leading-none mt-0.5">Candidats</p>
+              </div>
+            </div>
+
+            {/* Interactive Element 4: Floating Stats Pill 2 (Left Bottom) */}
+            <div className="absolute left-6 bottom-0 z-30 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-full px-3 py-1.5 flex items-center gap-2 shadow-lg hover:scale-105 transition-transform duration-300">
+              <div className="w-5 h-5 rounded-full bg-cyan-400/20 flex items-center justify-center flex-shrink-0">
+                <Building2 className="w-3 h-3 text-cyan-400" />
+              </div>
+              <div>
+                <p className="text-[10px] font-black text-white leading-none">+847</p>
+                <p className="text-[8px] text-slate-300 leading-none mt-0.5">Recruteurs</p>
+              </div>
+            </div>
+
+            {/* Interactive Element 5: Floating Speed Stat Banner (Center overlapping) */}
+            <div className="absolute top-[42%] left-[45%] -translate-x-1/2 -translate-y-1/2 z-30 bg-gradient-to-r from-cyan-500 to-brand-600 border border-cyan-400/30 rounded-2xl p-2.5 flex items-center gap-3 shadow-2xl hover:scale-105 transition-transform duration-300 max-w-[180px]">
+              <div className="w-7 h-7 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+                <Zap className="w-3.5 h-3.5 text-white fill-white" />
+              </div>
+              <div className="flex-1">
+                <p className="text-[8px] font-bold text-cyan-100 uppercase tracking-widest leading-none">Délai moyen</p>
+                <p className="text-xs font-black text-white leading-tight mt-0.5">18 jours</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p className="relative text-xs text-blue-300 text-right">© 2026 Eureka Job | Talents & Advisory</p>
       </div>
     </div>
   )

@@ -81,25 +81,36 @@ export default function FAQ() {
       <Navbar />
 
       {/* Header */}
-      <section className="relative pt-20 pb-24 bg-slate-900 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,#1e40af_0%,transparent_50%)] opacity-30" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Badge variant="blue" className="mb-6">Centre d'aide</Badge>
-          <h1 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight">
-            Comment pouvons-nous <br />
-            <span className="bg-gradient-to-r from-blue-400 to-brand-400 bg-clip-text text-transparent">vous aider ?</span>
+      <section className="relative overflow-hidden pt-20 pb-28" style={{ background: 'linear-gradient(135deg, #0F1E3A 0%, #0F3B95 60%, #2563EB 100%)' }}>
+        <div className="absolute inset-0 bg-hero-pattern opacity-10" />
+        <div className="absolute top-20 right-0 w-[400px] h-[400px] rounded-full opacity-10 blur-3xl" style={{ background: '#39D5F4' }} />
+        <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full opacity-5 blur-3xl" style={{ background: '#2563EB' }} />
+        
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+          <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[10px] font-heading font-black tracking-widest uppercase border border-cyan-400/30" style={{ backgroundColor: 'rgba(57,213,244,0.1)', color: '#39D5F4' }}>
+            Centre d'aide
+          </span>
+          <h1 className="text-4xl md:text-5xl font-heading font-black text-white mt-4 mb-6 tracking-tight">
+            Comment pouvons-nous vous aider ?
           </h1>
           
-          <div className="max-w-2xl mx-auto relative mt-10">
+          <div className="max-w-2xl mx-auto relative mt-6">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input
               type="text"
               placeholder="Rechercher une question (ex: matching, paiement, visibilité...)"
               value={query}
               onChange={e => setQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-brand-500/50 transition-all text-lg"
+              className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white placeholder-blue-200 outline-none focus:ring-2 focus:ring-brand-500/50 transition-all text-base"
             />
           </div>
+        </div>
+
+        {/* Wave divider */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 60L1440 60L1440 0C1200 40 960 60 720 60C480 60 240 40 0 0L0 60Z" fill="#FFFFFF" />
+          </svg>
         </div>
       </section>
 
