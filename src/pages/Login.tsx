@@ -37,19 +37,28 @@ export default function Login() {
             La marketplace RH qui connecte les meilleurs talents aux meilleures opportunités en Afrique — Révélateur de talents, créateur de valeurs.
           </p>
 
-          <div className="space-y-4">
+          <div className="space-y-4 max-w-sm mt-8">
             {[
-              { icon: Trophy, title: '+34 000 candidats', desc: 'Profils vérifiés et qualifiés', color: 'text-amber-400' },
-              { icon: Building2, title: '+847 entreprises', desc: 'Recrutent activement', color: 'text-blue-400' },
-              { icon: Zap, title: '18 jours', desc: 'Délai moyen de recrutement', color: 'text-emerald-400' },
-            ].map(item => (
-              <div key={item.title} className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl px-4 py-3 border border-white/5">
-                <div className={`w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center ${item.color}`}>
+              { icon: Trophy, title: '+34 000', label: 'Candidats', desc: 'Profils vérifiés et qualifiés', color: 'text-amber-400', bg: 'bg-amber-400/15', border: 'border-amber-400/20' },
+              { icon: Building2, title: '+847', label: 'Entreprises', desc: 'Recrutent activement', color: 'text-cyan-400', bg: 'bg-cyan-400/15', border: 'border-cyan-400/20' },
+              { icon: Zap, title: '18 jours', label: 'Délai moyen', desc: 'De recrutement rapide', color: 'text-emerald-400', bg: 'bg-emerald-400/15', border: 'border-emerald-400/20' },
+            ].map((item, index) => (
+              <div
+                key={item.title}
+                className="flex items-center gap-4 bg-slate-900/40 backdrop-blur-lg rounded-2xl p-4 border border-white/10 hover:border-white/20 hover:bg-slate-900/60 transition-all duration-300 shadow-[0_8px_30px_rgb(0,0,0,0.2)] group"
+                style={{
+                  transform: `translateX(${index * 8}px)`,
+                }}
+              >
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${item.bg} border ${item.border} ${item.color} group-hover:scale-110 transition-transform duration-300`}>
                   <item.icon className="w-5 h-5" />
                 </div>
-                <div>
-                  <p className="font-semibold text-white text-sm">{item.title}</p>
-                  <p className="text-xs text-blue-200">{item.desc}</p>
+                <div className="min-w-0">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-xl font-heading font-black text-white tracking-tight">{item.title}</span>
+                    <span className="text-xs font-semibold text-white/90">{item.label}</span>
+                  </div>
+                  <p className="text-xs text-blue-200/70 mt-0.5">{item.desc}</p>
                 </div>
               </div>
             ))}
