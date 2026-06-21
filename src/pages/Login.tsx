@@ -37,31 +37,53 @@ export default function Login() {
             La marketplace RH qui connecte les meilleurs talents aux meilleures opportunités en Afrique — Révélateur de talents, créateur de valeurs.
           </p>
 
-          <div className="space-y-4 max-w-sm mt-8">
-            {[
-              { icon: Trophy, title: '+34 000', label: 'Candidats', desc: 'Profils vérifiés et qualifiés', color: 'text-amber-400', bg: 'bg-amber-400/15', border: 'border-amber-400/20' },
-              { icon: Building2, title: '+847', label: 'Entreprises', desc: 'Recrutent activement', color: 'text-cyan-400', bg: 'bg-cyan-400/15', border: 'border-cyan-400/20' },
-              { icon: Zap, title: '18 jours', label: 'Délai moyen', desc: 'De recrutement rapide', color: 'text-emerald-400', bg: 'bg-emerald-400/15', border: 'border-emerald-400/20' },
-            ].map((item, index) => (
-              <div
-                key={item.title}
-                className="flex items-center gap-4 bg-slate-900/40 backdrop-blur-lg rounded-2xl p-4 border border-white/10 hover:border-white/20 hover:bg-slate-900/60 transition-all duration-300 shadow-[0_8px_30px_rgb(0,0,0,0.2)] group"
-                style={{
-                  transform: `translateX(${index * 8}px)`,
-                }}
-              >
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${item.bg} border ${item.border} ${item.color} group-hover:scale-110 transition-transform duration-300`}>
-                  <item.icon className="w-5 h-5" />
+          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md relative overflow-hidden mt-8 shadow-2xl">
+            {/* Ambient glows inside the card */}
+            <div className="absolute -top-10 -right-10 w-24 h-24 bg-cyan-400/10 rounded-full blur-2xl" />
+            <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl" />
+
+            <h3 className="text-xs font-heading font-bold uppercase tracking-widest text-blue-200 mb-6 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+              L'impact Eureka Job en chiffres
+            </h3>
+
+            {/* Grid for candidates & companies */}
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="bg-white/5 border border-white/5 rounded-2xl p-4 hover:bg-white/10 transition-all duration-300">
+                <div className="w-9 h-9 rounded-xl bg-amber-400/10 flex items-center justify-center mb-3">
+                  <Trophy className="w-5 h-5 text-amber-400" />
                 </div>
-                <div className="min-w-0">
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-xl font-heading font-black text-white tracking-tight">{item.title}</span>
-                    <span className="text-xs font-semibold text-white/90">{item.label}</span>
-                  </div>
-                  <p className="text-xs text-blue-200/70 mt-0.5">{item.desc}</p>
+                <p className="text-2xl font-black text-white leading-none font-heading">+34k</p>
+                <p className="text-xs font-bold text-slate-100 mt-1.5">Candidats</p>
+                <p className="text-[10px] text-blue-200 mt-0.5 leading-tight">Profils vérifiés & qualifiés</p>
+              </div>
+
+              <div className="bg-white/5 border border-white/5 rounded-2xl p-4 hover:bg-white/10 transition-all duration-300">
+                <div className="w-9 h-9 rounded-xl bg-cyan-400/10 flex items-center justify-center mb-3">
+                  <Building2 className="w-5 h-5 text-cyan-400" />
+                </div>
+                <p className="text-2xl font-black text-white leading-none font-heading">+847</p>
+                <p className="text-xs font-bold text-slate-100 mt-1.5">Entreprises</p>
+                <p className="text-[10px] text-blue-200 mt-0.5 leading-tight">Recrutent activement</p>
+              </div>
+            </div>
+
+            {/* Highlighted speed stat banner */}
+            <div className="bg-gradient-to-r from-cyan-500/10 to-brand-500/10 border border-cyan-400/20 rounded-2xl p-4 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-cyan-400 flex items-center justify-center shadow-lg shadow-cyan-400/20">
+                  <Zap className="w-5 h-5 text-brand-900 fill-brand-900" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-white">Délai moyen de recrutement</p>
+                  <p className="text-[10px] text-cyan-200 leading-tight mt-0.5">Pour finaliser un placement</p>
                 </div>
               </div>
-            ))}
+              <div className="text-right">
+                <p className="text-2xl font-black text-cyan-400 leading-none font-heading">18 j</p>
+                <p className="text-[9px] font-bold text-cyan-300 uppercase tracking-wide mt-1">Moyenne</p>
+              </div>
+            </div>
           </div>
         </div>
 
