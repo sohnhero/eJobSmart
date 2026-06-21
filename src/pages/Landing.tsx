@@ -173,7 +173,7 @@ export default function Landing() {
         <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full opacity-5 blur-3xl" style={{ background: '#2563EB' }} />
 
         {/* Neon Strings Background Overlay */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-60 z-0">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-45 z-0">
           <svg className="w-full h-full" viewBox="0 0 1440 800" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
             <defs>
               <filter id="neon-glow-cyan" x="-30%" y="-30%" width="160%" height="160%">
@@ -185,66 +185,81 @@ export default function Landing() {
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
+
+              {/* Radial gradient to fade out lines in the center content area */}
+              <radialGradient id="center-fade" cx="50%" cy="45%" r="45%">
+                <stop offset="0%" stop-color="#000" stop-opacity="1" />
+                <stop offset="55%" stop-color="#000" stop-opacity="0.85" />
+                <stop offset="100%" stop-color="#000" stop-opacity="0" />
+              </radialGradient>
+
+              {/* Mask that applies the fade out */}
+              <mask id="neon-mask">
+                <rect x="0" y="0" width="100%" height="100%" fill="#fff" />
+                <rect x="0" y="0" width="100%" height="100%" fill="url(#center-fade)" />
+              </mask>
             </defs>
             
-            {/* Glowing neon strings - Only Cyan #39D5F4 */}
-            {/* Main sweeping base lines */}
-            <path
-              d="M-100,220 C350,450 800,100 1600,300"
-              stroke="#39D5F4"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              filter="url(#neon-glow-cyan)"
-              className="animate-neon-string-1"
-            />
-            <path
-              d="M-100,380 C400,150 900,600 1600,200"
-              stroke="#39D5F4"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              filter="url(#neon-glow-cyan)"
-              className="animate-neon-string-2"
-            />
-            
-            {/* Flowing animated pulse lines on top of the paths */}
-            <path
-              d="M-100,220 C350,450 800,100 1600,300"
-              stroke="#39D5F4"
-              strokeWidth="3.5"
-              strokeLinecap="round"
-              filter="url(#neon-glow-cyan)"
-              className="animate-neon-flow-string-1"
-              opacity="0.8"
-            />
-            <path
-              d="M-100,380 C400,150 900,600 1600,200"
-              stroke="#39D5F4"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              filter="url(#neon-glow-cyan)"
-              className="animate-neon-flow-string-2"
-              opacity="0.8"
-            />
+            {/* Glowing neon strings - Masked to fade in the center */}
+            <g mask="url(#neon-mask)">
+              {/* Main sweeping base lines */}
+              <path
+                d="M-100,220 C350,450 800,100 1600,300"
+                stroke="#39D5F4"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                filter="url(#neon-glow-cyan)"
+                className="animate-neon-string-1"
+              />
+              <path
+                d="M-100,380 C400,150 900,600 1600,200"
+                stroke="#39D5F4"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                filter="url(#neon-glow-cyan)"
+                className="animate-neon-string-2"
+              />
+              
+              {/* Flowing animated pulse lines on top of the paths */}
+              <path
+                d="M-100,220 C350,450 800,100 1600,300"
+                stroke="#39D5F4"
+                strokeWidth="3.5"
+                strokeLinecap="round"
+                filter="url(#neon-glow-cyan)"
+                className="animate-neon-flow-string-1"
+                opacity="0.8"
+              />
+              <path
+                d="M-100,380 C400,150 900,600 1600,200"
+                stroke="#39D5F4"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                filter="url(#neon-glow-cyan)"
+                className="animate-neon-flow-string-2"
+                opacity="0.8"
+              />
 
-            {/* Fine background details */}
-            <path
-              d="M-100,120 C500,400 1000,50 1600,480"
-              stroke="#39D5F4"
-              strokeWidth="1"
-              strokeLinecap="round"
-              filter="url(#neon-glow-cyan)"
-              className="animate-neon-string-2"
-              opacity="0.4"
-            />
-            <path
-              d="M-100,550 C300,700 950,250 1600,600"
-              stroke="#39D5F4"
-              strokeWidth="2"
-              strokeLinecap="round"
-              filter="url(#neon-glow-cyan)"
-              className="animate-neon-string-1"
-              opacity="0.5"
-            />
+              {/* Fine background details */}
+              <path
+                d="M-100,120 C500,400 1000,50 1600,480"
+                stroke="#39D5F4"
+                strokeWidth="1"
+                strokeLinecap="round"
+                filter="url(#neon-glow-cyan)"
+                className="animate-neon-string-2"
+                opacity="0.4"
+              />
+              <path
+                d="M-100,550 C300,700 950,250 1600,600"
+                stroke="#39D5F4"
+                strokeWidth="2"
+                strokeLinecap="round"
+                filter="url(#neon-glow-cyan)"
+                className="animate-neon-string-1"
+                opacity="0.5"
+              />
+            </g>
           </svg>
         </div>
 
