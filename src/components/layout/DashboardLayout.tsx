@@ -100,7 +100,7 @@ export default function DashboardLayout({ children, role = 'candidate', userName
       {/* Logo */}
       <div className="px-4 py-5 border-b border-slate-100">
         <Link to="/" className="flex items-center">
-          <img src="public/logo-eureka-job.png" alt="Eureka Job" className="h-9 w-auto object-contain" />
+          <img src="/logo-eureka-job.png" alt="Eureka Job" className="h-9 w-auto object-contain" />
         </Link>
       </div>
 

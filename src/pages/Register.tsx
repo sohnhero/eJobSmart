@@ -39,7 +39,7 @@ export default function Register() {
       {/* Top bar */}
       <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center">
-          <img src="public/logo-eureka-job.png" alt="Eureka Job" className="h-9 w-auto object-contain" />
+          <img src="/logo-eureka-job.png" alt="Eureka Job" className="h-9 w-auto object-contain" />
         </Link>
         <Link to="/login" className="text-sm text-slate-500 hover:text-brand-600 transition-colors">
           Déjà un compte ? <span className="font-semibold">Se connecter</span>

@@ -39,7 +39,7 @@ export default function Navbar({ isLoggedIn, userRole, userName = 'Amadou Diallo
           {/* Logo */}
           <Link to="/" className="flex items-center flex-shrink-0" aria-label="Accueil Eureka Job">
             <img
-              src="public/logo-eureka-job.png"
+              src="/logo-eureka-job.png"
               alt="Eureka Job | Talents & Advisory"
               className="h-14 w-auto object-contain"
             />
