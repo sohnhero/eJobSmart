@@ -9,10 +9,11 @@
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
-    @apply font-sans text-slate-800 bg-white antialiased;
+    @apply font-sans text-slate-800 bg-white antialiased overflow-x-hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -143,7 +144,7 @@
   }
 
   .service-card {
-    @apply bg-white rounded-2xl border border-slate-100 p-6 transition-all duration-300
+    @apply bg-white rounded-2xl border border-slate-100 p-3.5 sm:p-6 transition-all duration-300
            hover:shadow-[0_16px_40px_-12px_rgba(37,99,235,0.15)] hover:-translate-y-1 hover:border-brand-100;
   }
 }

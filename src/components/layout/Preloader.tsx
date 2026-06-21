@@ -5,14 +5,28 @@ interface PreloaderProps {
 }
 
 export default function Preloader({ onComplete }: PreloaderProps) {
-  const [videoReady, setVideoReady] = useState(false)
+  const [isMobile, setIsMobile] = useState<boolean | null>(null)
   const [fade, setFade] = useState(false)
   const [visible, setVisible] = useState(true)
   const videoRef = useRef<HTMLVideoElement>(null)
 
+  // 1. Detect screen size on mount
   useEffect(() => {
-    // Lock body scrolling while the preloader is visible
-    if (visible) {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
+      if (mobile) {
+        // If mobile, bypass the preloader immediately
+        setVisible(false)
+        onComplete()
+      }
+    }
+    checkMobile()
+  }, [onComplete])
+
+  // 2. Lock body scrolling while the preloader is visible (desktop only)
+  useEffect(() => {
+    if (visible && isMobile === false) {
       document.body.style.overflow = 'hidden'
       document.documentElement.style.overflow = 'hidden'
     } else {
@@ -24,32 +38,30 @@ export default function Preloader({ onComplete }: PreloaderProps) {
       document.body.style.overflow = ''
       document.documentElement.style.overflow = ''
     }
-  }, [visible])
+  }, [visible, isMobile])
 
-  // Autoplay assurance & safety fallback
+  // 3. Desktop Video Autoplay Assurance & Fallback
   useEffect(() => {
-    // Safety fallback: if video fails to play/end, auto-close after 3.5s
-    const fallbackTimer = setTimeout(() => {
-      handleExit()
-    }, 3500)
+    if (isMobile === false) {
+      // Safety fallback: if video fails to play/end, auto-close after 3.5s
+      const fallbackTimer = setTimeout(() => {
+        handleExit()
+      }, 3500)
 
-    if (videoRef.current) {
-      videoRef.current.muted = true
-      // Explicitly call play to ensure modern mobile browsers trigger autoplay
-      const playPromise = videoRef.current.play()
-      if (playPromise !== undefined) {
-        playPromise.catch((error) => {
-          console.warn("Autoplay was prevented or video failed to play:", error)
-          // Fade out immediately to avoid blocking the user if autoplay fails
-          handleExit()
-        })
+      if (videoRef.current) {
+        videoRef.current.muted = true
+        const playPromise = videoRef.current.play()
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {
+            console.warn("Autoplay was prevented or video failed to play:", error)
+            handleExit()
+          })
+        }
       }
-    }
 
-    return () => {
-      clearTimeout(fallbackTimer)
+      return () => clearTimeout(fallbackTimer)
     }
-  }, [])
+  }, [isMobile])
 
   const handleExit = () => {
     setFade(true)
@@ -60,11 +72,12 @@ export default function Preloader({ onComplete }: PreloaderProps) {
     return () => clearTimeout(exitTimer)
   }
 
-  if (!visible) return null
+  // If mobile or not visible, render nothing
+  if (isMobile === true || !visible) return null
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] bg-[#0F1E3A] overflow-hidden transition-opacity duration-800 ease-out flex items-center justify-center ${
+      className={`fixed inset-0 z-[9999] bg-black overflow-hidden transition-opacity duration-800 ease-out flex items-center justify-center ${
         fade ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
@@ -75,11 +88,8 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         muted
         playsInline
         preload="auto"
-        onPlay={() => setVideoReady(true)}
         onEnded={handleExit}
-        className={`w-full h-full object-cover pointer-events-none select-none transition-opacity duration-500 ease-in-out ${
-          videoReady ? 'opacity-100' : 'opacity-0'
-        }`}
+        className="w-full h-full object-cover pointer-events-none select-none"
         style={{
           willChange: 'opacity',
           transform: 'translateZ(0)', // Force GPU rendering

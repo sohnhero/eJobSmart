@@ -152,6 +152,19 @@ function SectorIcon({ name, className, style }: { name: string; className?: stri
   return <Icon className={className} style={style} />
 }
 
+const formatSalary = (min: number, max: number, currency: string) => {
+  const formatNum = (val: number) => {
+    if (val >= 1000000) {
+      return `${(val / 1000000).toFixed(1).replace('.0', '')}M`
+    }
+    if (val >= 1000) {
+      return `${(val / 1000).toFixed(0)}K`
+    }
+    return val.toString()
+  }
+  return `${formatNum(min)} — ${formatNum(max)} ${currency}`
+}
+
 export default function Landing() {
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
@@ -323,8 +336,8 @@ export default function Landing() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
           {/* Badge */}
           <div className="flex justify-center mb-8 scroll-reveal reveal-fade-down">
-            <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-heading font-medium border" style={{ backgroundColor: 'rgba(57,213,244,0.1)', borderColor: 'rgba(57,213,244,0.3)', color: '#39D5F4' }}>
-              <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#39D5F4' }} />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-5 sm:py-2 rounded-full text-[10px] sm:text-sm font-heading font-medium border" style={{ backgroundColor: 'rgba(57,213,244,0.1)', borderColor: 'rgba(57,213,244,0.3)', color: '#39D5F4' }}>
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full animate-pulse" style={{ backgroundColor: '#39D5F4' }} />
               La marketplace RH #1 en Afrique de l'Ouest
             </span>
           </div>
@@ -422,29 +435,29 @@ export default function Landing() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             {services.map((service, index) => (
               <div
                 key={service.title}
                 onMouseMove={handleCardTilt}
                 onMouseLeave={resetCardTilt}
-                className={`group service-card cursor-pointer relative overflow-hidden hover-glow ${index >= 3 ? 'hidden sm:block' : 'block'} scroll-reveal reveal-zoom-in reveal-delay-${(index % 3) * 150}`}
+                className={`group service-card cursor-pointer relative overflow-hidden hover-glow ${index >= 4 ? 'hidden sm:block' : 'block'} scroll-reveal reveal-zoom-in reveal-delay-${(index % 3) * 150}`}
               >
                 {/* Gradient accent top */}
                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${service.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
 
-                <div className="flex items-start gap-4 mb-4">
-                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
-                    <service.icon className="w-6 h-6 text-white" />
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 mb-2 sm:mb-4">
+                  <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
+                    <service.icon className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                   </div>
-                  <div className="flex-1 min-w-0 pt-1">
-                    <h3 className="font-heading font-bold text-slate-900 text-base leading-tight group-hover:text-brand-700 transition-colors">
+                  <div className="flex-1 min-w-0 pt-0.5">
+                    <h3 className="font-heading font-bold text-slate-900 text-xs sm:text-base leading-tight group-hover:text-brand-700 transition-colors">
                       {service.title}
                     </h3>
                   </div>
                 </div>
-                <p className="text-sm text-slate-500 leading-relaxed">{service.desc}</p>
-                <div className="mt-4 flex items-center gap-1 text-xs font-heading font-semibold text-brand-600 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300">
+                <p className="text-[10px] sm:text-sm text-slate-500 leading-normal sm:leading-relaxed line-clamp-3 sm:line-clamp-none">{service.desc}</p>
+                <div className="mt-2 sm:mt-4 flex items-center gap-1 text-[10px] sm:text-xs font-heading font-semibold text-brand-600 opacity-0 sm:group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300 hidden sm:flex">
                   En savoir plus <ArrowRight className="w-3 h-3" />
                 </div>
               </div>
@@ -456,7 +469,7 @@ export default function Landing() {
       {/* ========== SECTORS ========== */}
       <section className="py-24 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 40%, #EEF2F6 100%)' }}>
         {/* Custom Brand Pattern (Connecting Arcs & RH Nodes) */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none scroll-reveal" style={{ opacity: 0.18 }} viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <svg className="absolute inset-0 w-full h-full pointer-events-none scroll-reveal z-0" style={{ opacity: 0.18, zIndex: 0 }} viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
           {/* Sweeping advisory arcs */}
           <path className="draw-path" d="M-100,200 C300,500 800,100 1600,400" stroke="#2563EB" strokeWidth="2" />
           <path className="draw-path reveal-delay-100" d="M-100,215 C300,515 800,115 1600,415" stroke="#2563EB" strokeWidth="1" />
@@ -549,72 +562,72 @@ export default function Landing() {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
             {featuredJobs.map((job, index) => (
               <div
                 key={job.id}
                 onClick={() => navigate(`/jobs/${job.id}`)}
                 onMouseMove={handleCardTilt}
                 onMouseLeave={resetCardTilt}
-                className={`card card-premium card-hover-premium p-6 cursor-pointer relative group hover-glow ${index >= 3 ? 'hidden sm:block' : 'block'} scroll-reveal ${index % 3 === 0 ? 'reveal-slide-left' : index % 3 === 1 ? 'reveal-fade-up' : 'reveal-slide-right'} reveal-delay-${(index % 3) * 150}`}
+                className={`card card-premium card-hover-premium p-3 sm:p-6 cursor-pointer relative group hover-glow ${index >= 4 ? 'hidden sm:block' : 'block'} scroll-reveal ${index % 3 === 0 ? 'reveal-slide-left' : index % 3 === 1 ? 'reveal-fade-up' : 'reveal-slide-right'} reveal-delay-${(index % 3) * 150}`}
               >
                 {/* Header */}
-                <div className="flex items-start justify-between gap-3 mb-5">
-                  <div className="flex items-start gap-4 min-w-0">
-                    <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center p-2.5 flex-shrink-0 group-hover:shadow-md transition-shadow">
+                <div className="flex flex-col sm:flex-row items-start justify-between gap-2 mb-3 sm:mb-5">
+                  <div className="flex items-start gap-2 sm:gap-4 min-w-0">
+                    <div className="w-8 h-8 sm:w-14 sm:h-14 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center p-1 sm:p-2.5 flex-shrink-0 group-hover:shadow-md transition-shadow">
                       <img src={job.companyLogo} alt={job.company} className="w-full h-full object-contain" />
                     </div>
-                    <div className="min-w-0 pt-1">
-                      <h3 className="font-heading font-bold text-slate-900 text-base leading-tight line-clamp-2 group-hover:text-brand-600 transition-colors">
+                    <div className="min-w-0 pt-0.5">
+                      <h3 className="font-heading font-bold text-slate-900 text-[11px] sm:text-base leading-tight line-clamp-2 group-hover:text-brand-600 transition-colors">
                         {job.title}
                       </h3>
-                      <p className="text-xs font-medium text-slate-500 mt-1.5 flex items-center gap-1.5">
-                        <Building2 className="w-3.5 h-3.5 text-slate-400" /> {job.company}
+                      <p className="text-[9px] sm:text-xs font-medium text-slate-500 mt-0.5 sm:mt-1.5 flex items-center gap-1">
+                        <Building2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400" /> {job.company}
                       </p>
                     </div>
                   </div>
                   {job.isBoosted && (
-                    <div className="flex-shrink-0 pt-1">
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-heading font-bold shadow-sm" style={{ backgroundColor: '#FEF3C7', color: '#92400E', border: '1px solid #FDE68A' }}>
-                        <Zap className="w-2.5 h-2.5" style={{ fill: '#F59E0B', color: '#F59E0B' }} />
+                    <div className="flex-shrink-0 mt-1 sm:mt-0">
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[8px] sm:text-[10px] font-heading font-bold shadow-sm" style={{ backgroundColor: '#FEF3C7', color: '#92400E', border: '1px solid #FDE68A' }}>
+                        <Zap className="w-2 h-2 sm:w-2.5 sm:h-2.5" style={{ fill: '#F59E0B', color: '#F59E0B' }} />
                         En vedette
                       </span>
                     </div>
                   )}
                 </div>
 
-                {/* Badges */}
-                <div className="flex flex-wrap gap-2 mb-5">
+                {/* Badges - Hidden on mobile to prevent extreme clutter */}
+                <div className="hidden sm:flex flex-wrap gap-2 mb-5">
                   <ContractBadge type={job.contractType} />
                   <Badge variant="slate" className="bg-slate-50 text-slate-600 border border-slate-100">{job.remoteType}</Badge>
                   <Badge variant="blue" className="bg-blue-50 text-blue-600 border border-blue-100">{job.experienceLevel}</Badge>
                 </div>
 
                 {/* Info */}
-                <div className="grid grid-cols-2 gap-3 mb-5">
-                  <div className="flex items-center gap-2 text-slate-500">
-                    <div className="w-7 h-7 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-3.5 h-3.5" />
+                <div className="grid grid-cols-2 gap-1.5 sm:gap-3 mb-3 sm:mb-5">
+                  <div className="flex items-center gap-1 text-slate-500">
+                    <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-md bg-slate-50 flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     </div>
-                    <span className="text-xs font-medium truncate">{job.city}</span>
+                    <span className="text-[10px] sm:text-xs font-medium truncate">{job.city}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-slate-500">
-                    <div className="w-7 h-7 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0">
-                      <Users className="w-3.5 h-3.5" />
+                  <div className="flex items-center gap-1 text-slate-500">
+                    <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-md bg-slate-50 flex items-center justify-center flex-shrink-0">
+                      <Users className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     </div>
-                    <span className="text-xs font-medium">{job.applicants} candidats</span>
+                    <span className="text-[10px] sm:text-xs font-medium truncate">{job.applicants} cand.</span>
                   </div>
                 </div>
 
                 {/* Footer */}
-                <div className="flex items-center justify-between pt-4 border-t border-slate-50">
+                <div className="flex items-center justify-between pt-2.5 sm:pt-4 border-t border-slate-50">
                   <div>
-                    <p className="text-[10px] font-heading font-bold text-slate-400 uppercase tracking-wider mb-0.5">Salaire annuel</p>
-                    <p className="text-sm font-heading font-bold text-slate-900">
-                      {job.salaryMin.toLocaleString('fr-FR')} — {job.salaryMax.toLocaleString('fr-FR')} <span className="text-slate-400 text-[10px] font-medium">{job.currency}</span>
+                    <p className="text-[8px] sm:text-[10px] font-heading font-bold text-slate-400 uppercase tracking-wider mb-0.5">Salaire</p>
+                    <p className="text-[10px] sm:text-sm font-heading font-bold text-slate-900 leading-tight">
+                      {formatSalary(job.salaryMin, job.salaryMax, job.currency)}
                     </p>
                   </div>
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300" style={{ backgroundColor: '#E6F2FF', color: '#2563EB' }}>
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 hidden sm:flex" style={{ backgroundColor: '#E6F2FF', color: '#2563EB' }}>
                     <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>
@@ -651,34 +664,34 @@ export default function Landing() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {features.map((feature, index) => (
               <div
                 key={feature.title}
                 onMouseMove={handleCardTilt}
                 onMouseLeave={resetCardTilt}
-                className={`group relative bg-white p-8 rounded-[32px] border transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(15,30,58,0.08)] cursor-pointer flex flex-col justify-between hover-glow scroll-reveal reveal-flip-x reveal-delay-${(index % 4) * 100}`}
+                className={`group relative bg-white p-3.5 sm:p-8 rounded-2xl sm:rounded-[32px] border transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(15,30,58,0.08)] cursor-pointer flex flex-col justify-between hover-glow scroll-reveal reveal-flip-x reveal-delay-${(index % 4) * 100}`}
                 style={{ borderColor: '#E6F2FF' }}
               >
 
                 <div>
                   {/* Glowing Icon Container */}
-                  <div className={`w-12 h-12 rounded-2xl ${feature.bg} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 relative`}>
+                  <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl ${feature.bg} flex items-center justify-center mb-3 sm:mb-6 group-hover:scale-110 transition-transform duration-300 relative`}>
                     {/* Inner glass overlay */}
-                    <div className="absolute inset-0.5 rounded-xl bg-white opacity-80" />
-                    <feature.icon className={`w-6 h-6 ${feature.color} relative z-10`} />
+                    <div className="absolute inset-0.5 rounded-lg sm:rounded-xl bg-white opacity-80" />
+                    <feature.icon className={`w-4 h-4 sm:w-6 sm:h-6 ${feature.color} relative z-10`} />
                   </div>
 
-                  <h3 className="text-base font-heading font-black text-slate-900 mb-3 group-hover:text-brand-600 transition-colors">
+                  <h3 className="text-xs sm:text-base font-heading font-black text-slate-900 mb-1.5 sm:mb-3 group-hover:text-brand-600 transition-colors">
                     {feature.title}
                   </h3>
-                  <p className="text-slate-500 leading-relaxed text-sm">
+                  <p className="text-slate-500 leading-normal sm:leading-relaxed text-[10px] sm:text-sm">
                     {feature.desc}
                   </p>
                 </div>
 
                 {/* Sleek bottom interactive link */}
-                <div className="mt-6 pt-5 border-t border-slate-50 flex items-center justify-between text-xs font-heading font-bold text-slate-400 group-hover:text-brand-600 transition-colors">
+                <div className="mt-3 sm:mt-6 pt-2.5 sm:pt-5 border-t border-slate-50 flex items-center justify-between text-[10px] sm:text-xs font-heading font-bold text-slate-400 group-hover:text-brand-600 transition-colors hidden sm:flex">
                   <span>En savoir plus</span>
                   <div className="w-7 h-7 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-brand-50 group-hover:text-brand-600 transition-colors">
                     <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
@@ -716,18 +729,18 @@ export default function Landing() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 max-w-4xl mx-auto">
             {howItWorks[activeTab].map((step, i) => (
-              <div key={step.step} className="relative">
+              <div key={step.step} className={`relative ${i === 2 ? 'col-span-2 md:col-span-1' : 'col-span-1'}`}>
                 {i < 2 && (
                   <div className="hidden md:block absolute top-6 left-full w-full h-px bg-gradient-to-r from-brand-200 to-transparent -translate-x-4 z-0" />
                 )}
-                <div className={`card p-6 relative z-10 hover:shadow-card-hover transition-shadow scroll-reveal reveal-zoom-in reveal-delay-${i * 150}`}>
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-heading font-black text-lg mb-4" style={{ background: 'linear-gradient(135deg, #2563EB, #0F1E3A)' }}>
+                <div className={`card p-3.5 sm:p-6 relative z-10 hover:shadow-card-hover transition-shadow scroll-reveal reveal-zoom-in reveal-delay-${i * 150}`}>
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center text-white font-heading font-black text-sm sm:text-lg mb-2.5 sm:mb-4" style={{ background: 'linear-gradient(135deg, #2563EB, #0F1E3A)' }}>
                     {step.step}
                   </div>
-                  <h3 className="font-heading font-semibold text-slate-900 mb-2">{step.title}</h3>
-                  <p className="text-sm text-slate-500 leading-relaxed">{step.desc}</p>
+                  <h3 className="font-heading font-semibold text-slate-900 text-xs sm:text-base mb-1 sm:mb-2">{step.title}</h3>
+                  <p className="text-[10px] sm:text-sm text-slate-500 leading-normal sm:leading-relaxed">{step.desc}</p>
                 </div>
               </div>
             ))}
@@ -779,72 +792,64 @@ export default function Landing() {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             {featuredTrainings.map((training, index) => (
               <div
                 key={training.id}
                 onClick={() => navigate(`/trainings/${training.id}`)}
-                className={`card card-premium card-hover-premium overflow-hidden cursor-pointer group ${index >= 2 ? 'hidden sm:block' : 'block'} scroll-reveal ${index % 3 === 0 ? 'reveal-slide-left' : index % 3 === 1 ? 'reveal-fade-up' : 'reveal-slide-right'} reveal-delay-${(index % 3) * 150}`}
+                className={`card card-premium card-hover-premium overflow-hidden cursor-pointer group ${index === 2 ? 'col-span-2 lg:col-span-1' : 'col-span-1'} scroll-reveal ${index % 3 === 0 ? 'reveal-slide-left' : index % 3 === 1 ? 'reveal-fade-up' : 'reveal-slide-right'} reveal-delay-${(index % 3) * 150}`}
               >
-                <div className="relative h-48 bg-slate-200 overflow-hidden">
+                <div className="relative h-24 sm:h-48 bg-slate-200 overflow-hidden">
                   <div
                     className="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-700"
                     style={{ backgroundImage: `url(${training.thumbnail})` }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
-                  <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-                    <Badge variant={training.format === 'En ligne' ? 'blue' : training.format === 'Hybride' ? 'purple' : 'amber'} className="backdrop-blur-md bg-white/20 text-white border-white/30">
+                  <div className="absolute top-2 sm:top-4 left-2 sm:left-4 flex flex-wrap gap-1">
+                    <Badge variant={training.format === 'En ligne' ? 'blue' : training.format === 'Hybride' ? 'purple' : 'amber'} className="backdrop-blur-md bg-white/20 text-white border-white/30 text-[8px] sm:text-xs px-1.5 py-0.5">
                       {training.format}
                     </Badge>
-                    {training.price === 0 && (
-                      <Badge variant="green" className="backdrop-blur-md bg-emerald-500/80 text-white border-emerald-400/50">
-                        Gratuit
-                      </Badge>
-                    )}
                   </div>
 
-                  <div className="absolute bottom-4 left-4">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full border-2 border-white/50 overflow-hidden shadow-md">
+                  <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <div className="w-5 h-5 sm:w-8 sm:h-8 rounded-full border border-white/50 overflow-hidden shadow-md">
                         <img src={`https://ui-avatars.com/api/?name=${training.instructor}&background=random`} alt={training.instructor} className="w-full h-full object-cover" />
                       </div>
-                      <span className="text-xs font-heading font-bold text-white drop-shadow-md">{training.instructor}</span>
+                      <span className="text-[9px] sm:text-xs font-heading font-bold text-white drop-shadow-md truncate max-w-[60px] sm:max-w-none">{training.instructor}</span>
                     </div>
                   </div>
 
                   {training.hasCertificate && (
-                    <div className="absolute bottom-4 right-4 bg-white/20 backdrop-blur-md p-1.5 rounded-lg border border-white/30 shadow-lg">
-                      <Award className="w-4 h-4 text-amber-400" />
+                    <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 bg-white/20 backdrop-blur-md p-1.5 rounded-lg border border-white/30 shadow-lg">
+                      <Award className="w-3 h-3 sm:w-4 sm:h-4 text-amber-400" />
                     </div>
                   )}
                 </div>
 
-                <div className="p-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="px-2 py-0.5 rounded-full bg-slate-50 text-slate-500 text-[10px] font-heading font-bold uppercase tracking-wider border border-slate-100">
+                <div className="p-2.5 sm:p-6">
+                  <div className="flex items-center gap-1 sm:gap-2 mb-1.5 sm:mb-3">
+                    <span className="px-1.5 py-0.5 rounded-full bg-slate-50 text-slate-500 text-[8px] sm:text-[10px] font-heading font-bold uppercase tracking-wider border border-slate-100">
                       {training.level}
                     </span>
-                    <span className="text-[10px] font-bold text-slate-300">•</span>
-                    <span className="text-[10px] font-heading font-bold text-slate-400 uppercase tracking-wider">RH & Management</span>
                   </div>
 
-                  <h3 className="font-heading font-bold text-slate-900 text-base leading-snug mb-4 group-hover:text-brand-600 transition-colors line-clamp-2">
+                  <h3 className="font-heading font-bold text-slate-900 text-xs sm:text-base leading-snug mb-2 sm:mb-4 group-hover:text-brand-600 transition-colors line-clamp-2">
                     {training.title}
                   </h3>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-slate-50">
-                    <div className="flex items-center gap-1.5">
-                      <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                      <span className="text-sm font-heading font-bold text-slate-900">{training.rating}</span>
-                      <span className="text-xs text-slate-400">({training.reviewCount})</span>
+                  <div className="flex items-center justify-between pt-2 sm:pt-4 border-t border-slate-50">
+                    <div className="flex items-center gap-1">
+                      <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                      <span className="text-xs font-heading font-bold text-slate-900">{training.rating}</span>
                     </div>
                     <div className="text-right">
                       {training.price === 0 ? (
-                        <span className="text-sm font-heading font-black text-emerald-600">Gratuit</span>
+                        <span className="text-xs sm:text-sm font-heading font-black text-emerald-600">Gratuit</span>
                       ) : (
-                        <span className="text-sm font-heading font-black text-slate-900">
-                          {training.price.toLocaleString('fr-FR')} <span className="text-[10px] font-bold text-slate-400">FCFA</span>
+                        <span className="text-xs sm:text-sm font-heading font-black text-slate-900">
+                          {training.price >= 1000 ? `${(training.price / 1000).toFixed(0)}K` : training.price} <span className="text-[8px] sm:text-[10px] font-bold text-slate-400">FCFA</span>
                         </span>
                       )}
                     </div>
@@ -863,7 +868,7 @@ export default function Landing() {
         <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full opacity-35 blur-[100px] pointer-events-none" style={{ backgroundColor: '#E6F2FF' }} />
 
         {/* Custom brand vector lines in background */}
-        <svg className="absolute inset-0 w-full h-full opacity-[0.08] pointer-events-none scroll-reveal" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <svg className="absolute inset-0 w-full h-full pointer-events-none scroll-reveal z-0" style={{ opacity: 0.08, zIndex: 0 }} viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
           <path className="draw-path" d="M-100,300 C400,100 900,500 1600,200" stroke="#2563EB" strokeWidth="1" strokeDasharray="4 8" />
           <path className="draw-path reveal-delay-200" d="M-100,315 C400,115 900,515 1600,215" stroke="#39D5F4" strokeWidth="1.5" />
         </svg>
@@ -881,42 +886,42 @@ export default function Landing() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8">
             {testimonials.map((t, index) => (
               <div 
                 key={t.name} 
-                className={`group relative bg-white border border-slate-100 rounded-[32px] p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(15,30,58,0.08)] flex flex-col justify-between ${index >= 2 ? 'hidden sm:flex' : 'flex'} scroll-reveal reveal-fade-up reveal-delay-${(index % 3) * 150}`}
+                className={`group relative bg-white border border-slate-100 rounded-2xl sm:rounded-[32px] p-3.5 sm:p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(15,30,58,0.08)] flex flex-col justify-between ${index >= 2 ? 'hidden sm:flex' : 'flex'} scroll-reveal reveal-fade-up reveal-delay-${(index % 3) * 150}`}
               >
                 {/* Large decorative quotation mark */}
-                <span className="absolute top-4 right-6 text-7xl font-serif text-slate-100 group-hover:text-brand-100/40 select-none pointer-events-none transition-colors duration-300">
+                <span className="absolute top-2 sm:top-4 right-4 sm:right-6 text-4xl sm:text-7xl font-serif text-slate-100 group-hover:text-brand-100/40 select-none pointer-events-none transition-colors duration-300">
                   ”
                 </span>
 
                 <div>
                   {/* Stars */}
-                  <div className="flex items-center gap-1 mb-5">
+                  <div className="flex items-center gap-0.5 sm:gap-1 mb-3 sm:mb-5">
                     {Array.from({ length: t.stars }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                      <Star key={i} className="w-3 h-3 sm:w-4 sm:h-4 text-amber-400 fill-amber-400" />
                     ))}
                   </div>
 
                   {/* Testimonial Quote */}
-                  <p className="text-[14px] sm:text-base text-slate-600 leading-relaxed mb-8 font-sans">
+                  <p className="text-[10px] sm:text-base text-slate-600 leading-normal sm:leading-relaxed mb-4 sm:mb-8 font-sans line-clamp-4 sm:line-clamp-none">
                     "{t.text}"
                   </p>
                 </div>
 
                 {/* User Info block */}
-                <div className="flex items-center gap-4 mt-auto pt-6 border-t border-slate-50">
-                  <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-slate-100 group-hover:border-brand-500/50 flex-shrink-0 transition-colors duration-300">
+                <div className="flex items-center gap-2 sm:gap-4 mt-auto pt-3 sm:pt-6 border-t border-slate-50">
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-xl overflow-hidden border border-slate-100 group-hover:border-brand-500/50 flex-shrink-0 transition-colors duration-300">
                     <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="min-w-0">
-                    <p className="font-heading font-bold text-slate-900 text-[15px] truncate flex items-center gap-1.5">
+                    <p className="font-heading font-bold text-slate-900 text-xs sm:text-[15px] truncate flex items-center gap-1">
                       {t.name}
-                      <span className="inline-flex w-3.5 h-3.5 rounded-full bg-brand-50 text-brand-600 items-center justify-center text-[8px] font-bold">✓</span>
+                      <span className="inline-flex w-3 h-3 rounded-full bg-brand-50 text-brand-600 items-center justify-center text-[7px] font-bold hidden sm:inline-flex">✓</span>
                     </p>
-                    <p className="text-xs text-slate-400 truncate mt-0.5">{t.role}</p>
+                    <p className="text-[9px] sm:text-xs text-slate-400 truncate mt-0.5">{t.role}</p>
                   </div>
                 </div>
               </div>
