@@ -14,24 +14,24 @@ import Badge, { ContractBadge } from '../components/ui/Badge'
 import { jobs } from '../data/jobs'
 
 const companiesData = [
-  { 
-    id: 1, 
-    name: 'Sonatel Digital', 
+  {
+    id: 1,
+    name: 'Sonatel Digital',
     logo: 'https://ui-avatars.com/api/?name=Sonatel&background=2563eb&color=fff&size=200',
     cover: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200',
-    sector: 'Télécommunications', 
-    size: 'Grand groupe (5000+)', 
-    founded: 1985,
-    country: 'SN', 
-    city: 'Dakar', 
+    sector: 'Télécommunications',
+    size: 'Grand groupe (5000+)',
+    founded: 1986,
+    country: 'SN',
+    city: 'Dakar',
     address: '64 Voie de Dégagement Nord, Dakar',
-    openJobs: 8, 
-    rating: 4.7, 
-    reviews: 234, 
+    openJobs: 8,
+    rating: 4.7,
+    reviews: 234,
     website: 'https://www.sonatel.sn',
     description: 'Filiale digitale du groupe Sonatel (Orange), leader des télécoms au Sénégal. Nous développons des solutions numériques innovantes pour l\'Afrique. Acteur majeur de l\'écosystème numérique, Sonatel Digital accompagne la transformation digitale des entreprises et des administrations à travers des solutions de Cloud, Cybersécurité, IoT et Big Data.',
     fullAbout: "Sonatel Digital est au cœur de la stratégie d'innovation du Groupe Sonatel. Notre mission est d'inventer les services de demain pour nos clients particuliers et entreprises. Nous cultivons un environnement de travail agile, créatif et tourné vers l'excellence technique.\n\nRejoindre Sonatel Digital, c'est participer à des projets d'envergure internationale tout en ayant un impact direct sur le développement numérique du Sénégal et de la sous-région. Nous valorisons l'apprentissage continu, la diversité des talents et l'esprit entrepreneurial.",
-    tags: ['Tech', 'Innovation', 'Afrique', 'Agile', 'Cloud'], 
+    tags: ['Tech', 'Innovation', 'Afrique', 'Agile', 'Cloud'],
     verified: true,
     gallery: [
       'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&q=80&w=800',
@@ -39,24 +39,24 @@ const companiesData = [
       'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800'
     ]
   },
-  { 
-    id: 2, 
-    name: 'Wave Mobile Money', 
+  {
+    id: 2,
+    name: 'Wave Mobile Money',
     logo: 'https://ui-avatars.com/api/?name=Wave&background=0891b2&color=fff&size=200',
     cover: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=1200',
-    sector: 'Technologie & Numérique', 
-    size: 'ETI (250-5000)', 
+    sector: 'Technologie & Numérique',
+    size: 'ETI (250-5000)',
     founded: 2018,
-    country: 'SN', 
-    city: 'Dakar', 
+    country: 'SN',
+    city: 'Dakar',
     address: 'Point E, Boulevard de l\'Est, Dakar',
-    openJobs: 15, 
-    rating: 4.9, 
-    reviews: 312, 
+    openJobs: 15,
+    rating: 4.9,
+    reviews: 312,
     website: 'https://www.wave.com',
     description: 'Wave est la super-app financière qui révolutionne les transferts d\'argent et les paiements en Afrique de l\'Ouest.',
     fullAbout: "Wave est en train de construire le premier réseau financier sans frais pour l'Afrique. Nous utilisons la technologie pour rendre les services financiers radicalement abordables et accessibles à tous. Notre équipe est composée de passionnés qui croient que l'accès aux services financiers est un droit fondamental.\n\nDepuis notre lancement en 2018, nous avons connu une croissance fulgurante, devenant la première 'licorne' d'Afrique francophone. Nous recherchons des talents exceptionnels pour nous aider à étendre notre impact sur tout le continent.",
-    tags: ['Fintech', 'Mobile', 'Scale-up', 'Impact'], 
+    tags: ['Fintech', 'Mobile', 'Scale-up', 'Impact'],
     verified: true,
     gallery: [
       'https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=800',
@@ -89,13 +89,13 @@ export default function CompanyDetail() {
 
       {/* Header / Cover */}
       <div className="relative h-64 md:h-80 w-full overflow-hidden">
-        <img 
-          src={company.cover} 
-          alt={company.name} 
+        <img
+          src={company.cover}
+          alt={company.name}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-        
+
         <div className="absolute bottom-6 left-0 right-0">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="flex items-end gap-5">
@@ -115,13 +115,12 @@ export default function CompanyDetail() {
               </div>
             </div>
             <div className="flex items-center gap-3 pb-2">
-              <button 
+              <button
                 onClick={() => setIsFollowing(!isFollowing)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
-                  isFollowing 
-                  ? 'bg-white/20 text-white backdrop-blur-md border border-white/30' 
-                  : 'bg-brand-600 text-white hover:bg-brand-700'
-                }`}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${isFollowing
+                    ? 'bg-white/20 text-white backdrop-blur-md border border-white/30'
+                    : 'bg-brand-600 text-white hover:bg-brand-700'
+                  }`}
               >
                 {isFollowing ? <CheckCircle className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                 {isFollowing ? 'Suivi' : 'Suivre'}
@@ -133,7 +132,7 @@ export default function CompanyDetail() {
           </div>
         </div>
 
-        <button 
+        <button
           onClick={() => navigate('/companies')}
           className="absolute top-6 left-6 p-2 bg-black/20 backdrop-blur-md rounded-full text-white hover:bg-black/40 transition-all border border-white/10"
         >
@@ -149,11 +148,10 @@ export default function CompanyDetail() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-2 px-6 py-4 text-sm font-bold border-b-2 transition-all whitespace-nowrap ${
-                  activeTab === tab.id 
-                  ? 'border-brand-600 text-brand-600 bg-brand-50/30' 
-                  : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50'
-                }`}
+                className={`flex items-center gap-2 px-6 py-4 text-sm font-bold border-b-2 transition-all whitespace-nowrap ${activeTab === tab.id
+                    ? 'border-brand-600 text-brand-600 bg-brand-50/30'
+                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+                  }`}
               >
                 <tab.icon className="w-4 h-4" />
                 {tab.label}
@@ -167,7 +165,7 @@ export default function CompanyDetail() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            
+
             {activeTab === 'about' && (
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="card p-8">
@@ -241,8 +239,8 @@ export default function CompanyDetail() {
                   </div>
                 </div>
                 {companyJobs.map(job => (
-                  <Link 
-                    key={job.id} 
+                  <Link
+                    key={job.id}
                     to={`/jobs/${job.id}`}
                     className="card p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-brand-300 hover:shadow-md transition-all group"
                   >
@@ -305,9 +303,9 @@ export default function CompanyDetail() {
                       <div key={stars} className="flex items-center gap-4">
                         <span className="text-xs font-bold text-slate-500 w-4">{stars}</span>
                         <div className="flex-1 bg-slate-100 h-2 rounded-full overflow-hidden">
-                          <div 
-                            className="bg-amber-400 h-full rounded-full" 
-                            style={{ width: `${stars === 5 ? 75 : stars === 4 ? 20 : 5}%` }} 
+                          <div
+                            className="bg-amber-400 h-full rounded-full"
+                            style={{ width: `${stars === 5 ? 75 : stars === 4 ? 20 : 5}%` }}
                           />
                         </div>
                         <span className="text-[10px] font-bold text-slate-400 w-8">{stars === 5 ? '75%' : stars === 4 ? '20%' : '5%'}</span>
@@ -350,7 +348,7 @@ export default function CompanyDetail() {
             <div className="card p-6">
               <h3 className="font-bold text-slate-900 mb-6 text-base">Liens & Réseaux</h3>
               <div className="space-y-4">
-                <a 
+                <a
                   href={company.website} target="_blank" rel="noreferrer"
                   className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 text-slate-700 hover:bg-brand-50 hover:text-brand-600 transition-all border border-transparent hover:border-brand-200"
                 >
