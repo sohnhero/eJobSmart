@@ -116,74 +116,131 @@ export default function Navbar({ isLoggedIn, userRole, userName = 'Amadou Diallo
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100"
+            className="md:hidden relative w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-600 focus:outline-none z-[110]"
             onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
           >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            <div className="relative w-5 h-3.5 flex flex-col justify-between items-center">
+              <span className={clsx(
+                "w-5 h-0.5 bg-slate-600 rounded-full transition-all duration-300 transform origin-center",
+                mobileOpen && "translate-y-[6px] rotate-45"
+              )} />
+              <span className={clsx(
+                "w-5 h-0.5 bg-slate-600 rounded-full transition-all duration-300",
+                mobileOpen && "opacity-0"
+              )} />
+              <span className={clsx(
+                "w-5 h-0.5 bg-slate-600 rounded-full transition-all duration-300 transform origin-center",
+                mobileOpen && "-translate-y-[6px] -rotate-45"
+              )} />
+            </div>
           </button>
         </div>
 
-        {/* Mobile menu */}
+        {/* Mobile menu backdrop */}
         {mobileOpen && (
-          <div className="md:hidden py-4 border-t border-slate-100 space-y-1">
-            {navLinks.map(link => (
-              <Link
-                key={link.href}
-                to={link.href}
-                onClick={() => setMobileOpen(false)}
-                className={clsx(
-                  'block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50',
-                  location.pathname === link.href && 'text-brand-600 bg-brand-50'
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
+          <div 
+            className="md:hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[90] transition-opacity duration-300"
+            onClick={() => setMobileOpen(false)}
+          />
+        )}
+
+        {/* Mobile menu drawer */}
+        <div className={clsx(
+          "md:hidden fixed inset-y-0 right-0 w-full max-w-xs sm:max-w-sm h-screen bg-white/95 backdrop-blur-2xl border-l border-slate-200/80 shadow-2xl z-[100] transition-transform duration-300 ease-out transform flex flex-col justify-between p-6 pt-24",
+          mobileOpen ? "translate-x-0" : "translate-x-full"
+        )}>
+          {/* Top user profile card or guest heading */}
+          <div>
             {isLoggedIn ? (
-              <div className="pt-4 border-t border-slate-100 mt-3">
-                <div className="flex items-center gap-3 px-3 py-2 mb-3">
+              <div className="bg-gradient-to-r from-brand-50 to-blue-50/50 border border-brand-100/50 rounded-2xl p-4 mb-8">
+                <div className="flex items-center gap-3">
                   <Avatar name={userName} size="md" />
-                  <div>
-                    <p className="text-sm font-semibold text-slate-800 leading-none">{userName}</p>
-                    <p className="text-xs text-slate-400 capitalize mt-1">{userRole}</p>
+                  <div className="min-w-0">
+                    <p className="text-sm font-heading font-black text-slate-800 truncate">{userName}</p>
+                    <span className="inline-block px-2 py-0.5 rounded-full bg-brand-100 text-brand-700 text-[10px] font-heading font-bold uppercase tracking-wider mt-1">
+                      {userRole}
+                    </span>
                   </div>
-                </div>
-                <div className="space-y-1">
-                  <button
-                    onClick={() => { navigate(dashboardPath[userRole || 'candidate']); setMobileOpen(false) }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-lg text-left"
-                  >
-                    <LayoutDashboard className="w-4 h-4 text-slate-400" />
-                    Tableau de bord
-                  </button>
-                  <button
-                    onClick={() => setMobileOpen(false)}
-                    className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-lg text-left"
-                  >
-                    <User className="w-4 h-4 text-slate-400" />
-                    Mon profil
-                  </button>
-                  <button
-                    onClick={() => { navigate('/'); setMobileOpen(false) }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg text-left"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    Déconnexion
-                  </button>
                 </div>
               </div>
             ) : (
-              <div className="pt-3 flex flex-col gap-2">
-                <Button variant="secondary" fullWidth size="sm" onClick={() => { navigate('/login'); setMobileOpen(false) }}>
+              <div className="mb-8 p-1 text-center">
+                <p className="text-sm text-slate-500 mb-2 font-medium">Rejoignez la communauté Eureka Job</p>
+                <div className="h-0.5 bg-gradient-to-r from-brand-500/20 to-cyan-500/20 rounded-full" />
+              </div>
+            )}
+
+            {/* Navigation links */}
+            <div className="space-y-4">
+              <p className="text-[10px] font-heading font-bold text-slate-400 uppercase tracking-widest mb-2">Navigation</p>
+              {navLinks.map((link, i) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={clsx(
+                    "flex items-center justify-between py-2 border-b border-slate-50 text-slate-600 hover:text-brand-600 transition-colors group",
+                    location.pathname === link.href && "text-brand-600 font-bold border-brand-100"
+                  )}
+                >
+                  <span className="flex items-center gap-3">
+                    <span className="text-xs font-mono text-slate-300 group-hover:text-brand-400 transition-colors">0{i+1}.</span>
+                    <span className="text-lg font-heading font-black tracking-tight">{link.label}</span>
+                  </span>
+                  <ChevronDown className="w-4 h-4 text-slate-300 group-hover:text-brand-500 -rotate-90 transition-all duration-300" />
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom actions & contact metadata */}
+          <div className="space-y-6">
+            {isLoggedIn ? (
+              <div className="space-y-2">
+                <Button
+                  fullWidth
+                  variant="primary"
+                  onClick={() => { navigate(dashboardPath[userRole || 'candidate']); setMobileOpen(false) }}
+                  className="rounded-xl flex items-center justify-center gap-2"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  Tableau de bord
+                </Button>
+                <button
+                  onClick={() => { navigate('/'); setMobileOpen(false) }}
+                  className="w-full py-2.5 rounded-xl border border-red-200 hover:bg-red-50 text-red-600 font-heading font-semibold text-sm flex items-center justify-center gap-2 transition-colors"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Déconnexion
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                <Button
+                  variant="secondary"
+                  fullWidth
+                  onClick={() => { navigate('/login'); setMobileOpen(false) }}
+                  className="rounded-xl"
+                >
                   Se connecter
                 </Button>
-                <Button fullWidth size="sm" onClick={() => { navigate('/register'); setMobileOpen(false) }}>
+                <Button
+                  fullWidth
+                  onClick={() => { navigate('/register'); setMobileOpen(false) }}
+                  className="bg-brand-600 hover:bg-brand-700 rounded-xl"
+                >
                   Créer un compte
                 </Button>
               </div>
             )}
+
+            <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-medium">
+              <span>Dakar, Sénégal</span>
+              <a href="mailto:bdiop@eurekajob.africa" className="hover:text-brand-600 transition-colors">bdiop@eurekajob.africa</a>
+            </div>
           </div>
-        )}
+        </div>
       </nav>
     </header>
   )
