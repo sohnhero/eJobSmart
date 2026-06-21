@@ -39,7 +39,7 @@ export default function Register() {
       {/* Top bar */}
       <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center">
-          <img src="/eurekaLogo.png" alt="Eureka Job" className="h-9 w-auto object-contain" />
+          <img src="public/logo-eureka-job.png" alt="Eureka Job" className="h-9 w-auto object-contain" />
         </Link>
         <Link to="/login" className="text-sm text-slate-500 hover:text-brand-600 transition-colors">
           Déjà un compte ? <span className="font-semibold">Se connecter</span>
@@ -55,8 +55,8 @@ export default function Register() {
                 <div key={s.label} className="flex items-center">
                   <div className="flex flex-col items-center">
                     <div className={`w-9 h-9 rounded-full flex items-center justify-center border-2 font-bold text-sm transition-all ${step > i + 1 ? 'bg-brand-600 border-brand-600 text-white'
-                        : step === i + 1 ? 'border-brand-600 text-brand-600'
-                          : 'border-slate-200 text-slate-400'
+                      : step === i + 1 ? 'border-brand-600 text-brand-600'
+                        : 'border-slate-200 text-slate-400'
                       }`}>
                       {step > i + 1 ? <Check className="w-4 h-4" /> : i + 1}
                     </div>
@@ -81,8 +81,8 @@ export default function Register() {
                       key={r.id}
                       onClick={() => setRole(r.id)}
                       className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all text-left ${role === r.id
-                          ? 'border-brand-500 bg-brand-50'
-                          : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                        ? 'border-brand-500 bg-brand-50'
+                        : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                         }`}
                     >
                       <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${role === r.id ? 'bg-brand-600' : 'bg-slate-100'}`}>

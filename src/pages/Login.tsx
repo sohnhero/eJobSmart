@@ -27,7 +27,7 @@ export default function Login() {
 
         <div className="relative">
           <Link to="/" className="flex items-center mb-12">
-            <img src="/eurekaLogo.png" alt="Eureka Job" className="h-12 w-auto object-contain brightness-0 invert" />
+            <img src="public/logo-eureka-job.png" alt="Eureka Job" className="h-12 w-auto object-contain brightness-0 invert" />
           </Link>
 
           <h1 className="text-4xl font-heading font-black text-white leading-tight mb-4">
@@ -64,7 +64,7 @@ export default function Login() {
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <Link to="/" className="flex items-center mb-8 lg:hidden">
-            <img src="/eurekaLogo.png" alt="Eureka Job" className="h-10 w-auto object-contain" />
+            <img src="public/logo-eureka-job.png" alt="Eureka Job" className="h-10 w-auto object-contain" />
           </Link>
 
           <h2 className="text-2xl font-bold text-slate-900 mb-1">Connexion</h2>

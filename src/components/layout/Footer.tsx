@@ -34,7 +34,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center mb-5">
-              <img src="/eurekaLogo.png" alt="Eureka Job | Talents &amp; Advisory" className="h-12 w-auto object-contain brightness-0 invert" />
+              <img src="public/logo-eureka-job.png" alt="Eureka Job | Talents &amp; Advisory" className="h-12 w-auto object-contain brightness-0 invert" />
             </Link>
             <p className="text-sm text-slate-400 leading-relaxed mb-2 max-w-sm italic font-heading" style={{ color: '#39D5F4' }}>
               "Révélateur de talents. Créateur de valeurs."
