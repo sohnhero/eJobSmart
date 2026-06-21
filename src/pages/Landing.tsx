@@ -97,27 +97,27 @@ const features = [
 const services = [
   {
     icon: Briefcase, title: 'Agence Intérim', desc: 'Placement de travailleurs temporaires dans le BTP, hôtellerie, industrie et services.',
-    badge: 'Priorité haute', badgeColor: 'bg-emerald-100 text-emerald-700', gradient: 'from-emerald-500 to-teal-600',
+    gradient: 'from-emerald-500 to-teal-600',
   },
   {
     icon: Globe, title: 'Marketplace RH', desc: 'Plateforme multi-acteurs : entreprises, cabinets, freelances et candidats sur un seul espace.',
-    badge: 'Priorité haute', badgeColor: 'bg-brand-100 text-brand-700', gradient: 'from-brand-500 to-blue-700',
+    gradient: 'from-brand-500 to-blue-700',
   },
   {
     icon: Search, title: 'Offres d\'Emploi', desc: 'CDI, CDD, interim, freelance, stage et alternance. La source d\'offres la plus complète du Sénégal.',
-    badge: 'Priorité haute', badgeColor: 'bg-brand-100 text-brand-700', gradient: 'from-blue-500 to-brand-700',
+    gradient: 'from-blue-500 to-brand-700',
   },
   {
     icon: Users, title: 'Base CV & Talents', desc: 'Vivier de 500 000+ profils vérifiés. Recherche et filtrage avancés pour les recruteurs.',
-    badge: 'Priorité haute', badgeColor: 'bg-brand-100 text-brand-700', gradient: 'from-violet-500 to-purple-700',
+    gradient: 'from-violet-500 to-purple-700',
   },
   {
     icon: BookOpen, title: 'Formation & E-Learning', desc: 'Programmes certifiants en RH, management et compétences numériques pour booster l\'employabilité.',
-    badge: 'An 2', badgeColor: 'bg-amber-100 text-amber-700', gradient: 'from-amber-500 to-orange-600',
+    gradient: 'from-amber-500 to-orange-600',
   },
   {
     icon: BarChart3, title: 'Conseil RH', desc: 'Missions de conseil, audit organisationnel et accompagnement stratégique des DRH.',
-    badge: 'An 1', badgeColor: 'bg-slate-100 text-slate-600', gradient: 'from-slate-500 to-slate-700',
+    gradient: 'from-slate-500 to-slate-700',
   },
 ]
 
@@ -375,10 +375,7 @@ export default function Landing() {
                   <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
                     <service.icon className="w-6 h-6 text-white" />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <span className={`inline-block text-[10px] font-heading font-bold px-2 py-0.5 rounded-full mb-1.5 ${service.badgeColor}`}>
-                      {service.badge}
-                    </span>
+                  <div className="flex-1 min-w-0 pt-1">
                     <h3 className="font-heading font-bold text-slate-900 text-base leading-tight group-hover:text-brand-700 transition-colors">
                       {service.title}
                     </h3>
@@ -465,29 +462,29 @@ export default function Landing() {
                 onClick={() => navigate(`/jobs/${job.id}`)}
                 className="card card-premium card-hover-premium p-6 cursor-pointer relative group"
               >
-                {/* Featured Badge */}
-                {job.isBoosted && (
-                  <div className="absolute top-4 right-4 z-10">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-heading font-bold shadow-sm" style={{ backgroundColor: '#FEF3C7', color: '#92400E', border: '1px solid #FDE68A' }}>
-                      <Zap className="w-3 h-3" style={{ fill: '#F59E0B', color: '#F59E0B' }} />
-                      En vedette
-                    </span>
-                  </div>
-                )}
-
                 {/* Header */}
-                <div className="flex items-start gap-4 mb-5">
-                  <div className="w-13 h-13 w-14 h-14 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center p-2.5 flex-shrink-0 group-hover:shadow-md transition-shadow">
-                    <img src={job.companyLogo} alt={job.company} className="w-full h-full object-contain" />
+                <div className="flex items-start justify-between gap-3 mb-5">
+                  <div className="flex items-start gap-4 min-w-0">
+                    <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center p-2.5 flex-shrink-0 group-hover:shadow-md transition-shadow">
+                      <img src={job.companyLogo} alt={job.company} className="w-full h-full object-contain" />
+                    </div>
+                    <div className="min-w-0 pt-1">
+                      <h3 className="font-heading font-bold text-slate-900 text-base leading-tight line-clamp-2 group-hover:text-brand-600 transition-colors">
+                        {job.title}
+                      </h3>
+                      <p className="text-xs font-medium text-slate-500 mt-1.5 flex items-center gap-1.5">
+                        <Building2 className="w-3.5 h-3.5 text-slate-400" /> {job.company}
+                      </p>
+                    </div>
                   </div>
-                  <div className={`min-w-0 pt-1 ${job.isBoosted ? 'pr-20' : ''}`}>
-                    <h3 className="font-heading font-bold text-slate-900 text-base leading-tight line-clamp-2 group-hover:text-brand-600 transition-colors">
-                      {job.title}
-                    </h3>
-                    <p className="text-xs font-medium text-slate-500 mt-1.5 flex items-center gap-1.5">
-                      <Building2 className="w-3.5 h-3.5 text-slate-400" /> {job.company}
-                    </p>
-                  </div>
+                  {job.isBoosted && (
+                    <div className="flex-shrink-0 pt-1">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-heading font-bold shadow-sm" style={{ backgroundColor: '#FEF3C7', color: '#92400E', border: '1px solid #FDE68A' }}>
+                        <Zap className="w-2.5 h-2.5" style={{ fill: '#F59E0B', color: '#F59E0B' }} />
+                        En vedette
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Badges */}
