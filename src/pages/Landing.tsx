@@ -161,12 +161,62 @@ export default function Landing() {
   const featuredTrainings = trainings.filter(t => t.isFeatured).slice(0, 3)
   const topSectors = sectors.slice(0, 12)
 
+  const handleCardTilt = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+    const rotateX = ((y - centerY) / centerY) * -5 // subtle 5-deg tilt
+    const rotateY = ((x - centerX) / centerX) * 5
+    
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.01)`
+    card.style.transition = 'transform 0.05s ease-out'
+    card.style.setProperty('--mouse-x', `${x}px`)
+    card.style.setProperty('--mouse-y', `${y}px`)
+  }
+
+  const resetCardTilt = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget
+    card.style.transform = ''
+    card.style.transition = 'transform 0.4s ease-out'
+  }
+
   const handleSearch = () => {
     const params = new URLSearchParams()
     if (searchQuery) params.set('q', searchQuery)
     if (searchLocation) params.set('location', searchLocation)
     navigate(`/jobs?${params.toString()}`)
   }
+
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '-40px 0px -40px 0px',
+      threshold: 0.05,
+    }
+
+    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active-reveal')
+        } else {
+          entry.target.classList.remove('active-reveal')
+        }
+      })
+    }
+
+    const observer = new IntersectionObserver(handleIntersect, observerOptions)
+    
+    // Select elements we want to animate on scroll
+    const revealElements = document.querySelectorAll('.scroll-reveal')
+    revealElements.forEach(el => observer.observe(el))
+
+    return () => {
+      revealElements.forEach(el => observer.unobserve(el))
+    }
+  }, [activeTab])
 
   return (
     <div className="min-h-screen">
@@ -179,8 +229,8 @@ export default function Landing() {
         <div className="absolute top-20 right-0 w-[500px] h-[500px] rounded-full opacity-10 blur-3xl" style={{ background: '#39D5F4' }} />
         <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full opacity-5 blur-3xl" style={{ background: '#2563EB' }} />
 
-        {/* Neon Strings Background Overlay */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-45 z-0">
+        {/* Neon Strings Background Overlay - Hidden on mobile/tablet to prevent rendering lag */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-45 z-0 hidden md:block">
           <svg className="w-full h-full" viewBox="0 0 1440 800" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
             <defs>
               <filter id="neon-glow-cyan" x="-30%" y="-30%" width="160%" height="160%">
@@ -272,7 +322,7 @@ export default function Landing() {
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
           {/* Badge */}
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-8 scroll-reveal reveal-fade-down">
             <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-heading font-medium border" style={{ backgroundColor: 'rgba(57,213,244,0.1)', borderColor: 'rgba(57,213,244,0.3)', color: '#39D5F4' }}>
               <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#39D5F4' }} />
               La marketplace RH #1 en Afrique de l'Ouest
@@ -280,19 +330,19 @@ export default function Landing() {
           </div>
 
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-black text-white leading-tight tracking-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-black text-white leading-tight tracking-tight scroll-reveal reveal-fade-up">
               Révélateur de talents.{' '}
               <br className="hidden sm:block" />
               <span style={{ color: '#39D5F4' }}>Créateur de valeurs.</span>
             </h1>
-            <p className="mt-6 text-lg text-blue-200 max-w-2xl mx-auto leading-relaxed">
+            <p className="mt-6 text-lg text-blue-200 max-w-2xl mx-auto leading-relaxed scroll-reveal reveal-fade-up reveal-delay-150">
               Connectez entreprises, cabinets de recrutement et talents africains sur une plateforme
               numérique intelligente. Recrutez mieux. Évoluez plus vite.
             </p>
           </div>
 
           {/* Search bar */}
-          <div className="mt-10 max-w-3xl mx-auto">
+          <div className="mt-10 max-w-3xl mx-auto scroll-reveal reveal-fade-up reveal-delay-250">
             <div className="bg-white rounded-2xl p-2 flex flex-col sm:flex-row gap-2 shadow-2xl">
               <div className="flex-1 flex items-center gap-3 px-4 py-2">
                 <Search className="w-5 h-5 text-slate-400 flex-shrink-0" />
@@ -322,7 +372,7 @@ export default function Landing() {
             </div>
 
             {/* Quick filters */}
-            <div className="flex items-center gap-2 mt-4 flex-wrap justify-center">
+            <div className="flex items-center gap-2 mt-4 flex-wrap justify-center scroll-reveal reveal-fade-up reveal-delay-350">
               <span className="text-xs" style={{ color: 'rgba(57,213,244,0.8)' }}>Tendances :</span>
               {['DRH', 'Data Analyst', 'Chef de projet', 'Ingénieur BTP', 'Télétravail'].map(tag => (
                 <button
@@ -338,7 +388,7 @@ export default function Landing() {
           </div>
 
           {/* Trust indicators */}
-          <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
+          <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto scroll-reveal reveal-zoom-in reveal-delay-450">
             <AnimatedStat value={platformStats.totalJobs} label="Offres actives" suffix="+" />
             <AnimatedStat value={platformStats.activeCompanies} label="Entreprises" suffix="+" />
             <AnimatedStat value={platformStats.totalCandidates} label="Candidats inscrits" suffix="+" />
@@ -359,7 +409,7 @@ export default function Landing() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(37,99,235,0.025)_0%,transparent_60%)] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 scroll-reveal reveal-fade-up">
             <span className="inline-block px-4 py-1.5 rounded-full text-xs font-heading font-bold uppercase tracking-widest mb-4" style={{ backgroundColor: '#E6F2FF', color: '#2563EB' }}>
               Nos Services
             </span>
@@ -373,8 +423,13 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((service) => (
-              <div key={service.title} className="group service-card cursor-pointer relative overflow-hidden">
+            {services.map((service, index) => (
+              <div
+                key={service.title}
+                onMouseMove={handleCardTilt}
+                onMouseLeave={resetCardTilt}
+                className={`group service-card cursor-pointer relative overflow-hidden hover-glow ${index >= 3 ? 'hidden sm:block' : 'block'} scroll-reveal reveal-zoom-in reveal-delay-${(index % 3) * 150}`}
+              >
                 {/* Gradient accent top */}
                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${service.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
 
@@ -401,14 +456,14 @@ export default function Landing() {
       {/* ========== SECTORS ========== */}
       <section className="py-24 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 40%, #EEF2F6 100%)' }}>
         {/* Custom Brand Pattern (Connecting Arcs & RH Nodes) */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity: 0.18 }} viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <svg className="absolute inset-0 w-full h-full pointer-events-none scroll-reveal" style={{ opacity: 0.18 }} viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
           {/* Sweeping advisory arcs */}
-          <path d="M-100,200 C300,500 800,100 1600,400" stroke="#2563EB" strokeWidth="2" />
-          <path d="M-100,215 C300,515 800,115 1600,415" stroke="#2563EB" strokeWidth="1" />
-          <path d="M-100,230 C300,530 800,130 1600,430" stroke="#2563EB" strokeWidth="1.5" strokeDasharray="5, 10" />
+          <path className="draw-path" d="M-100,200 C300,500 800,100 1600,400" stroke="#2563EB" strokeWidth="2" />
+          <path className="draw-path reveal-delay-100" d="M-100,215 C300,515 800,115 1600,415" stroke="#2563EB" strokeWidth="1" />
+          <path className="draw-path reveal-delay-200" d="M-100,230 C300,530 800,130 1600,430" stroke="#2563EB" strokeWidth="1.5" strokeDasharray="5, 10" />
           
-          <path d="M-100,500 C400,200 1000,550 1600,150" stroke="#2563EB" strokeWidth="2.5" />
-          <path d="M-100,515 C400,215 1000,565 1600,165" stroke="#2563EB" strokeWidth="1" />
+          <path className="draw-path reveal-delay-50" d="M-100,500 C400,200 1000,550 1600,150" stroke="#2563EB" strokeWidth="2.5" />
+          <path className="draw-path reveal-delay-150" d="M-100,515 C400,215 1000,565 1600,165" stroke="#2563EB" strokeWidth="1" />
 
           {/* Connection Nodes (representing companies, candidates and cabinets) */}
           <circle cx="250" cy="380" r="6" fill="#2563EB" />
@@ -426,7 +481,7 @@ export default function Landing() {
         <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full opacity-40 blur-[100px] pointer-events-none" style={{ backgroundColor: '#E6F2FF' }} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-14">
+          <div className="text-center mb-14 scroll-reveal reveal-fade-up">
             <span className="inline-block px-4 py-1.5 rounded-full text-xs font-heading font-bold uppercase tracking-widest mb-4" style={{ backgroundColor: '#E6F2FF', color: '#2563EB' }}>
               Secteurs d'activité
             </span>
@@ -439,11 +494,11 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {topSectors.map(sector => (
+            {topSectors.map((sector, index) => (
               <button
                 key={sector.id}
                 onClick={() => navigate(`/jobs?sector=${sector.slug}`)}
-                className="group relative h-44 w-full rounded-3xl overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(15,30,58,0.3)] border border-slate-100 flex flex-col justify-end p-4 text-left"
+                className={`group relative h-44 w-full rounded-3xl overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(15,30,58,0.3)] border border-slate-100 flex flex-col justify-end p-4 text-left ${index >= 6 ? 'hidden sm:flex' : 'flex'} scroll-reveal reveal-zoom-in reveal-delay-${(index % 6) * 50}`}
               >
                 {/* Background Image */}
                 <img
@@ -483,7 +538,7 @@ export default function Landing() {
       {/* ========== FEATURED JOBS ========== */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-10">
+          <div className="flex items-end justify-between mb-10 scroll-reveal reveal-fade-up">
             <div>
               <span className="text-xs font-heading font-bold uppercase tracking-widest" style={{ color: '#2563EB' }}>Offres vedettes</span>
               <h2 className="section-title mt-2">Opportunités en vedette</h2>
@@ -495,11 +550,13 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {featuredJobs.map(job => (
+            {featuredJobs.map((job, index) => (
               <div
                 key={job.id}
                 onClick={() => navigate(`/jobs/${job.id}`)}
-                className="card card-premium card-hover-premium p-6 cursor-pointer relative group"
+                onMouseMove={handleCardTilt}
+                onMouseLeave={resetCardTilt}
+                className={`card card-premium card-hover-premium p-6 cursor-pointer relative group hover-glow ${index >= 3 ? 'hidden sm:block' : 'block'} scroll-reveal ${index % 3 === 0 ? 'reveal-slide-left' : index % 3 === 1 ? 'reveal-fade-up' : 'reveal-slide-right'} reveal-delay-${(index % 3) * 150}`}
               >
                 {/* Header */}
                 <div className="flex items-start justify-between gap-3 mb-5">
@@ -579,7 +636,7 @@ export default function Landing() {
         <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full blur-3xl opacity-20 pointer-events-none" style={{ backgroundColor: '#C7E8FF' }} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 scroll-reveal reveal-fade-up">
             <span className="inline-block px-4 py-1.5 rounded-full text-xs font-heading font-bold uppercase tracking-widest mb-4" style={{ backgroundColor: '#E6F2FF', color: '#2563EB' }}>
               L'Excellence Eureka Job
             </span>
@@ -595,10 +652,12 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature) => (
+            {features.map((feature, index) => (
               <div
                 key={feature.title}
-                className="group relative bg-white p-8 rounded-[32px] border transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(15,30,58,0.08)] cursor-pointer flex flex-col justify-between"
+                onMouseMove={handleCardTilt}
+                onMouseLeave={resetCardTilt}
+                className={`group relative bg-white p-8 rounded-[32px] border transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(15,30,58,0.08)] cursor-pointer flex flex-col justify-between hover-glow scroll-reveal reveal-flip-x reveal-delay-${(index % 4) * 100}`}
                 style={{ borderColor: '#E6F2FF' }}
               >
 
@@ -634,13 +693,13 @@ export default function Landing() {
       {/* ========== HOW IT WORKS ========== */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 scroll-reveal reveal-fade-up">
             <span className="text-xs font-heading font-bold uppercase tracking-widest" style={{ color: '#2563EB' }}>Fonctionnement</span>
             <h2 className="section-title mt-2">Simple, rapide, efficace</h2>
           </div>
 
           {/* Tabs */}
-          <div className="flex justify-center gap-2 mb-12">
+          <div className="flex justify-center gap-2 mb-12 scroll-reveal reveal-fade-up reveal-delay-100">
             {(['candidate', 'company'] as const).map(tab => (
               <button
                 key={tab}
@@ -663,7 +722,7 @@ export default function Landing() {
                 {i < 2 && (
                   <div className="hidden md:block absolute top-6 left-full w-full h-px bg-gradient-to-r from-brand-200 to-transparent -translate-x-4 z-0" />
                 )}
-                <div className="card p-6 relative z-10 hover:shadow-card-hover transition-shadow">
+                <div className={`card p-6 relative z-10 hover:shadow-card-hover transition-shadow scroll-reveal reveal-zoom-in reveal-delay-${i * 150}`}>
                   <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-heading font-black text-lg mb-4" style={{ background: 'linear-gradient(135deg, #2563EB, #0F1E3A)' }}>
                     {step.step}
                   </div>
@@ -697,8 +756,10 @@ export default function Landing() {
               { value: platformStats.totalAgencies, label: 'Cabinets RH partenaires', suffix: '+' },
               { value: platformStats.satisfactionRate, label: 'Taux de satisfaction client', suffix: '%' },
               { value: platformStats.totalTrainings, label: 'Formations disponibles', suffix: '+' },
-            ].map((stat) => (
-              <AnimatedStat key={stat.label} value={stat.value} label={stat.label} suffix={stat.suffix} />
+            ].map((stat, i) => (
+              <div key={stat.label} className={`scroll-reveal reveal-zoom-in reveal-delay-${(i % 4) * 150}`}>
+                <AnimatedStat value={stat.value} label={stat.label} suffix={stat.suffix} />
+              </div>
             ))}
           </div>
         </div>
@@ -707,7 +768,7 @@ export default function Landing() {
       {/* ========== TRAININGS ========== */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-10">
+          <div className="flex items-end justify-between mb-10 scroll-reveal reveal-fade-up">
             <div>
               <span className="text-xs font-heading font-bold uppercase tracking-widest" style={{ color: '#2563EB' }}>Formations</span>
               <h2 className="section-title mt-2">Formations RH & Métiers</h2>
@@ -719,11 +780,11 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredTrainings.map(training => (
+            {featuredTrainings.map((training, index) => (
               <div
                 key={training.id}
                 onClick={() => navigate(`/trainings/${training.id}`)}
-                className="card card-premium card-hover-premium overflow-hidden cursor-pointer group"
+                className={`card card-premium card-hover-premium overflow-hidden cursor-pointer group ${index >= 2 ? 'hidden sm:block' : 'block'} scroll-reveal ${index % 3 === 0 ? 'reveal-slide-left' : index % 3 === 1 ? 'reveal-fade-up' : 'reveal-slide-right'} reveal-delay-${(index % 3) * 150}`}
               >
                 <div className="relative h-48 bg-slate-200 overflow-hidden">
                   <div
@@ -802,13 +863,13 @@ export default function Landing() {
         <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full opacity-35 blur-[100px] pointer-events-none" style={{ backgroundColor: '#E6F2FF' }} />
 
         {/* Custom brand vector lines in background */}
-        <svg className="absolute inset-0 w-full h-full opacity-[0.08] pointer-events-none" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-          <path d="M-100,300 C400,100 900,500 1600,200" stroke="#2563EB" strokeWidth="1" strokeDasharray="4 8" />
-          <path d="M-100,315 C400,115 900,515 1600,215" stroke="#39D5F4" strokeWidth="1.5" />
+        <svg className="absolute inset-0 w-full h-full opacity-[0.08] pointer-events-none scroll-reveal" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+          <path className="draw-path" d="M-100,300 C400,100 900,500 1600,200" stroke="#2563EB" strokeWidth="1" strokeDasharray="4 8" />
+          <path className="draw-path reveal-delay-200" d="M-100,315 C400,115 900,515 1600,215" stroke="#39D5F4" strokeWidth="1.5" />
         </svg>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 scroll-reveal reveal-fade-up">
             <span className="inline-block px-4 py-1.5 rounded-full text-xs font-heading font-bold uppercase tracking-widest mb-4" style={{ backgroundColor: '#E6F2FF', color: '#2563EB' }}>
               Témoignages
             </span>
@@ -821,10 +882,10 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {testimonials.map((t) => (
+            {testimonials.map((t, index) => (
               <div 
                 key={t.name} 
-                className="group relative bg-white border border-slate-100 rounded-[32px] p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(15,30,58,0.08)] flex flex-col justify-between"
+                className={`group relative bg-white border border-slate-100 rounded-[32px] p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(15,30,58,0.08)] flex flex-col justify-between ${index >= 2 ? 'hidden sm:flex' : 'flex'} scroll-reveal reveal-fade-up reveal-delay-${(index % 3) * 150}`}
               >
                 {/* Large decorative quotation mark */}
                 <span className="absolute top-4 right-6 text-7xl font-serif text-slate-100 group-hover:text-brand-100/40 select-none pointer-events-none transition-colors duration-300">
@@ -871,14 +932,14 @@ export default function Landing() {
         <div className="absolute bottom-0 left-0 h-1 right-0" style={{ background: 'linear-gradient(90deg, #39D5F4, transparent)' }} />
 
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-5xl font-heading font-black text-white mb-4">
+          <h2 className="text-3xl md:text-5xl font-heading font-black text-white mb-4 scroll-reveal reveal-fade-up">
             Bâtissons l'avenir du travail{' '}
             <span style={{ color: '#39D5F4' }}>en Afrique</span>
           </h2>
-          <p className="text-lg text-blue-200 mb-10 max-w-2xl mx-auto">
+          <p className="text-lg text-blue-200 mb-10 max-w-2xl mx-auto scroll-reveal reveal-fade-up reveal-delay-100">
             Rejoignez 34 000+ professionnels qui font confiance à Eureka Job pour leurs recrutements et leur développement de carrière.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center scroll-reveal reveal-fade-up reveal-delay-200">
             <Button
               size="xl"
               variant="white"

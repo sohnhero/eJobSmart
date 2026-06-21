@@ -226,4 +226,95 @@
     animation: neon-flow 16s linear infinite, neon-drift-2 10s ease-in-out infinite;
     transform-origin: center;
   }
+
+  /* Two-Way Scroll Reveal System */
+  .scroll-reveal {
+    opacity: 0;
+    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity, filter;
+  }
+
+  /* Reveal styles (Initial States) */
+  .reveal-fade-up {
+    transform: translateY(50px);
+    filter: blur(4px);
+  }
+
+  .reveal-fade-down {
+    transform: translateY(-50px);
+    filter: blur(4px);
+  }
+
+  .reveal-zoom-in {
+    transform: scale(0.92) translateY(15px);
+    filter: blur(4px);
+  }
+
+  .reveal-slide-left {
+    transform: translateX(-50px);
+    filter: blur(4px);
+  }
+
+  .reveal-slide-right {
+    transform: translateX(50px);
+    filter: blur(4px);
+  }
+
+  .reveal-flip-x {
+    transform: perspective(1000px) rotateX(12deg) translateY(30px);
+    filter: blur(4px);
+  }
+
+  /* Active State (Revealed) - Applicable in both ways (enters/exits) */
+  .scroll-reveal.active-reveal {
+    opacity: 1;
+    transform: none;
+    filter: blur(0px);
+  }
+
+  /* Stagger Delays */
+  .reveal-delay-50 { transition-delay: 50ms; }
+  .reveal-delay-100 { transition-delay: 100ms; }
+  .reveal-delay-150 { transition-delay: 150ms; }
+  .reveal-delay-200 { transition-delay: 200ms; }
+  .reveal-delay-250 { transition-delay: 250ms; }
+  .reveal-delay-300 { transition-delay: 300ms; }
+  .reveal-delay-350 { transition-delay: 350ms; }
+  .reveal-delay-400 { transition-delay: 400ms; }
+  .reveal-delay-450 { transition-delay: 450ms; }
+  .reveal-delay-500 { transition-delay: 500ms; }
+  .reveal-delay-600 { transition-delay: 600ms; }
+
+  /* SVG Path Drawing Reveal */
+  .draw-path {
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+    transition: stroke-dashoffset 2.8s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: stroke-dashoffset;
+  }
+  .active-reveal .draw-path,
+  .active-reveal.draw-path {
+    stroke-dashoffset: 0;
+  }
+
+  /* Interactive Spotlight Hover Glow */
+  .hover-glow {
+    position: relative;
+    overflow: hidden;
+  }
+  .hover-glow::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(320px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(37, 99, 235, 0.06), transparent 75%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .hover-glow:hover::before {
+    opacity: 1;
+  }
 }
