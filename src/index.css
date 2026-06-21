@@ -169,30 +169,39 @@
   /* Neon Glowing Strings for Landing Hero */
   @keyframes neon-pulse {
     0%, 100% {
-      opacity: 0.5;
+      opacity: 0.35;
       stroke-width: 2px;
     }
     50% {
-      opacity: 0.9;
+      opacity: 0.75;
       stroke-width: 3.5px;
     }
   }
 
   @keyframes neon-drift-1 {
     0%, 100% {
-      transform: translateY(0px) scaleY(1);
+      transform: translateY(0px) scale(1);
     }
     50% {
-      transform: translateY(-20px) scaleY(1.03);
+      transform: translateY(-15px) scale(1.02);
     }
   }
 
   @keyframes neon-drift-2 {
     0%, 100% {
-      transform: translateY(0px) scaleY(1);
+      transform: translateY(0px) scale(1);
     }
     50% {
-      transform: translateY(15px) scaleY(0.97);
+      transform: translateY(18px) scale(0.98);
+    }
+  }
+
+  @keyframes neon-flow {
+    0% {
+      stroke-dashoffset: 0;
+    }
+    100% {
+      stroke-dashoffset: -1200;
     }
   }
 
@@ -206,8 +215,15 @@
     transform-origin: center;
   }
 
-  .animate-neon-string-3 {
-    animation: neon-pulse 5s ease-in-out infinite, neon-drift-1 14s ease-in-out infinite reverse;
+  .animate-neon-flow-string-1 {
+    stroke-dasharray: 100, 200;
+    animation: neon-flow 22s linear infinite, neon-drift-1 14s ease-in-out infinite;
+    transform-origin: center;
+  }
+
+  .animate-neon-flow-string-2 {
+    stroke-dasharray: 80, 160;
+    animation: neon-flow 16s linear infinite, neon-drift-2 10s ease-in-out infinite;
     transform-origin: center;
   }
 }

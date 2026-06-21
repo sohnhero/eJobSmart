@@ -173,28 +173,24 @@ export default function Landing() {
         <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full opacity-5 blur-3xl" style={{ background: '#2563EB' }} />
 
         {/* Neon Strings Background Overlay */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-50 z-0">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-60 z-0">
           <svg className="w-full h-full" viewBox="0 0 1440 800" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
             <defs>
-              <filter id="neon-glow-cyan" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="6" result="blur" />
+              <filter id="neon-glow-cyan" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="8" result="blur1" />
+                <feGaussianBlur stdDeviation="3" result="blur2" />
                 <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-              <filter id="neon-glow-blue" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="4" result="blur" />
-                <feMerge>
-                  <feMergeNode in="blur" />
+                  <feMergeNode in="blur1" />
+                  <feMergeNode in="blur2" />
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
             </defs>
             
-            {/* Glowing neon strings */}
+            {/* Glowing neon strings - Only Cyan #39D5F4 */}
+            {/* Main sweeping base lines */}
             <path
-              d="M-100,200 C300,50 600,600 1600,100"
+              d="M-100,220 C350,450 800,100 1600,300"
               stroke="#39D5F4"
               strokeWidth="2.5"
               strokeLinecap="round"
@@ -202,28 +198,52 @@ export default function Landing() {
               className="animate-neon-string-1"
             />
             <path
-              d="M-100,450 C400,150 850,700 1600,300"
+              d="M-100,380 C400,150 900,600 1600,200"
               stroke="#39D5F4"
               strokeWidth="1.5"
               strokeLinecap="round"
               filter="url(#neon-glow-cyan)"
               className="animate-neon-string-2"
             />
+            
+            {/* Flowing animated pulse lines on top of the paths */}
             <path
-              d="M-100,100 C500,500 900,100 1600,550"
-              stroke="#2563EB"
-              strokeWidth="3"
+              d="M-100,220 C350,450 800,100 1600,300"
+              stroke="#39D5F4"
+              strokeWidth="3.5"
               strokeLinecap="round"
-              filter="url(#neon-glow-blue)"
-              className="animate-neon-string-3"
+              filter="url(#neon-glow-cyan)"
+              className="animate-neon-flow-string-1"
+              opacity="0.8"
             />
             <path
-              d="M-100,580 C350,700 900,300 1600,450"
+              d="M-100,380 C400,150 900,600 1600,200"
+              stroke="#39D5F4"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              filter="url(#neon-glow-cyan)"
+              className="animate-neon-flow-string-2"
+              opacity="0.8"
+            />
+
+            {/* Fine background details */}
+            <path
+              d="M-100,120 C500,400 1000,50 1600,480"
+              stroke="#39D5F4"
+              strokeWidth="1"
+              strokeLinecap="round"
+              filter="url(#neon-glow-cyan)"
+              className="animate-neon-string-2"
+              opacity="0.4"
+            />
+            <path
+              d="M-100,550 C300,700 950,250 1600,600"
               stroke="#39D5F4"
               strokeWidth="2"
               strokeLinecap="round"
               filter="url(#neon-glow-cyan)"
               className="animate-neon-string-1"
+              opacity="0.5"
             />
           </svg>
         </div>
