@@ -58,37 +58,44 @@ function AnimatedStat({ value, label, suffix = '' }: { value: number; label: str
 
 const testimonials = [
   {
-    name: 'Fatou Mbaye', role: 'DRH, Sonatel', avatar: 'FM',
-    text: 'Eureka Job a transformé notre processus de recrutement. Nous avons réduit notre délai moyen d\'embauche de 45 à 18 jours grâce au matching intelligent.',
-    stars: 5, color: 'bg-brand-600',
+    name: 'Fatou Mbaye', role: 'DRH, Sonatel',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150',
+    text: "Eureka Job a transformé notre processus de recrutement. Nous avons réduit notre délai moyen d'embauche de 45 à 18 jours grâce au matching intelligent et à la réactivité des équipes.",
+    stars: 5, color: '#39D5F4'
   },
   {
-    name: 'Ibrahima Diop', role: 'Développeur Senior, Dakar', avatar: 'ID',
-    text: 'J\'ai trouvé mon poste actuel en moins de 2 semaines. Les recommandations personnalisées sont vraiment pertinentes par rapport à mon profil.',
-    stars: 5, color: 'bg-blue-700',
+    name: 'Ibrahima Diop', role: 'Développeur Senior, Dakar',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150',
+    text: "J'ai trouvé mon poste de Lead Dev en moins de 2 semaines. Les recommandations personnalisées de l'algorithme sont d'une pertinence incroyable par rapport à mon profil.",
+    stars: 5, color: '#2563EB'
   },
   {
-    name: 'Aminata Sow', role: 'Directrice, Cabinet RH Excellence', avatar: 'AS',
-    text: 'La plateforme nous permet de gérer efficacement notre portefeuille de 200+ candidats et de répondre rapidement aux besoins de nos clients entreprises.',
-    stars: 5, color: 'bg-emerald-600',
+    name: 'Aminata Sow', role: 'Directrice, Cabinet RH Excellence',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150',
+    text: "La marketplace nous permet de gérer efficacement nos viviers de candidats et de répondre rapidement aux besoins de nos clients entreprises avec des profils pré-qualifiés.",
+    stars: 5, color: '#10B981'
   },
 ]
 
 const features = [
   {
     icon: Zap, title: 'Matching Intelligent', color: 'text-brand-600', bg: 'bg-brand-50', borderColor: 'border-brand-100',
+    gradient: 'from-brand-500/10 to-blue-500/10',
     desc: 'Notre algorithme analyse 6 critères pour calculer un score de compatibilité entre votre profil et les offres disponibles.',
   },
   {
     icon: Shield, title: 'Profils vérifiés', color: 'text-emerald-600', bg: 'bg-emerald-50', borderColor: 'border-emerald-100',
+    gradient: 'from-emerald-500/10 to-teal-500/10',
     desc: 'Chaque entreprise et cabinet RH est vérifié manuellement (NINEA, RC, agréments) avant de pouvoir publier des offres.',
   },
   {
     icon: Clock, title: 'Recrutement rapide', color: 'text-purple-600', bg: 'bg-purple-50', borderColor: 'border-purple-100',
+    gradient: 'from-purple-500/10 to-pink-500/10',
     desc: 'Délai moyen de placement de 18 jours. Notifications en temps réel à chaque étape du processus de recrutement.',
   },
   {
     icon: Handshake, title: 'Conseil RH Expert', color: 'text-amber-600', bg: 'bg-amber-50', borderColor: 'border-amber-100',
+    gradient: 'from-amber-500/10 to-orange-500/10',
     desc: 'Des experts RH vous accompagnent : audit, stratégie de recrutement, conformité droit du travail sénégalais.',
   },
 ]
@@ -199,7 +206,7 @@ export default function Landing() {
                 <rect x="0" y="0" width="100%" height="100%" fill="url(#center-fade)" />
               </mask>
             </defs>
-            
+
             {/* Glowing neon strings - Masked to fade in the center */}
             <g mask="url(#neon-mask)">
               {/* Main sweeping base lines */}
@@ -219,7 +226,7 @@ export default function Landing() {
                 filter="url(#neon-glow-cyan)"
                 className="animate-neon-string-2"
               />
-              
+
               {/* Flowing animated pulse lines on top of the paths */}
               <path
                 d="M-100,220 C350,450 800,100 1600,300"
@@ -392,8 +399,33 @@ export default function Landing() {
       </section>
 
       {/* ========== SECTORS ========== */}
-      <section className="py-20" style={{ backgroundColor: '#F2F4F7' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-24 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 40%, #EEF2F6 100%)' }}>
+        {/* Custom Brand Pattern (Connecting Arcs & RH Nodes) */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity: 0.18 }} viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+          {/* Sweeping advisory arcs */}
+          <path d="M-100,200 C300,500 800,100 1600,400" stroke="#2563EB" strokeWidth="2" />
+          <path d="M-100,215 C300,515 800,115 1600,415" stroke="#2563EB" strokeWidth="1" />
+          <path d="M-100,230 C300,530 800,130 1600,430" stroke="#2563EB" strokeWidth="1.5" strokeDasharray="5, 10" />
+          
+          <path d="M-100,500 C400,200 1000,550 1600,150" stroke="#2563EB" strokeWidth="2.5" />
+          <path d="M-100,515 C400,215 1000,565 1600,165" stroke="#2563EB" strokeWidth="1" />
+
+          {/* Connection Nodes (representing companies, candidates and cabinets) */}
+          <circle cx="250" cy="380" r="6" fill="#2563EB" />
+          <circle cx="250" cy="380" r="16" stroke="#2563EB" strokeWidth="1" opacity="0.5" />
+          
+          <circle cx="850" cy="240" r="8" fill="#2563EB" />
+          <circle cx="850" cy="240" r="22" stroke="#2563EB" strokeWidth="1.5" opacity="0.3" strokeDasharray="3 6" />
+
+          <circle cx="1150" cy="420" r="4" fill="#2563EB" />
+          <circle cx="1150" cy="420" r="12" stroke="#2563EB" strokeWidth="1" opacity="0.6" />
+        </svg>
+
+        {/* Soft glowing ambient spots */}
+        <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full opacity-35 blur-[100px] pointer-events-none" style={{ backgroundColor: '#E6F2FF' }} />
+        <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full opacity-40 blur-[100px] pointer-events-none" style={{ backgroundColor: '#E6F2FF' }} />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-14">
             <span className="inline-block px-4 py-1.5 rounded-full text-xs font-heading font-bold uppercase tracking-widest mb-4" style={{ backgroundColor: '#E6F2FF', color: '#2563EB' }}>
               Secteurs d'activité
@@ -411,20 +443,27 @@ export default function Landing() {
               <button
                 key={sector.id}
                 onClick={() => navigate(`/jobs?sector=${sector.slug}`)}
-                className="group relative p-5 bg-white rounded-3xl text-center transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_16px_40px_-12px_rgba(37,99,235,0.15)] flex flex-col items-center border border-slate-100 hover:border-brand-100"
+                className="group relative h-44 w-full rounded-3xl overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(15,30,58,0.3)] border border-slate-100 flex flex-col justify-end p-4 text-left"
               >
-                <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-3 transition-all duration-300 group-hover:scale-110"
-                  style={{ backgroundColor: sector.color + '15' }}
-                >
-                  <SectorIcon name={sector.icon} className="w-7 h-7" style={{ color: sector.color }} />
+                {/* Background Image */}
+                <img
+                  src={sector.image}
+                  alt={sector.name}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/45 to-transparent transition-opacity duration-300 group-hover:from-slate-950/95" />
+
+                {/* Content */}
+                <div className="relative z-10 w-full">
+                  <h3 className="text-xs sm:text-[13px] font-heading font-bold text-white leading-tight group-hover:text-cyan-300 transition-colors drop-shadow-sm">
+                    {sector.name}
+                  </h3>
+                  <span className="inline-block mt-1 text-[9px] font-bold text-cyan-400 uppercase tracking-widest leading-none">
+                    {sector.count} offres
+                  </span>
                 </div>
-                <h3 className="text-xs font-heading font-bold text-slate-700 leading-tight group-hover:text-brand-700 transition-colors">
-                  {sector.name}
-                </h3>
-                <span className="mt-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  {sector.count} offres
-                </span>
               </button>
             ))}
           </div>
@@ -455,7 +494,7 @@ export default function Landing() {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {featuredJobs.map(job => (
               <div
                 key={job.id}
@@ -559,26 +598,32 @@ export default function Landing() {
             {features.map((feature) => (
               <div
                 key={feature.title}
-                className="group relative bg-white p-8 rounded-[28px] border transition-all duration-400 hover:-translate-y-2 hover:shadow-[0_24px_48px_-12px_rgba(37,99,235,0.12)] cursor-pointer overflow-hidden"
+                className="group relative bg-white p-8 rounded-[32px] border transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(15,30,58,0.08)] cursor-pointer flex flex-col justify-between"
                 style={{ borderColor: '#E6F2FF' }}
               >
-                <div className={`absolute top-0 right-0 w-32 h-32 ${feature.bg} opacity-0 group-hover:opacity-30 rounded-full -translate-y-1/2 translate-x-1/2 transition-opacity duration-500`} />
 
-                <div className={`w-14 h-14 rounded-2xl ${feature.bg} border ${feature.borderColor} flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                  <feature.icon className={`w-7 h-7 ${feature.color}`} />
+                <div>
+                  {/* Glowing Icon Container */}
+                  <div className={`w-12 h-12 rounded-2xl ${feature.bg} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 relative`}>
+                    {/* Inner glass overlay */}
+                    <div className="absolute inset-0.5 rounded-xl bg-white opacity-80" />
+                    <feature.icon className={`w-6 h-6 ${feature.color} relative z-10`} />
+                  </div>
+
+                  <h3 className="text-base font-heading font-black text-slate-900 mb-3 group-hover:text-brand-600 transition-colors">
+                    {feature.title}
+                  </h3>
+                  <p className="text-slate-500 leading-relaxed text-sm">
+                    {feature.desc}
+                  </p>
                 </div>
 
-                <h3 className="text-lg font-heading font-black text-slate-900 mb-3 group-hover:text-brand-700 transition-colors">
-                  {feature.title}
-                </h3>
-                <p className="text-slate-500 leading-relaxed text-sm">
-                  {feature.desc}
-                </p>
-
-                <div className="mt-5 flex items-center gap-2 text-xs font-heading font-semibold text-slate-300 group-hover:text-brand-600 transition-all">
-                  <span className="opacity-0 group-hover:opacity-100 transition-opacity">Découvrir</span>
-                  <div className="w-8 h-px bg-slate-200 group-hover:w-12 transition-all duration-400" style={{ '--tw-bg-opacity': 1 } as any} />
-                  <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-400" />
+                {/* Sleek bottom interactive link */}
+                <div className="mt-6 pt-5 border-t border-slate-50 flex items-center justify-between text-xs font-heading font-bold text-slate-400 group-hover:text-brand-600 transition-colors">
+                  <span>En savoir plus</span>
+                  <div className="w-7 h-7 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-brand-50 group-hover:text-brand-600 transition-colors">
+                    <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+                  </div>
                 </div>
               </div>
             ))}
@@ -673,7 +718,7 @@ export default function Landing() {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredTrainings.map(training => (
               <div
                 key={training.id}
@@ -750,30 +795,67 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ========== TESTIMONIALS ========== */}
-      <section className="py-20" style={{ backgroundColor: '#F2F4F7' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <span className="text-xs font-heading font-bold uppercase tracking-widest" style={{ color: '#2563EB' }}>Témoignages</span>
-            <h2 className="section-title mt-2">Ils nous font confiance</h2>
+      {/* ========== TESTIMONIALS (Dribbble/Behance Premium Light Showcase) ========== */}
+      <section className="py-24 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 50%, #F1F5F9 100%)' }}>
+        {/* Soft glowing ambient spots */}
+        <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full opacity-30 blur-[100px] pointer-events-none" style={{ backgroundColor: '#E6F2FF' }} />
+        <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full opacity-35 blur-[100px] pointer-events-none" style={{ backgroundColor: '#E6F2FF' }} />
+
+        {/* Custom brand vector lines in background */}
+        <svg className="absolute inset-0 w-full h-full opacity-[0.08] pointer-events-none" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+          <path d="M-100,300 C400,100 900,500 1600,200" stroke="#2563EB" strokeWidth="1" strokeDasharray="4 8" />
+          <path d="M-100,315 C400,115 900,515 1600,215" stroke="#39D5F4" strokeWidth="1.5" />
+        </svg>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <span className="inline-block px-4 py-1.5 rounded-full text-xs font-heading font-bold uppercase tracking-widest mb-4" style={{ backgroundColor: '#E6F2FF', color: '#2563EB' }}>
+              Témoignages
+            </span>
+            <h2 className="text-3xl md:text-5xl font-heading font-black text-slate-900 tracking-tight">
+              Ils bâtissent l'avenir avec <span style={{ color: '#2563EB' }}>nous</span>
+            </h2>
+            <p className="mt-4 text-slate-500 max-w-2xl mx-auto text-base">
+              Découvrez les retours d'expérience des talents, recruteurs et cabinets qui utilisent notre marketplace au quotidien.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {testimonials.map((t) => (
-              <div key={t.name} className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-card-hover transition-shadow">
-                <div className="flex items-center gap-1 mb-4">
-                  {Array.from({ length: t.stars }).map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
-                  ))}
-                </div>
-                <p className="text-sm text-slate-600 leading-relaxed mb-5 italic">"{t.text}"</p>
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full ${t.color} flex items-center justify-center text-white font-heading font-bold text-sm`}>
-                    {t.avatar}
+              <div 
+                key={t.name} 
+                className="group relative bg-white border border-slate-100 rounded-[32px] p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(15,30,58,0.08)] flex flex-col justify-between"
+              >
+                {/* Large decorative quotation mark */}
+                <span className="absolute top-4 right-6 text-7xl font-serif text-slate-100 group-hover:text-brand-100/40 select-none pointer-events-none transition-colors duration-300">
+                  ”
+                </span>
+
+                <div>
+                  {/* Stars */}
+                  <div className="flex items-center gap-1 mb-5">
+                    {Array.from({ length: t.stars }).map((_, i) => (
+                      <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                    ))}
                   </div>
-                  <div>
-                    <p className="font-heading font-semibold text-slate-900 text-sm">{t.name}</p>
-                    <p className="text-xs text-slate-400">{t.role}</p>
+
+                  {/* Testimonial Quote */}
+                  <p className="text-[14px] sm:text-base text-slate-600 leading-relaxed mb-8 font-sans">
+                    "{t.text}"
+                  </p>
+                </div>
+
+                {/* User Info block */}
+                <div className="flex items-center gap-4 mt-auto pt-6 border-t border-slate-50">
+                  <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-slate-100 group-hover:border-brand-500/50 flex-shrink-0 transition-colors duration-300">
+                    <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-heading font-bold text-slate-900 text-[15px] truncate flex items-center gap-1.5">
+                      {t.name}
+                      <span className="inline-flex w-3.5 h-3.5 rounded-full bg-brand-50 text-brand-600 items-center justify-center text-[8px] font-bold">✓</span>
+                    </p>
+                    <p className="text-xs text-slate-400 truncate mt-0.5">{t.role}</p>
                   </div>
                 </div>
               </div>

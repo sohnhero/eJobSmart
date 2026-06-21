@@ -139,14 +139,49 @@ export default function Navbar({ isLoggedIn, userRole, userName = 'Amadou Diallo
                 {link.label}
               </Link>
             ))}
-            <div className="pt-3 flex flex-col gap-2">
-              <Button variant="secondary" fullWidth size="sm" onClick={() => { navigate('/login'); setMobileOpen(false) }}>
-                Se connecter
-              </Button>
-              <Button fullWidth size="sm" onClick={() => { navigate('/register'); setMobileOpen(false) }}>
-                Créer un compte
-              </Button>
-            </div>
+            {isLoggedIn ? (
+              <div className="pt-4 border-t border-slate-100 mt-3">
+                <div className="flex items-center gap-3 px-3 py-2 mb-3">
+                  <Avatar name={userName} size="md" />
+                  <div>
+                    <p className="text-sm font-semibold text-slate-800 leading-none">{userName}</p>
+                    <p className="text-xs text-slate-400 capitalize mt-1">{userRole}</p>
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <button
+                    onClick={() => { navigate(dashboardPath[userRole || 'candidate']); setMobileOpen(false) }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-lg text-left"
+                  >
+                    <LayoutDashboard className="w-4 h-4 text-slate-400" />
+                    Tableau de bord
+                  </button>
+                  <button
+                    onClick={() => setMobileOpen(false)}
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-lg text-left"
+                  >
+                    <User className="w-4 h-4 text-slate-400" />
+                    Mon profil
+                  </button>
+                  <button
+                    onClick={() => { navigate('/'); setMobileOpen(false) }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg text-left"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Déconnexion
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="pt-3 flex flex-col gap-2">
+                <Button variant="secondary" fullWidth size="sm" onClick={() => { navigate('/login'); setMobileOpen(false) }}>
+                  Se connecter
+                </Button>
+                <Button fullWidth size="sm" onClick={() => { navigate('/register'); setMobileOpen(false) }}>
+                  Créer un compte
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </nav>

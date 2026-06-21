@@ -207,7 +207,7 @@ export default function Jobs() {
                     </button>
                   ))}
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="hidden sm:flex items-center gap-1">
                   <button onClick={() => setViewMode('grid')} className={`p-1.5 rounded-lg ${viewMode === 'grid' ? 'bg-brand-100 text-brand-600' : 'text-slate-400 hover:text-slate-600'}`}>
                     <LayoutGrid className="w-4 h-4" />
                   </button>
@@ -252,7 +252,7 @@ export default function Jobs() {
                 {filtered.map(job => (
                   <div
                     key={job.id}
-                    className={`card card-premium card-hover-premium p-5 cursor-pointer relative group ${viewMode === 'list' ? 'flex items-center gap-5' : ''}`}
+                    className={`card card-premium card-hover-premium p-5 cursor-pointer relative group ${viewMode === 'list' ? 'sm:flex sm:items-center sm:gap-5' : ''}`}
                     onClick={() => navigate(`/jobs/${job.id}`)}
                   >
                     {/* Action Badges */}
@@ -275,7 +275,7 @@ export default function Jobs() {
                         <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center p-2.5 flex-shrink-0 group-hover:shadow-md transition-shadow">
                           <img src={job.companyLogo} alt={job.company} className="w-full h-full object-contain" />
                         </div>
-                        <div className={`flex-1 min-w-0 ${job.isBoosted ? 'pr-20' : 'pr-10'}`}>
+                        <div className={`flex-1 min-w-0 ${job.isBoosted ? 'sm:pr-20 pr-12' : 'sm:pr-10 pr-6'}`}>
                           <h3 className="font-bold text-slate-900 text-sm group-hover:text-brand-600 transition-colors line-clamp-1">{job.title}</h3>
                           <p className="text-xs font-medium text-slate-500 mt-1 flex items-center gap-1.5"><Building2 className="w-3.5 h-3.5 text-slate-400" />{job.company}</p>
                           <div className="flex flex-wrap gap-1.5 mt-3">
