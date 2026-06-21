@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Landing from './pages/Landing'
 import Jobs from './pages/Jobs'
@@ -42,14 +43,19 @@ import Support from './pages/Support'
 import FAQ from './pages/FAQ'
 import NotFound from './pages/NotFound'
 import ScrollToTop from './components/layout/ScrollToTop'
+import Preloader from './components/layout/Preloader'
 
 export default function App() {
+  const [loading, setLoading] = useState(true)
+
   return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <Routes>
-        {/* Public */}
-        <Route path="/" element={<Landing />} />
+    <>
+      {loading && <Preloader onComplete={() => setLoading(false)} />}
+      <BrowserRouter>
+        <ScrollToTop />
+        <Routes>
+          {/* Public */}
+          <Route path="/" element={<Landing />} />
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/jobs/:id" element={<JobDetail />} />
         <Route path="/trainings" element={<Trainings />} />
@@ -130,5 +136,6 @@ export default function App() {
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
+    </>
   )
 }
