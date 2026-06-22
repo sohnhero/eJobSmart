@@ -142,7 +142,7 @@ export default function Jobs() {
       <Navbar />
 
       {/* Header */}
-      <section className="relative overflow-hidden py-16 mb-6" style={{ background: 'linear-gradient(135deg, #0F1E3A 0%, #0F3B95 60%, #2563EB 100%)' }}>
+      <section className="relative overflow-hidden py-16" style={{ background: 'linear-gradient(135deg, #0F1E3A 0%, #0F3B95 60%, #2563EB 100%)' }}>
         <div className="absolute inset-0 bg-hero-pattern opacity-10" />
         <div className="absolute top-20 right-0 w-[400px] h-[400px] rounded-full opacity-10 blur-3xl" style={{ background: '#39D5F4' }} />
         <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full opacity-5 blur-3xl" style={{ background: '#2563EB' }} />
@@ -189,7 +189,7 @@ export default function Jobs() {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-6">
         <div className="flex gap-6">
           {/* Sidebar filters - desktop */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
