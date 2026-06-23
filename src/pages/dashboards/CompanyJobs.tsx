@@ -1,6 +1,7 @@
+import { useState } from 'react'
 import {
   Plus, Search, Filter, MoreVertical,
-  Zap, Clock, Users, Eye, Edit3, Trash2,
+  Zap, Clock, Users, Eye, Edit3, Trash2, CheckCircle2, AlertCircle
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import DashboardLayout from '../../components/layout/DashboardLayout'
@@ -10,10 +11,33 @@ import { jobs } from '../../data/jobs'
 
 export default function CompanyJobs() {
   const navigate = useNavigate()
-  const companyJobs = jobs.slice(0, 5) // Mocking company jobs
+  
+  const [list, setList] = useState(
+    jobs.slice(0, 5).map(j => ({ ...j, activeStatus: true }))
+  )
+  
+  const [searchQuery, setSearchQuery] = useState('')
+  const [statusFilter, setStatusFilter] = useState('Toutes')
+
+  const handleDeleteJob = (id: number) => {
+    setList(prev => prev.filter(j => j.id !== id))
+  }
+
+  const handleToggleActive = (id: number) => {
+    setList(prev => prev.map(j => j.id === id ? { ...j, activeStatus: !j.activeStatus } : j))
+  }
+
+  const filteredJobs = list.filter(job => {
+    const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          job.city.toLowerCase().includes(searchQuery.toLowerCase())
+    
+    if (statusFilter === 'Actives') return matchesSearch && job.activeStatus
+    if (statusFilter === 'Expirées') return matchesSearch && !job.activeStatus
+    return matchesSearch
+  })
 
   return (
-    <DashboardLayout role="company" userName="Sonatel Digital">
+    <DashboardLayout role="company" userName="Sonatel Digital" userTitle="Compte Entreprise">
       <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-900">Mes offres d'emploi</h1>
@@ -31,16 +55,20 @@ export default function CompanyJobs() {
             <input
               type="text"
               placeholder="Rechercher une offre..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-500/20"
             />
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" leftIcon={<Filter className="w-4 h-4" />}>Filtrer</Button>
-            <select className="bg-white border border-slate-200 rounded-xl text-xs px-3 py-2 outline-none">
-              <option>Toutes les offres</option>
-              <option>Actives</option>
-              <option>Expirées</option>
-              <option>Brouillons</option>
+            <select 
+              value={statusFilter}
+              onChange={e => setStatusFilter(e.target.value)}
+              className="bg-white border border-slate-200 rounded-xl text-xs px-3 py-2 outline-none cursor-pointer"
+            >
+              <option value="Toutes">Toutes les offres</option>
+              <option value="Actives">Actives</option>
+              <option value="Expirées">Expirées</option>
             </select>
           </div>
         </div>
@@ -58,12 +86,12 @@ export default function CompanyJobs() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {companyJobs.map(job => (
+              {filteredJobs.map(job => (
                 <tr key={job.id} className="hover:bg-slate-50/50 transition-colors group">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2 mb-1">
                       <p className="text-sm font-bold text-slate-800 group-hover:text-brand-600 transition-colors">{job.title}</p>
-                      {job.isBoosted && <Zap className="w-3.5 h-3.5 text-amber-500" />}
+                      {job.isBoosted && <Zap className="w-3.5 h-3.5 text-amber-500 animate-pulse" />}
                     </div>
                     <div className="flex items-center gap-2">
                       <ContractBadge type={job.contractType} />
@@ -71,10 +99,19 @@ export default function CompanyJobs() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <Badge variant="green" size="sm">Active</Badge>
+                    <button 
+                      onClick={() => handleToggleActive(job.id)}
+                      className={`px-2.5 py-1 text-[10px] font-bold rounded-lg border transition-all ${
+                        job.activeStatus 
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100' 
+                          : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200'
+                      }`}
+                    >
+                      {job.activeStatus ? 'Active' : 'Inactive'}
+                    </button>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 cursor-pointer hover:text-brand-600" onClick={() => navigate('/dashboard/company/applications')}>
                       <Users className="w-3.5 h-3.5 text-slate-400" />
                       <span className="text-sm font-semibold text-slate-700">{job.applicants}</span>
                     </div>
@@ -93,13 +130,25 @@ export default function CompanyJobs() {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="p-2 text-slate-400 hover:text-brand-600 transition-colors"><Edit3 className="w-4 h-4" /></button>
-                      <button className="p-2 text-slate-400 hover:text-red-600 transition-colors"><Trash2 className="w-4 h-4" /></button>
-                      <button className="p-2 text-slate-400 hover:text-slate-600 transition-colors"><MoreVertical className="w-4 h-4" /></button>
+                      <button 
+                        onClick={() => handleDeleteJob(job.id)}
+                        className="p-2 text-slate-400 hover:text-red-600 transition-colors"
+                        title="Supprimer l'offre"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </td>
                 </tr>
               ))}
+
+              {filteredJobs.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="p-12 text-center text-slate-400 text-sm">
+                    Aucune offre d'emploi publiée.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

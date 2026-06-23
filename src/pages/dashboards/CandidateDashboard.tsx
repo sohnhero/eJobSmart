@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Briefcase, FileText, TrendingUp, Eye, Bell, Star,
@@ -13,19 +14,45 @@ import { myApplications } from '../../data/candidates'
 import { dashboardStats } from '../../data/stats'
 import { trainings } from '../../data/trainings'
 
-const profileCompletion = [
-  { label: 'Photo de profil', done: true },
-  { label: 'Informations personnelles', done: true },
-  { label: 'Expériences professionnelles', done: true },
-  { label: 'CV uploadé', done: false },
-  { label: 'Compétences renseignées', done: true },
-  { label: 'Alertes emploi configurées', done: false },
-]
-
 export default function CandidateDashboard() {
   const navigate = useNavigate()
   const stats = dashboardStats.candidate
   const recommendedJobs = jobs.slice(0, 5)
+
+  const [cvUploaded, setCvUploaded] = useState(() => {
+    return localStorage.getItem('cv_uploaded') === 'true'
+  })
+  const [alertsConfigured, setAlertsConfigured] = useState(() => {
+    return localStorage.getItem('alerts_configured') !== 'false'
+  })
+
+  const profileCompletion = [
+    { label: 'Photo de profil', done: true, tab: 'info' },
+    { label: 'Informations personnelles', done: true, tab: 'info' },
+    { label: 'Expériences professionnelles', done: true, tab: 'experience' },
+    { label: 'CV uploadé', done: cvUploaded, tab: 'cv' },
+    { label: 'Compétences renseignées', done: true, tab: 'skills' },
+    { label: 'Alertes emploi configurées', done: alertsConfigured, href: '/dashboard/candidate/alerts' },
+  ]
+
+  const completionPct = Math.round((profileCompletion.filter(c => c.done).length / profileCompletion.length) * 100)
+
+  const handleCompletionClick = (item: typeof profileCompletion[0]) => {
+    if (item.href) {
+      navigate(item.href)
+    } else if (item.tab) {
+      navigate('/dashboard/candidate/profile', { state: { activeTab: item.tab } })
+    }
+  }
+
+  const handleCompleteProfileClick = () => {
+    const nextUnchecked = profileCompletion.find(c => !c.done)
+    if (nextUnchecked) {
+      handleCompletionClick(nextUnchecked)
+    } else {
+      navigate('/dashboard/candidate/profile')
+    }
+  }
 
   return (
     <DashboardLayout role="candidate" userName="Amadou Diallo">
@@ -37,11 +64,11 @@ export default function CandidateDashboard() {
         <p className="text-blue-200 text-sm">Développeur Full Stack · Dakar, Sénégal</p>
         <div className="flex items-center gap-4 mt-4">
           <div>
-            <p className="text-3xl font-black">{stats.profileScore}%</p>
+            <p className="text-3xl font-black">{completionPct}%</p>
             <p className="text-xs text-blue-200">Profil complété</p>
           </div>
           <div className="flex-1 bg-white/20 rounded-full h-2">
-            <div className="bg-amber-400 h-full rounded-full" style={{ width: `${stats.profileScore}%` }} />
+            <div className="bg-amber-400 h-full rounded-full" style={{ width: `${completionPct}%` }} />
           </div>
         </div>
         <p className="text-xs text-blue-200 mt-1.5">{stats.matchingJobs} offres correspondent à votre profil</p>
@@ -127,18 +154,22 @@ export default function CandidateDashboard() {
             <p className="text-xs text-slate-400 mb-4">Un profil complet reçoit 3× plus de vues</p>
             <div className="space-y-2.5">
               {profileCompletion.map(item => (
-                <div key={item.label} className="flex items-center gap-2.5">
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${item.done ? 'bg-emerald-100' : 'bg-slate-100'}`}>
+                <div 
+                  key={item.label}
+                  onClick={() => handleCompletionClick(item)}
+                  className="flex items-center gap-2.5 cursor-pointer hover:bg-slate-50 p-1 rounded-lg transition-colors group animate-fade-in"
+                >
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${item.done ? 'bg-emerald-100 group-hover:bg-emerald-200' : 'bg-slate-100 group-hover:bg-brand-50'}`}>
                     {item.done
-                      ? <svg className="w-3 h-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                      : <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+                      ? <svg className="w-3 h-3 text-emerald-600 animate-scale-up" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                      : <div className="w-1.5 h-1.5 rounded-full bg-slate-300 group-hover:bg-brand-400" />
                     }
                   </div>
-                  <span className={`text-xs ${item.done ? 'text-slate-600 line-through' : 'text-slate-700 font-medium'}`}>{item.label}</span>
+                  <span className={`text-xs transition-colors group-hover:text-brand-600 ${item.done ? 'text-slate-500 line-through' : 'text-slate-700 font-medium'}`}>{item.label}</span>
                 </div>
               ))}
             </div>
-            <Button fullWidth size="sm" variant="secondary" className="mt-4">
+            <Button fullWidth size="sm" variant="secondary" className="mt-4" onClick={handleCompleteProfileClick}>
               Compléter mon profil
             </Button>
           </div>
@@ -155,7 +186,7 @@ export default function CandidateDashboard() {
                 { label: 'Full Stack + Dakar', count: 8, sector: 'Tech' },
                 { label: 'CDI + Télétravail', count: 23, sector: 'Tous' },
               ].map(alert => (
-                <div key={alert.label} className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-brand-50 transition-colors cursor-pointer">
+                <div key={alert.label} onClick={() => navigate('/dashboard/candidate/alerts')} className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-brand-50 transition-colors cursor-pointer">
                   <div>
                     <p className="text-sm font-medium text-slate-800">{alert.label}</p>
                     <p className="text-xs text-slate-400">{alert.sector}</p>
@@ -166,7 +197,7 @@ export default function CandidateDashboard() {
                 </div>
               ))}
             </div>
-            <Button fullWidth size="sm" variant="secondary" className="mt-3">
+            <Button fullWidth size="sm" variant="secondary" className="mt-3" onClick={() => navigate('/dashboard/candidate/alerts')}>
               <Bell className="w-3.5 h-3.5" /> Créer une alerte
             </Button>
           </div>

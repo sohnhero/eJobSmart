@@ -1,14 +1,33 @@
+import { useState } from 'react'
 import {
   BookOpen, Clock, Play, Award,
-  ChevronRight, Search, Filter,
+  ChevronRight, Search, Filter, Loader2,
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import DashboardLayout from '../../components/layout/DashboardLayout'
 import Badge from '../../components/ui/Badge'
+import Button from '../../components/ui/Button'
 import { trainings } from '../../data/trainings'
 
 export default function CandidateTrainings() {
   const navigate = useNavigate()
+  const [downloadingId, setDownloadingId] = useState<number | null>(null)
+
+  const handleDownloadCert = (e: React.MouseEvent, id: number, title: string) => {
+    e.stopPropagation()
+    setDownloadingId(id)
+    setTimeout(() => {
+      setDownloadingId(null)
+      // download simulation
+      const link = document.createElement('a')
+      link.href = '#'
+      link.setAttribute('download', `Certificat_${title.replace(/\s+/g, '_')}.pdf`)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    }, 1500)
+  }
+
   const myTrainings = [
     { ...trainings[0], progress: 85, lastAccessed: 'Il y a 2h' },
     { ...trainings[1], progress: 100, lastAccessed: 'Hier', certified: true },
@@ -35,7 +54,11 @@ export default function CandidateTrainings() {
           </h2>
           <div className="space-y-4">
             {myTrainings.filter(t => t.progress < 100).map(training => (
-              <div key={training.id} className="card p-5 flex flex-col sm:flex-row gap-5 hover:border-brand-200 transition-colors cursor-pointer group">
+              <div 
+                key={training.id} 
+                onClick={() => navigate(`/trainings/${training.id}`)}
+                className="card p-5 flex flex-col sm:flex-row gap-5 hover:border-brand-200 transition-colors cursor-pointer group"
+              >
                 <div className="w-full sm:w-32 h-20 rounded-xl overflow-hidden flex-shrink-0">
                   <img src={training.thumbnail} alt={training.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                 </div>
@@ -50,7 +73,17 @@ export default function CandidateTrainings() {
                   </div>
                 </div>
                 <div className="flex items-center justify-end">
-                  <Button size="sm" variant="secondary" rightIcon={<ChevronRight className="w-4 h-4" />}>Continuer</Button>
+                  <Button 
+                    size="sm" 
+                    variant="secondary" 
+                    rightIcon={<ChevronRight className="w-4 h-4" />}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/trainings/${training.id}`);
+                    }}
+                  >
+                    Continuer
+                  </Button>
                 </div>
               </div>
             ))}
@@ -68,7 +101,19 @@ export default function CandidateTrainings() {
                 <div className="flex-1 min-w-0">
                   <h3 className="font-bold text-slate-800 text-sm line-clamp-1">{training.title}</h3>
                   <p className="text-[10px] text-slate-400 mb-2">Terminé le 12 Avril 2026</p>
-                  <button className="text-[10px] font-bold text-brand-600 hover:underline">Télécharger le certificat</button>
+                  <button 
+                    disabled={downloadingId === training.id}
+                    onClick={(e) => handleDownloadCert(e, training.id, training.title)}
+                    className="text-[10px] font-bold text-brand-600 hover:underline flex items-center gap-1 disabled:text-slate-400 disabled:no-underline"
+                  >
+                    {downloadingId === training.id ? (
+                      <>
+                        <Loader2 className="w-3 h-3 animate-spin" /> Téléchargement...
+                      </>
+                    ) : (
+                      'Télécharger le certificat'
+                    )}
+                  </button>
                 </div>
               </div>
             ))}
@@ -82,14 +127,25 @@ export default function CandidateTrainings() {
             <p className="text-xs text-blue-100 mb-4 leading-relaxed">
               Les profils certifiés eJobSmart sont 40% plus susceptibles d'être contactés par les recruteurs.
             </p>
-            <Button variant="white" size="sm" fullWidth>Voir les certifications</Button>
+            <Button 
+              variant="white" 
+              size="sm" 
+              fullWidth
+              onClick={() => navigate('/trainings')}
+            >
+              Voir les certifications
+            </Button>
           </div>
           
           <div className="card p-5">
             <h3 className="font-bold text-slate-900 mb-4 text-sm">Recommandé pour vous</h3>
             <div className="space-y-4">
               {trainings.slice(3, 5).map(t => (
-                <div key={t.id} className="flex gap-3 group cursor-pointer">
+                <div 
+                  key={t.id} 
+                  onClick={() => navigate(`/trainings/${t.id}`)}
+                  className="flex gap-3 group cursor-pointer"
+                >
                   <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
                     <img src={t.thumbnail} alt={t.title} className="w-full h-full object-cover" />
                   </div>
@@ -106,5 +162,3 @@ export default function CandidateTrainings() {
     </DashboardLayout>
   )
 }
-
-import Button from '../../components/ui/Button'

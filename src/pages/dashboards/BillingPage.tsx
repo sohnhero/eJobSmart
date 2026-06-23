@@ -111,6 +111,7 @@ export default function BillingPage({ role = 'company' }: { role?: 'company' | '
                   size="sm" 
                   variant={activePlan === plan.name ? 'primary' : 'secondary'}
                   disabled={activePlan === plan.name}
+                  onClick={() => setActivePlan(plan.name)}
                 >
                   {activePlan === plan.name ? 'Plan Actuel' : 'Choisir'}
                 </Button>

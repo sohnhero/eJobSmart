@@ -9,17 +9,71 @@ import DashboardLayout from '../../components/layout/DashboardLayout'
 import Button from '../../components/ui/Button'
 import Badge from '../../components/ui/Badge'
 
+interface SectorItem {
+  id: number
+  label: string
+  icon: string
+  count: number
+  status: string
+}
+
 export default function PlatformSettings() {
   const [activeTab, setActiveTab] = useState('sectors')
 
-  const sectors = [
+  // Reactive state for sectors
+  const [sectorsList, setSectorsList] = useState<SectorItem[]>([
     { id: 1, label: 'Technologie & Numérique', icon: '💻', count: 342, status: 'Actif' },
     { id: 2, label: 'Banque & Finance', icon: '🏦', count: 218, status: 'Actif' },
     { id: 3, label: 'Santé & Pharmaceutique', icon: '🏥', count: 189, status: 'Actif' },
     { id: 4, label: 'BTP & Immobilier', icon: '🏗️', count: 156, status: 'Actif' },
-  ]
+  ])
 
-  const contracts = ['CDI', 'CDD', 'Intérim', 'Freelance', 'Stage', 'Alternance']
+  // Reactive state for contracts
+  const [contractsList, setContractsList] = useState<string[]>([
+    'CDI', 'CDD', 'Intérim', 'Freelance', 'Stage', 'Alternance'
+  ])
+
+  // Modal State
+  const [showAddSector, setShowAddSector] = useState(false)
+  const [newSectorLabel, setNewSectorLabel] = useState('')
+  const [newSectorIcon, setNewSectorIcon] = useState('💻')
+
+  const handleDeleteSector = (id: number) => {
+    setSectorsList(prev => prev.filter(s => s.id !== id))
+  }
+
+  const handleAddSectorSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newSectorLabel.trim()) return
+
+    const newSec: SectorItem = {
+      id: Date.now(),
+      label: newSectorLabel,
+      icon: newSectorIcon,
+      count: 0,
+      status: 'Actif'
+    }
+
+    setSectorsList(prev => [...prev, newSec])
+    setShowAddSector(false)
+    setNewSectorLabel('')
+    setNewSectorIcon('💻')
+  }
+
+  const handleDeleteContract = (name: string) => {
+    setContractsList(prev => prev.filter(c => c !== name))
+  }
+
+  const [newContractName, setNewContractName] = useState('')
+  const [showAddContractInput, setShowAddContractInput] = useState(false)
+
+  const handleAddContractSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newContractName.trim() || contractsList.includes(newContractName.trim())) return
+    setContractsList(prev => [...prev, newContractName.trim()])
+    setNewContractName('')
+    setShowAddContractInput(false)
+  }
 
   return (
     <DashboardLayout role="admin" userName="Super Admin">
@@ -37,9 +91,6 @@ export default function PlatformSettings() {
                 { id: 'sectors', label: 'Secteurs d\'activité', icon: Briefcase },
                 { id: 'contracts', label: 'Types de contrats', icon: FileText },
                 { id: 'plans', label: 'Plans & Abonnements', icon: CreditCard },
-                { id: 'notifications', label: 'Templates Emails', icon: Bell },
-                { id: 'security', label: 'Sécurité & Accès', icon: Shield },
-                { id: 'database', label: 'Maintenance DB', icon: Database },
               ].map(tab => (
                 <button
                   key={tab.id}
@@ -64,7 +115,7 @@ export default function PlatformSettings() {
             <div className="card">
               <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
                 <h2 className="font-bold text-slate-900">Gestion des Secteurs</h2>
-                <Button size="sm" leftIcon={<Plus className="w-4 h-4" />}>Nouveau Secteur</Button>
+                <Button size="sm" onClick={() => setShowAddSector(true)} leftIcon={<Plus className="w-4 h-4" />}>Nouveau Secteur</Button>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
@@ -77,7 +128,7 @@ export default function PlatformSettings() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {sectors.map(s => (
+                    {sectorsList.map(s => (
                       <tr key={s.id} className="hover:bg-slate-50/50 transition-colors">
                         <td className="px-6 py-4 flex items-center gap-3">
                           <span className="text-xl">{s.icon}</span>
@@ -89,8 +140,12 @@ export default function PlatformSettings() {
                         </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex justify-end gap-2">
-                            <button className="p-1.5 text-slate-400 hover:text-brand-600 transition-colors"><Edit3 className="w-4 h-4" /></button>
-                            <button className="p-1.5 text-slate-400 hover:text-red-600 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                            <button 
+                              onClick={() => handleDeleteSector(s.id)}
+                              className="p-1.5 text-slate-400 hover:text-red-600 transition-colors"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -105,16 +160,32 @@ export default function PlatformSettings() {
             <div className="card p-6">
               <h2 className="font-bold text-slate-900 mb-4">Types de Contrats</h2>
               <div className="flex flex-wrap gap-3">
-                {contracts.map(c => (
+                {contractsList.map(c => (
                   <div key={c} className="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
                     <span className="text-sm font-medium text-slate-700">{c}</span>
-                    <button className="text-slate-400 hover:text-red-500"><X className="w-3 h-3" /></button>
+                    <button onClick={() => handleDeleteContract(c)} className="text-slate-400 hover:text-red-500"><X className="w-3 h-3" /></button>
                   </div>
                 ))}
-                <button className="flex items-center gap-2 px-3 py-2 border border-dashed border-slate-300 text-slate-400 rounded-xl hover:bg-slate-50 transition-colors">
-                  <Plus className="w-3 h-3" />
-                  <span className="text-sm font-medium">Ajouter</span>
-                </button>
+                
+                {showAddContractInput ? (
+                  <form onSubmit={handleAddContractSubmit} className="flex items-center gap-2">
+                    <input 
+                      type="text" 
+                      placeholder="Nom du contrat" 
+                      required
+                      value={newContractName}
+                      onChange={e => setNewContractName(e.target.value)}
+                      className="px-2.5 py-1.5 border border-slate-200 rounded-xl text-xs outline-none"
+                    />
+                    <Button type="submit" size="sm">OK</Button>
+                    <button type="button" onClick={() => setShowAddContractInput(false)} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
+                  </form>
+                ) : (
+                  <button onClick={() => setShowAddContractInput(true)} className="flex items-center gap-2 px-3 py-2 border border-dashed border-slate-300 text-slate-400 rounded-xl hover:bg-slate-50 transition-colors">
+                    <Plus className="w-3 h-3" />
+                    <span className="text-sm font-medium">Ajouter</span>
+                  </button>
+                )}
               </div>
             </div>
           )}
@@ -138,13 +209,54 @@ export default function PlatformSettings() {
                       </li>
                     ))}
                   </ul>
-                  <Button fullWidth variant="secondary" size="sm" leftIcon={<Edit3 className="w-4 h-4" />}>Modifier le plan</Button>
                 </div>
               ))}
             </div>
           )}
         </div>
       </div>
+
+      {/* Add Sector Modal */}
+      {showAddSector && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setShowAddSector(false)} />
+          
+          <div className="bg-white rounded-3xl w-full max-w-sm shadow-2xl relative z-10 overflow-hidden border border-slate-100">
+            <form onSubmit={handleAddSectorSubmit}>
+              <div className="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                <h3 className="font-black text-slate-900">Ajouter un secteur</h3>
+                <button type="button" onClick={() => setShowAddSector(false)} className="p-1 hover:bg-slate-200 rounded-lg text-slate-400 hover:text-slate-600">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Nom du secteur</label>
+                  <input 
+                    type="text" placeholder="ex: Transport & Logistique" required
+                    value={newSectorLabel} onChange={e => setNewSectorLabel(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-brand-500/20"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Icône (Émoji)</label>
+                  <input 
+                    type="text" placeholder="ex: 🚚" required
+                    value={newSectorIcon} onChange={e => setNewSectorIcon(e.target.value)}
+                    className="w-20 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-center outline-none focus:ring-2 focus:ring-brand-500/20"
+                  />
+                </div>
+              </div>
+
+              <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3">
+                <Button type="button" variant="ghost" size="sm" onClick={() => setShowAddSector(false)}>Annuler</Button>
+                <Button type="submit" size="sm">Créer</Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   )
 }

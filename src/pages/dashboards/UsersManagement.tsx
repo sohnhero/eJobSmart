@@ -3,27 +3,77 @@ import {
   Users, UserPlus, Search, Filter,
   MoreVertical, Shield, ShieldAlert,
   CheckCircle, XCircle, Mail,
-  Download, Edit3, Trash2,
+  Download, Edit3, Trash2, X
 } from 'lucide-react'
 import DashboardLayout from '../../components/layout/DashboardLayout'
 import Button from '../../components/ui/Button'
 import Badge, { StatusBadge } from '../../components/ui/Badge'
 import Avatar from '../../components/ui/Avatar'
 
-const users = [
-  { id: 1, name: 'Amadou Diallo', email: 'amadou@gmail.com', role: 'Candidat', status: 'Vérifié', joinDate: '2026-04-20', lastLogin: 'Il y a 2h' },
-  { id: 2, name: 'Sonatel Digital', email: 'hr@sonatel.sn', role: 'Entreprise', status: 'Vérifié', joinDate: '2026-03-15', lastLogin: 'Il y a 10m' },
-  { id: 3, name: 'Cabinet Excellence', email: 'contact@excellence.sn', role: 'Cabinet RH', status: 'Vérifié', joinDate: '2026-04-02', lastLogin: 'Hier' },
-  { id: 4, name: 'Fatou Kane', email: 'fkane@dev.sn', role: 'Freelance', status: 'En attente', joinDate: '2026-04-28', lastLogin: 'Jamais' },
-  { id: 5, name: 'Modou Fall', email: 'modou@admin.sn', role: 'Admin RH', status: 'Vérifié', joinDate: '2026-01-10', lastLogin: 'Il y a 5m' },
-]
+interface UserRecord {
+  id: number
+  name: string
+  email: string
+  role: string
+  status: 'Vérifié' | 'En attente' | 'Inactif'
+  joinDate: string
+  lastLogin: string
+}
 
 export default function UsersManagement() {
   const [query, setQuery] = useState('')
   const [filterRole, setFilterRole] = useState('All')
+  
+  // User creation state
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [newName, setNewName] = useState('')
+  const [newEmail, setNewEmail] = useState('')
+  const [newRole, setNewRole] = useState('Candidat')
 
-  const filteredUsers = users.filter(u => {
-    const matchesQuery = u.name.toLowerCase().includes(query.toLowerCase()) || u.email.toLowerCase().includes(query.toLowerCase())
+  const [userList, setUserList] = useState<UserRecord[]>([
+    { id: 1, name: 'Amadou Diallo', email: 'amadou@gmail.com', role: 'Candidat', status: 'Vérifié', joinDate: '2026-04-20', lastLogin: 'Il y a 2h' },
+    { id: 2, name: 'Sonatel Digital', email: 'hr@sonatel.sn', role: 'Entreprise', status: 'Vérifié', joinDate: '2026-03-15', lastLogin: 'Il y a 10m' },
+    { id: 3, name: 'Cabinet Excellence', email: 'contact@excellence.sn', role: 'Cabinet RH', status: 'Vérifié', joinDate: '2026-04-02', lastLogin: 'Hier' },
+    { id: 4, name: 'Fatou Kane', email: 'fkane@dev.sn', role: 'Freelance', status: 'En attente', joinDate: '2026-04-28', lastLogin: 'Jamais' },
+    { id: 5, name: 'Modou Fall', email: 'modou@admin.sn', role: 'Admin RH', status: 'Vérifié', joinDate: '2026-01-10', lastLogin: 'Il y a 5m' },
+  ])
+
+  const handleDeleteUser = (id: number) => {
+    setUserList(prev => prev.filter(u => u.id !== id))
+  }
+
+  const handleToggleSuspend = (id: number) => {
+    setUserList(prev => prev.map(u => 
+      u.id === id 
+        ? { ...u, status: u.status === 'Inactif' ? 'Vérifié' : 'Inactif' } 
+        : u
+    ))
+  }
+
+  const handleAddUserSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newName.trim() || !newEmail.trim()) return
+
+    const newUser: UserRecord = {
+      id: Date.now(),
+      name: newName,
+      email: newEmail,
+      role: newRole,
+      status: 'Vérifié',
+      joinDate: new Date().toISOString().split('T')[0],
+      lastLogin: 'Jamais'
+    }
+
+    setUserList(prev => [newUser, ...prev])
+    setShowAddModal(false)
+    setNewName('')
+    setNewEmail('')
+    setNewRole('Candidat')
+  }
+
+  const filteredUsers = userList.filter(u => {
+    const matchesQuery = u.name.toLowerCase().includes(query.toLowerCase()) || 
+                         u.email.toLowerCase().includes(query.toLowerCase())
     const matchesRole = filterRole === 'All' || u.role === filterRole
     return matchesQuery && matchesRole
   })
@@ -36,8 +86,9 @@ export default function UsersManagement() {
           <p className="text-slate-500 text-sm mt-0.5">Contrôle total sur les comptes et les permissions</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button size="sm" variant="secondary" leftIcon={<Download className="w-4 h-4" />}>Exporter CSV</Button>
-          <Button size="sm" leftIcon={<UserPlus className="w-4 h-4" />}>Créer Utilisateur</Button>
+          <Button size="sm" onClick={() => setShowAddModal(true)} leftIcon={<UserPlus className="w-4 h-4" />}>
+            Créer Utilisateur
+          </Button>
         </div>
       </div>
 
@@ -52,13 +103,13 @@ export default function UsersManagement() {
                 placeholder="Rechercher par nom ou email..."
                 value={query}
                 onChange={e => setQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-500/20 transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-500/20 transition-all"
               />
             </div>
             <select
               value={filterRole}
               onChange={e => setFilterRole(e.target.value)}
-              className="bg-white border border-slate-200 rounded-xl text-sm px-4 py-2 outline-none focus:ring-2 focus:ring-brand-500/20"
+              className="bg-white border border-slate-200 rounded-xl text-sm px-4 py-2 outline-none focus:ring-2 focus:ring-brand-500/20 cursor-pointer"
             >
               <option value="All">Tous les rôles</option>
               <option value="Candidat">Candidats</option>
@@ -68,9 +119,6 @@ export default function UsersManagement() {
               <option value="Admin RH">Admin RH</option>
             </select>
           </div>
-          <button className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800 transition-colors">
-            <Filter className="w-4 h-4" /> Filtres avancés
-          </button>
         </div>
 
         {/* Table */}
@@ -119,27 +167,91 @@ export default function UsersManagement() {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-1">
-                      <button title="Envoyer mail" className="p-2 text-slate-400 hover:text-blue-600 transition-colors"><Mail className="w-4 h-4" /></button>
-                      <button title="Modifier" className="p-2 text-slate-400 hover:text-brand-600 transition-colors"><Edit3 className="w-4 h-4" /></button>
-                      <button title="Suspendre" className="p-2 text-slate-400 hover:text-amber-600 transition-colors"><ShieldAlert className="w-4 h-4" /></button>
-                      <button title="Supprimer" className="p-2 text-slate-400 hover:text-red-600 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                      <button 
+                        onClick={() => handleToggleSuspend(user.id)}
+                        title={user.status === 'Inactif' ? 'Activer' : 'Suspendre'}
+                        className={`p-2 rounded-lg transition-colors ${user.status === 'Inactif' ? 'text-emerald-600 hover:bg-emerald-50' : 'text-amber-600 hover:bg-amber-50'}`}
+                      >
+                        <ShieldAlert className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteUser(user.id)}
+                        title="Supprimer" 
+                        className="p-2 text-slate-400 hover:text-red-600 transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </td>
                 </tr>
               ))}
+
+              {filteredUsers.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="p-12 text-center text-slate-400 text-sm">
+                    Aucun utilisateur trouvé.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
+      </div>
 
-        {/* Pagination */}
-        <div className="p-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-          <p>Affichage de {filteredUsers.length} sur {users.length} utilisateurs</p>
-          <div className="flex gap-2">
-            <button className="px-3 py-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50" disabled>Précédent</button>
-            <button className="px-3 py-1.5 border border-slate-200 rounded-lg hover:bg-slate-50">Suivant</button>
+      {/* Add User Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setShowAddModal(false)} />
+          
+          <div className="bg-white rounded-3xl w-full max-w-sm shadow-2xl relative z-10 overflow-hidden border border-slate-100">
+            <form onSubmit={handleAddUserSubmit}>
+              <div className="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                <h3 className="font-black text-slate-900">Créer un utilisateur</h3>
+                <button type="button" onClick={() => setShowAddModal(false)} className="p-1 hover:bg-slate-200 rounded-lg text-slate-400 hover:text-slate-600">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Nom / Raison Sociale</label>
+                  <input 
+                    type="text" placeholder="ex: Amadou Diallo, Sonatel..." required
+                    value={newName} onChange={e => setNewName(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-brand-500/20"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Adresse email</label>
+                  <input 
+                    type="email" placeholder="email@domaine.com" required
+                    value={newEmail} onChange={e => setNewEmail(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-brand-500/20"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Rôle initial</label>
+                  <select 
+                    value={newRole} onChange={e => setNewRole(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-brand-500/20 cursor-pointer"
+                  >
+                    <option value="Candidat">Candidat</option>
+                    <option value="Freelance">Freelance</option>
+                    <option value="Entreprise">Entreprise</option>
+                    <option value="Cabinet RH">Cabinet RH</option>
+                    <option value="Admin RH">Admin RH</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3">
+                <Button type="button" variant="ghost" size="sm" onClick={() => setShowAddModal(false)}>Annuler</Button>
+                <Button type="submit" size="sm">Créer l'utilisateur</Button>
+              </div>
+            </form>
           </div>
         </div>
-      </div>
+      )}
     </DashboardLayout>
   )
 }

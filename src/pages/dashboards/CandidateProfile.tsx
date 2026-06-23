@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import {
   User, Mail, Phone, MapPin, Upload, Plus, X, Save,
   CheckCircle, Briefcase, GraduationCap, Star, Globe,
-  Linkedin, Github, Eye, Edit3, Camera, FileText, Zap,
+  Linkedin, Github, Eye, Edit3, Camera, FileText, Zap, Trash2,
 } from 'lucide-react'
 import DashboardLayout from '../../components/layout/DashboardLayout'
 import Button from '../../components/ui/Button'
@@ -14,9 +14,21 @@ type Tab = 'info' | 'experience' | 'skills' | 'cv'
 const availabilities = ['Immédiate', 'Préavis 1 mois', 'Préavis 3 mois', 'En poste']
 const contractTypes = ['CDI', 'CDD', 'Freelance', 'Intérim', 'Stage', 'Alternance']
 
+const LANGUAGES_LIST = [
+  'Français', 'Anglais', 'Wolof', 'Arabe', 'Portugais', 'Mandingue',
+  'Pulaar', 'Sérère', 'Diola', 'Soninké', 'Bambara', 'Espagnol',
+  'Allemand', 'Italien', 'Chinois', 'Japonais', 'Russe', 'Swahili',
+  'Turc', 'Coréen', 'Néerlandais', 'Polonais', 'Suédois', 'Persan',
+  'Hindi', 'Ourdou', 'Bengali', 'Vietnamien', 'Thaï', 'Indonésien'
+].sort()
+
 export default function CandidateProfile() {
   const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState<Tab>('info')
+  const location = useLocation()
+  
+  const [activeTab, setActiveTab] = useState<Tab>(() => {
+    return (location.state as any)?.activeTab || 'info'
+  })
   const [saved, setSaved] = useState(false)
   const [skillInput, setSkillInput] = useState('')
 
@@ -35,26 +47,198 @@ export default function CandidateProfile() {
     languages: ['Français', 'Anglais', 'Wolof'],
   })
 
-  const [experiences] = useState([
+  // Experiences state
+  const [experiences, setExperiences] = useState([
     { id: 1, title: 'Senior Developer', company: 'Sonatel Digital', start: '2022-01', end: '', current: true, desc: 'Développement de microservices et APIs REST pour des millions d\'utilisateurs.' },
     { id: 2, title: 'Full Stack Developer', company: 'InnoTech Africa', start: '2020-03', end: '2021-12', current: false, desc: 'Développement d\'applications fintech mobile-first pour le marché africain.' },
     { id: 3, title: 'Développeur Junior', company: 'Agence WebCi', start: '2018-09', end: '2020-02', current: false, desc: 'Développement de sites web et applications e-commerce.' },
   ])
 
-  const [educations] = useState([
+  // Educations state
+  const [educations, setEducations] = useState([
     { id: 1, degree: 'Master en Génie Logiciel', school: 'Université Cheikh Anta Diop', year: '2018', mention: 'Mention Très Bien' },
     { id: 2, degree: 'Licence Informatique', school: 'Université de Dakar', year: '2016', mention: 'Mention Bien' },
   ])
+
+  // Modal control states
+  const [showExpModal, setShowExpModal] = useState(false)
+  const [editingExp, setEditingExp] = useState<any | null>(null)
+  
+  const [showEduModal, setShowEduModal] = useState(false)
+  const [editingEdu, setEditingEdu] = useState<any | null>(null)
+
+  // Form states for Experience
+  const [expTitle, setExpTitle] = useState('')
+  const [expCompany, setExpCompany] = useState('')
+  const [expStart, setExpStart] = useState('')
+  const [expEnd, setExpEnd] = useState('')
+  const [expCurrent, setExpCurrent] = useState(false)
+  const [expDesc, setExpDesc] = useState('')
+
+  // Form states for Education
+  const [eduDegree, setEduDegree] = useState('')
+  const [eduSchool, setEduSchool] = useState('')
+  const [eduYear, setEduYear] = useState('')
+  const [eduMention, setEduMention] = useState('')
+
+  // Open experience modal for addition
+  const handleAddExpOpen = () => {
+    setEditingExp(null)
+    setExpTitle('')
+    setExpCompany('')
+    setExpStart('')
+    setExpEnd('')
+    setExpCurrent(false)
+    setExpDesc('')
+    setShowExpModal(true)
+  }
+
+  // Open experience modal for editing
+  const handleEditExpOpen = (exp: any) => {
+    setEditingExp(exp)
+    setExpTitle(exp.title)
+    setExpCompany(exp.company)
+    setExpStart(exp.start)
+    setExpEnd(exp.end || '')
+    setExpCurrent(exp.current)
+    setExpDesc(exp.desc)
+    setShowExpModal(true)
+  }
+
+  // Handle saving experience
+  const handleSaveExp = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!expTitle.trim() || !expCompany.trim()) return
+
+    if (editingExp) {
+      // Modify
+      setExperiences(prev => prev.map(exp => exp.id === editingExp.id ? {
+        ...exp,
+        title: expTitle,
+        company: expCompany,
+        start: expStart,
+        end: expCurrent ? '' : expEnd,
+        current: expCurrent,
+        desc: expDesc
+      } : exp))
+    } else {
+      // Add
+      const newExp = {
+        id: Date.now(),
+        title: expTitle,
+        company: expCompany,
+        start: expStart || new Date().toISOString().substring(0, 7),
+        end: expCurrent ? '' : expEnd,
+        current: expCurrent,
+        desc: expDesc
+      }
+      setExperiences(prev => [...prev, newExp])
+    }
+    setShowExpModal(false)
+  }
+
+  // Handle deleting experience
+  const handleDeleteExp = (id: number) => {
+    setExperiences(prev => prev.filter(exp => exp.id !== id))
+  }
+
+  // Open education modal for addition
+  const handleAddEduOpen = () => {
+    setEditingEdu(null)
+    setEduDegree('')
+    setEduSchool('')
+    setEduYear('')
+    setEduMention('')
+    setShowEduModal(true)
+  }
+
+  // Open education modal for editing
+  const handleEditEduOpen = (edu: any) => {
+    setEditingEdu(edu)
+    setEduDegree(edu.degree)
+    setEduSchool(edu.school)
+    setEduYear(edu.year)
+    setEduMention(edu.mention || '')
+    setShowEduModal(true)
+  }
+
+  // Handle saving education
+  const handleSaveEdu = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!eduDegree.trim() || !eduSchool.trim()) return
+
+    if (editingEdu) {
+      // Modify
+      setEducations(prev => prev.map(edu => edu.id === editingEdu.id ? {
+        ...edu,
+        degree: eduDegree,
+        school: eduSchool,
+        year: eduYear,
+        mention: eduMention
+      } : edu))
+    } else {
+      // Add
+      const newEdu = {
+        id: Date.now(),
+        degree: eduDegree,
+        school: eduSchool,
+        year: eduYear || new Date().getFullYear().toString(),
+        mention: eduMention
+      }
+      setEducations(prev => [...prev, newEdu])
+    }
+    setShowEduModal(false)
+  }
+
+  // Handle deleting education
+  const handleDeleteEdu = (id: number) => {
+    setEducations(prev => prev.filter(edu => edu.id !== id))
+  }
+
+  const [cvUploaded, setCvUploaded] = useState(() => {
+    return localStorage.getItem('cv_uploaded') === 'true'
+  })
+  
+  const [alertsConfigured, setAlertsConfigured] = useState(() => {
+    return localStorage.getItem('alerts_configured') !== 'false'
+  })
 
   const completion = [
     { label: 'Photo de profil', done: true },
     { label: 'Informations personnelles', done: true },
     { label: 'Expériences', done: true },
-    { label: 'CV uploadé', done: false },
+    { label: 'CV uploadé', done: cvUploaded },
     { label: 'Compétences', done: true },
-    { label: 'Alertes emploi', done: false },
+    { label: 'Alertes emploi', done: alertsConfigured },
   ]
   const completionPct = Math.round((completion.filter(c => c.done).length / completion.length) * 100)
+
+  const handleCompletionClick = (itemLabel: string) => {
+    switch (itemLabel) {
+      case 'Photo de profil':
+      case 'Informations personnelles':
+      case 'Informations':
+        setActiveTab('info')
+        break
+      case 'Expériences':
+      case 'Expériences professionnelles':
+        setActiveTab('experience')
+        break
+      case 'CV uploadé':
+        setActiveTab('cv')
+        break
+      case 'Compétences':
+      case 'Compétences renseignées':
+        setActiveTab('skills')
+        break
+      case 'Alertes emploi':
+      case 'Alertes emploi configurées':
+        navigate('/dashboard/candidate/alerts')
+        break
+      default:
+        break
+    }
+  }
 
   const addSkill = () => {
     if (skillInput.trim() && !profile.skills.includes(skillInput.trim())) {
@@ -118,14 +302,18 @@ export default function CandidateProfile() {
             </div>
             <div className="space-y-2">
               {completion.map(item => (
-                <div key={item.label} className="flex items-center gap-2">
+                <div 
+                  key={item.label}
+                  onClick={() => handleCompletionClick(item.label)}
+                  className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 p-1 rounded-lg transition-colors group"
+                >
                   <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 ${item.done ? 'bg-emerald-100' : 'bg-slate-100'}`}>
                     {item.done
                       ? <CheckCircle className="w-3 h-3 text-emerald-600" />
                       : <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />
                     }
                   </div>
-                  <span className={`text-xs ${item.done ? 'text-slate-500 line-through' : 'text-slate-700 font-medium'}`}>{item.label}</span>
+                  <span className={`text-xs transition-colors group-hover:text-brand-600 ${item.done ? 'text-slate-500 line-through' : 'text-slate-700 font-medium'}`}>{item.label}</span>
                 </div>
               ))}
             </div>
@@ -214,47 +402,80 @@ export default function CandidateProfile() {
                   <div>
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-bold text-slate-900 flex items-center gap-2"><Briefcase className="w-4 h-4 text-brand-600" />Expériences professionnelles</h3>
-                      <button className="text-xs text-brand-600 font-medium flex items-center gap-1 hover:text-brand-800"><Plus className="w-3.5 h-3.5" />Ajouter</button>
+                      <button onClick={handleAddExpOpen} className="text-xs text-brand-600 font-medium flex items-center gap-1 hover:text-brand-800"><Plus className="w-3.5 h-3.5" />Ajouter</button>
                     </div>
                     <div className="space-y-4">
-                      {experiences.map(exp => (
-                        <div key={exp.id} className="flex gap-4 p-4 bg-slate-50 rounded-xl group">
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">{exp.company[0]}</div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between">
-                              <div>
-                                <p className="font-semibold text-sm text-slate-900">{exp.title}</p>
-                                <p className="text-xs text-slate-500">{exp.company}</p>
-                                <p className="text-xs text-slate-400 mt-0.5">
-                                  {new Date(exp.start).toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' })} — {exp.current ? 'Présent' : new Date(exp.end).toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' })}
-                                  {exp.current && <span className="ml-2 text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full font-semibold">Actuel</span>}
-                                </p>
+                      {experiences.map(exp => {
+                        const startFormatted = exp.start.includes('-') ? new Date(exp.start + '-01').toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' }) : exp.start;
+                        const endFormatted = exp.current ? 'Présent' : (exp.end && exp.end.includes('-') ? new Date(exp.end + '-01').toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' }) : exp.end);
+                        return (
+                          <div key={exp.id} className="flex gap-4 p-4 bg-slate-50 rounded-xl group relative">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">{exp.company[0]}</div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between">
+                                <div>
+                                  <p className="font-semibold text-sm text-slate-900">{exp.title}</p>
+                                  <p className="text-xs text-slate-500">{exp.company}</p>
+                                  <p className="text-xs text-slate-400 mt-0.5">
+                                    {startFormatted} — {endFormatted}
+                                    {exp.current && <span className="ml-2 text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full font-semibold">Actuel</span>}
+                                  </p>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <button onClick={() => handleEditExpOpen(exp)} className="p-1.5 opacity-0 group-hover:opacity-100 hover:bg-slate-200 rounded-lg transition-all" title="Modifier">
+                                    <Edit3 className="w-3.5 h-3.5 text-slate-500" />
+                                  </button>
+                                  <button onClick={() => handleDeleteExp(exp.id)} className="p-1.5 opacity-0 group-hover:opacity-100 hover:bg-red-50 rounded-lg transition-all" title="Supprimer">
+                                    <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                                  </button>
+                                </div>
                               </div>
-                              <button className="p-1.5 opacity-0 group-hover:opacity-100 hover:bg-slate-200 rounded-lg transition-all"><Edit3 className="w-3.5 h-3.5 text-slate-500" /></button>
+                              {exp.desc && <p className="text-xs text-slate-500 mt-2 leading-relaxed">{exp.desc}</p>}
                             </div>
-                            <p className="text-xs text-slate-500 mt-2 leading-relaxed">{exp.desc}</p>
                           </div>
+                        );
+                      })}
+                      {experiences.length === 0 && (
+                        <div className="p-8 text-center border-2 border-dashed border-slate-200 rounded-xl text-slate-400 text-xs">
+                          Aucune expérience enregistrée. Cliquez sur "Ajouter" pour commencer.
                         </div>
-                      ))}
+                      )}
                     </div>
                   </div>
 
                   <div>
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-bold text-slate-900 flex items-center gap-2"><GraduationCap className="w-4 h-4 text-purple-600" />Formation</h3>
-                      <button className="text-xs text-brand-600 font-medium flex items-center gap-1 hover:text-brand-800"><Plus className="w-3.5 h-3.5" />Ajouter</button>
+                      <button onClick={handleAddEduOpen} className="text-xs text-brand-600 font-medium flex items-center gap-1 hover:text-brand-800"><Plus className="w-3.5 h-3.5" />Ajouter</button>
                     </div>
                     <div className="space-y-3">
                       {educations.map(edu => (
-                        <div key={edu.id} className="flex gap-4 p-4 bg-slate-50 rounded-xl">
+                        <div key={edu.id} className="flex gap-4 p-4 bg-slate-50 rounded-xl group relative">
                           <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0"><GraduationCap className="w-5 h-5 text-purple-600" /></div>
-                          <div>
-                            <p className="font-semibold text-sm text-slate-900">{edu.degree}</p>
-                            <p className="text-xs text-slate-500">{edu.school} · {edu.year}</p>
-                            {edu.mention && <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-semibold mt-1 inline-block">{edu.mention}</span>}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <p className="font-semibold text-sm text-slate-900">{edu.degree}</p>
+                                <p className="text-xs text-slate-500">{edu.school} · {edu.year}</p>
+                                {edu.mention && <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-semibold mt-1 inline-block">{edu.mention}</span>}
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <button onClick={() => handleEditEduOpen(edu)} className="p-1.5 opacity-0 group-hover:opacity-100 hover:bg-slate-200 rounded-lg transition-all" title="Modifier">
+                                  <Edit3 className="w-3.5 h-3.5 text-slate-500" />
+                                </button>
+                                <button onClick={() => handleDeleteEdu(edu.id)} className="p-1.5 opacity-0 group-hover:opacity-100 hover:bg-red-50 rounded-lg transition-all" title="Supprimer">
+                                  <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                                </button>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       ))}
+                      {educations.length === 0 && (
+                        <div className="p-8 text-center border-2 border-dashed border-slate-200 rounded-xl text-slate-400 text-xs">
+                          Aucune formation enregistrée. Cliquez sur "Ajouter" pour commencer.
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -279,15 +500,68 @@ export default function CandidateProfile() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-3">Langues</label>
-                    <div className="flex flex-wrap gap-2">
-                      {['Français', 'Anglais', 'Wolof', 'Arabe', 'Portugais', 'Mandingue'].map(lang => (
-                        <button key={lang}
-                          onClick={() => setProfile(p => ({ ...p, languages: p.languages.includes(lang) ? p.languages.filter(l => l !== lang) : [...p.languages, lang] }))}
-                          className={`text-sm px-3 py-1.5 rounded-xl font-medium border transition-colors ${profile.languages.includes(lang) ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-600 border-slate-200 hover:border-emerald-300'}`}>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2.5">Langues parlées</label>
+                    
+                    {/* Selected languages as tags */}
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {profile.languages.map(lang => (
+                        <span key={lang} className="flex items-center gap-1.5 text-sm px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-100 font-medium">
                           {lang}
-                        </button>
+                          <button 
+                            type="button"
+                            onClick={() => setProfile(p => ({ ...p, languages: p.languages.filter(l => l !== lang) }))} 
+                            className="hover:text-red-500 transition-colors"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </span>
                       ))}
+                      {profile.languages.length === 0 && (
+                        <span className="text-xs text-slate-400 italic">Aucune langue sélectionnée</span>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center">
+                      {/* Dropdown for all languages */}
+                      <div className="w-full md:w-64">
+                        <select 
+                          onChange={(e) => {
+                            const val = e.target.value
+                            if (val && !profile.languages.includes(val)) {
+                              setProfile(p => ({ ...p, languages: [...p.languages, val] }))
+                            }
+                            e.target.value = ""
+                          }}
+                          className="input-field cursor-pointer"
+                          defaultValue=""
+                        >
+                          <option value="" disabled>-- Ajouter une langue --</option>
+                          {LANGUAGES_LIST.map(lang => (
+                            <option key={lang} value={lang} disabled={profile.languages.includes(lang)}>
+                              {lang}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Quick suggestions */}
+                      <div className="flex flex-wrap gap-1.5 items-center">
+                        <span className="text-xs text-slate-400 font-semibold mr-1">Suggestions :</span>
+                        {['Français', 'Anglais', 'Wolof', 'Arabe', 'Portugais', 'Mandingue'].map(lang => {
+                          const isSelected = profile.languages.includes(lang)
+                          if (isSelected) return null
+                          return (
+                            <button
+                              key={lang}
+                              type="button"
+                              onClick={() => setProfile(p => ({ ...p, languages: [...p.languages, lang] }))}
+                              className="text-xs px-2.5 py-1.5 rounded-lg bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700 border border-slate-200 transition-colors text-slate-600 font-medium"
+                            >
+                              + {lang}
+                            </button>
+                          )
+                        })}
+                      </div>
                     </div>
                   </div>
                   <div>
@@ -313,27 +587,65 @@ export default function CandidateProfile() {
               {/* CV TAB */}
               {activeTab === 'cv' && (
                 <div className="space-y-5">
-                  <div>
-                    <h3 className="font-semibold text-slate-900 mb-3">Téléverser votre CV</h3>
-                    <div className="border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center hover:border-brand-400 transition-colors cursor-pointer group">
-                      <Upload className="w-10 h-10 text-slate-300 group-hover:text-brand-400 mx-auto mb-3 transition-colors" />
-                      <p className="text-sm font-medium text-slate-600">Glissez votre CV ici</p>
-                      <p className="text-xs text-slate-400 mt-1">PDF, DOC, DOCX · Max 5 Mo</p>
-                      <button className="mt-4 text-sm font-semibold text-brand-600 hover:text-brand-800 transition-colors">Parcourir les fichiers</button>
-                    </div>
-                  </div>
-                  <div className="bg-brand-50 border border-brand-200 rounded-2xl p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <span className="text-xs font-bold text-red-600">PDF</span>
+                  {!cvUploaded ? (
+                    <div>
+                      <h3 className="font-semibold text-slate-900 mb-3">Téléverser votre CV</h3>
+                      <div 
+                        onClick={() => {
+                          localStorage.setItem('cv_uploaded', 'true')
+                          setCvUploaded(true)
+                        }}
+                        className="border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center hover:border-brand-400 transition-colors cursor-pointer group"
+                      >
+                        <Upload className="w-10 h-10 text-slate-300 group-hover:text-brand-400 mx-auto mb-3 transition-colors" />
+                        <p className="text-sm font-medium text-slate-600">Glissez votre CV ici</p>
+                        <p className="text-xs text-slate-400 mt-1">PDF, DOC, DOCX · Max 5 Mo</p>
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            localStorage.setItem('cv_uploaded', 'true')
+                            setCvUploaded(true)
+                          }}
+                          className="mt-4 text-sm font-semibold text-brand-600 hover:text-brand-800 transition-colors"
+                        >
+                          Parcourir les fichiers
+                        </button>
                       </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-semibold text-slate-900">CV_Amadou_Diallo_2026.pdf</p>
-                        <p className="text-xs text-slate-400">245 Ko · Mis à jour le 15/04/2026</p>
-                      </div>
-                      <button className="text-xs text-brand-600 font-semibold hover:text-brand-800">Remplacer</button>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="bg-brand-50 border border-brand-200 rounded-2xl p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <span className="text-xs font-bold text-red-600">PDF</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-slate-900">CV_Amadou_Diallo_2026.pdf</p>
+                          <p className="text-xs text-slate-400">245 Ko · Mis à jour à l'instant</p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <button 
+                            onClick={() => {
+                              localStorage.setItem('cv_uploaded', 'true')
+                              setCvUploaded(true)
+                            }}
+                            className="text-xs text-brand-600 font-semibold hover:text-brand-800"
+                          >
+                            Remplacer
+                          </button>
+                          <button 
+                            onClick={() => {
+                              localStorage.setItem('cv_uploaded', 'false')
+                              setCvUploaded(false)
+                            }}
+                            className="text-xs text-red-600 font-semibold hover:text-red-800"
+                          >
+                            Supprimer
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
                   <div className="pt-4 border-t border-slate-100">
                     <h3 className="font-semibold text-slate-900 mb-3">Visibilité du CV</h3>
                     <div className="space-y-3">
@@ -360,6 +672,159 @@ export default function CandidateProfile() {
           </div>
         </div>
       </div>
+
+      {/* Experience Modal */}
+      {showExpModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="bg-white rounded-2xl max-w-lg w-full shadow-xl overflow-hidden animate-scale-up">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <h3 className="font-bold text-slate-900 text-lg">
+                {editingExp ? 'Modifier l\'expérience' : 'Ajouter une expérience'}
+              </h3>
+              <button onClick={() => setShowExpModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleSaveExp} className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Titre du poste *</label>
+                <input 
+                  type="text" 
+                  required 
+                  value={expTitle} 
+                  onChange={e => setExpTitle(e.target.value)} 
+                  placeholder="ex: Senior React Developer" 
+                  className="input-field" 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Entreprise *</label>
+                <input 
+                  type="text" 
+                  required 
+                  value={expCompany} 
+                  onChange={e => setExpCompany(e.target.value)} 
+                  placeholder="ex: Sonatel" 
+                  className="input-field" 
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Date de début *</label>
+                  <input 
+                    type="month" 
+                    required 
+                    value={expStart} 
+                    onChange={e => setExpStart(e.target.value)} 
+                    className="input-field" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Date de fin</label>
+                  <input 
+                    type="month" 
+                    disabled={expCurrent} 
+                    required={!expCurrent} 
+                    value={expEnd} 
+                    onChange={e => setExpEnd(e.target.value)} 
+                    className="input-field disabled:bg-slate-50 disabled:text-slate-400" 
+                  />
+                </div>
+              </div>
+              <label className="flex items-center gap-2 cursor-pointer py-1">
+                <input 
+                  type="checkbox" 
+                  checked={expCurrent} 
+                  onChange={e => setExpCurrent(e.target.checked)} 
+                  className="rounded border-slate-300 text-brand-600 focus:ring-brand-500" 
+                />
+                <span className="text-sm font-semibold text-slate-700">C'est mon poste actuel</span>
+              </label>
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Description</label>
+                <textarea 
+                  rows={4} 
+                  value={expDesc} 
+                  onChange={e => setExpDesc(e.target.value)} 
+                  placeholder="Décrivez vos missions et réalisations..." 
+                  className="input-field resize-none" 
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+                <Button type="button" variant="secondary" size="sm" onClick={() => setShowExpModal(false)}>Annuler</Button>
+                <Button type="submit" size="sm">Enregistrer</Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Education Modal */}
+      {showEduModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="bg-white rounded-2xl max-w-lg w-full shadow-xl overflow-hidden animate-scale-up">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <h3 className="font-bold text-slate-900 text-lg">
+                {editingEdu ? 'Modifier la formation' : 'Ajouter une formation'}
+              </h3>
+              <button onClick={() => setShowEduModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleSaveEdu} className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Diplôme / Certification *</label>
+                <input 
+                  type="text" 
+                  required 
+                  value={eduDegree} 
+                  onChange={e => setEduDegree(e.target.value)} 
+                  placeholder="ex: Master en Génie Logiciel" 
+                  className="input-field" 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Établissement *</label>
+                <input 
+                  type="text" 
+                  required 
+                  value={eduSchool} 
+                  onChange={e => setEduSchool(e.target.value)} 
+                  placeholder="ex: Université Cheikh Anta Diop" 
+                  className="input-field" 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Année d'obtention *</label>
+                <input 
+                  type="number" 
+                  min="1950" 
+                  max="2100" 
+                  required 
+                  value={eduYear} 
+                  onChange={e => setEduYear(e.target.value)} 
+                  placeholder="ex: 2018" 
+                  className="input-field" 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Mention (optionnel)</label>
+                <input 
+                  type="text" 
+                  value={eduMention} 
+                  onChange={e => setEduMention(e.target.value)} 
+                  placeholder="ex: Mention Très Bien" 
+                  className="input-field" 
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+                <Button type="button" variant="secondary" size="sm" onClick={() => setShowEduModal(false)}>Annuler</Button>
+                <Button type="submit" size="sm">Enregistrer</Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   )
 }
