@@ -210,17 +210,14 @@ export default function Landing() {
       threshold: 0.05,
     }
 
-    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
+    const observer = new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('active-reveal')
-        } else {
-          entry.target.classList.remove('active-reveal')
+          obs.unobserve(entry.target) // Stop observing once revealed to prevent vibration jitter loops
         }
       })
-    }
-
-    const observer = new IntersectionObserver(handleIntersect, observerOptions)
+    }, observerOptions)
 
     // Select elements we want to animate on scroll
     const revealElements = document.querySelectorAll('.scroll-reveal')
