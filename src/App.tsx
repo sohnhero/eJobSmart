@@ -7,6 +7,7 @@ import Trainings from './pages/Trainings'
 import TrainingDetail from './pages/TrainingDetail'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import ForgotPassword from './pages/ForgotPassword'
 import Contact from './pages/Contact'
 import Pricing from './pages/Pricing'
 import Companies from './pages/Companies'
@@ -80,6 +81,7 @@ export default function App() {
         {/* Auth */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* Candidate Dashboard */}
         <Route path="/dashboard/candidate" element={<CandidateDashboard />} />
