@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Check, Zap, Star, Building2, Users, ArrowRight, HelpCircle, ShieldCheck, RefreshCw, CreditCard, Globe, ChevronDown } from 'lucide-react'
+import { Check, Zap, Star, Building2, Users, ArrowRight, HelpCircle, ShieldCheck, RefreshCw, CreditCard, Globe, ChevronDown, Briefcase } from 'lucide-react'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import Button from '../components/ui/Button'
@@ -47,6 +47,47 @@ const plans = {
         'Notifications SMS',
         'Export CV en PDF branded',
         'Statistiques de visibilité',
+      ],
+      missing: [],
+    },
+  ],
+  freelancer: [
+    {
+      name: 'Gratuit',
+      price: { monthly: 0, annual: 0 },
+      currency: 'FCFA',
+      desc: 'Idéal pour démarrer votre activité indépendante',
+      color: 'border-slate-200',
+      btnVariant: 'secondary' as const,
+      features: [
+        'Profil freelance complet',
+        'Jusqu\'à 10 propositions de service / mois',
+        'Messagerie en temps réel avec les clients',
+        'Accès à la base de missions standards',
+      ],
+      missing: [
+        'Badge de certification eJobSmart',
+        'Profil mis en avant dans les recherches',
+        'Propositions illimitées',
+        'Retraits de fonds prioritaires',
+      ],
+    },
+    {
+      name: 'Premium',
+      price: { monthly: 8000, annual: 80000 },
+      currency: 'FCFA',
+      desc: 'Pour maximiser vos opportunités et vos revenus',
+      color: 'border-brand-500',
+      popular: true,
+      btnVariant: 'primary' as const,
+      features: [
+        'Propositions illimitées sur toutes les missions',
+        'Badge de confiance "Freelance Certifié"',
+        'Accès anticipé de 24h aux missions urgentes',
+        'Profil mis en avant dans le catalogue client',
+        'Statistiques détaillées de visibilité',
+        'Retraits express sous 2h (Wave/OM)',
+        'Accès à toutes les formations premium',
       ],
       missing: [],
     },
@@ -187,10 +228,10 @@ const faqs = [
 export default function Pricing() {
   const navigate = useNavigate()
   const [billing, setBilling] = useState<Billing>('monthly')
-  const [audience, setAudience] = useState<'candidate' | 'company' | 'agency'>('company')
+  const [audience, setAudience] = useState<'candidate' | 'freelancer' | 'company' | 'agency'>('company')
   const [openFaq, setOpenFaq] = useState<number | null>(null)
 
-  const currentPlans = plans[audience]
+  const currentPlans = plans[audience as keyof typeof plans]
 
   return (
     <div className="min-h-screen bg-slate-50/50">
@@ -226,22 +267,28 @@ export default function Pricing() {
 
         {/* Toggle audience */}
         <div className="flex justify-center mb-10">
-          <div className="bg-slate-100/80 backdrop-blur-md border border-slate-200/50 p-1.5 rounded-2xl flex flex-wrap justify-center gap-1.5 max-w-lg shadow-sm">
+          <div className="bg-slate-100/80 backdrop-blur-md border border-slate-200/50 p-1.5 rounded-2xl flex flex-wrap justify-center gap-1.5 max-w-2xl shadow-sm">
             <button
               onClick={() => setAudience('candidate')}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-heading font-black tracking-tight uppercase transition-all duration-300 ${audience === 'candidate' ? 'bg-gradient-to-r from-brand-600 to-blue-600 text-white shadow-lg shadow-brand-500/25 scale-[1.02]' : 'text-slate-600 hover:text-slate-800'}`}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-heading font-black tracking-tight uppercase transition-all duration-300 ${audience === 'candidate' ? 'bg-gradient-to-r from-brand-600 to-blue-600 text-white shadow-lg shadow-brand-500/25 scale-[1.02]' : 'text-slate-600 hover:text-slate-800'}`}
             >
               <Users className="w-4 h-4" /> Candidats
             </button>
             <button
+              onClick={() => setAudience('freelancer')}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-heading font-black tracking-tight uppercase transition-all duration-300 ${audience === 'freelancer' ? 'bg-gradient-to-r from-brand-600 to-blue-600 text-white shadow-lg shadow-brand-500/25 scale-[1.02]' : 'text-slate-600 hover:text-slate-800'}`}
+            >
+              <Briefcase className="w-4 h-4" /> Freelancers
+            </button>
+            <button
               onClick={() => setAudience('company')}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-heading font-black tracking-tight uppercase transition-all duration-300 ${audience === 'company' ? 'bg-gradient-to-r from-brand-600 to-blue-600 text-white shadow-lg shadow-brand-500/25 scale-[1.02]' : 'text-slate-600 hover:text-slate-800'}`}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-heading font-black tracking-tight uppercase transition-all duration-300 ${audience === 'company' ? 'bg-gradient-to-r from-brand-600 to-blue-600 text-white shadow-lg shadow-brand-500/25 scale-[1.02]' : 'text-slate-600 hover:text-slate-800'}`}
             >
               <Building2 className="w-4 h-4" /> Entreprises
             </button>
             <button
               onClick={() => setAudience('agency')}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-heading font-black tracking-tight uppercase transition-all duration-300 ${audience === 'agency' ? 'bg-gradient-to-r from-brand-600 to-blue-600 text-white shadow-lg shadow-brand-500/25 scale-[1.02]' : 'text-slate-600 hover:text-slate-800'}`}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-heading font-black tracking-tight uppercase transition-all duration-300 ${audience === 'agency' ? 'bg-gradient-to-r from-brand-600 to-blue-600 text-white shadow-lg shadow-brand-500/25 scale-[1.02]' : 'text-slate-600 hover:text-slate-800'}`}
             >
               <Star className="w-4 h-4" /> Cabinets RH
             </button>
@@ -361,17 +408,29 @@ export default function Pricing() {
         {/* Trust badges */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20">
           {[
-            { icon: <ShieldCheck className="w-6 h-6 text-emerald-600" />, bg: 'bg-emerald-50 border-emerald-100/50', label: 'Paiement sécurisé SSL', desc: 'Vos transactions cryptées' },
-            { icon: <RefreshCw className="w-6 h-6 text-blue-600" />, bg: 'bg-blue-50 border-blue-100/50', label: 'Sans engagement', desc: 'Résiliation en un clic' },
-            { icon: <CreditCard className="w-6 h-6 text-purple-600" />, bg: 'bg-purple-50 border-purple-100/50', label: 'Orange Money & Wave', desc: 'Moyens locaux supportés' },
-            { icon: <Globe className="w-6 h-6 text-brand-600" />, bg: 'bg-brand-50 border-brand-100/50', label: '100% Afrique de l\'Ouest', desc: 'Serveurs locaux performants' },
+            { icon: <ShieldCheck className="w-6 h-6 text-emerald-600" />, bg: 'bg-emerald-50/70 border-emerald-100/50', glow: 'bg-emerald-400/20', label: 'Paiement sécurisé SSL', desc: 'Vos transactions cryptées' },
+            { icon: <RefreshCw className="w-6 h-6 text-blue-600" />, bg: 'bg-blue-50/70 border-blue-100/50', glow: 'bg-blue-400/20', label: 'Sans engagement', desc: 'Résiliation en un clic' },
+            { icon: <CreditCard className="w-6 h-6 text-purple-600" />, bg: 'bg-purple-50/70 border-purple-100/50', glow: 'bg-purple-400/20', label: 'Orange Money & Wave', desc: 'Moyens locaux supportés' },
+            { icon: <Globe className="w-6 h-6 text-brand-600" />, bg: 'bg-brand-50/70 border-brand-100/50', glow: 'bg-brand-400/20', label: '100% Afrique de l\'Ouest', desc: 'Serveurs locaux performants' },
           ].map(t => (
-            <div key={t.label} className="bg-white border border-slate-100 rounded-[24px] p-6 flex flex-col items-center text-center hover:shadow-md hover:border-slate-200 transition-all duration-300">
-              <div className={`w-12 h-12 rounded-2xl ${t.bg} border flex items-center justify-center mb-4`}>
+            <div 
+              key={t.label} 
+              className="group relative bg-white border border-slate-100/90 rounded-[28px] p-6 flex flex-col items-center text-center hover:-translate-y-1.5 transition-all duration-500 shadow-[0_8px_30px_rgba(0,0,0,0.01)] hover:shadow-[0_20px_40px_rgba(15,30,58,0.05)] hover:border-slate-200 overflow-hidden"
+            >
+              {/* Subtle top background decoration */}
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-slate-50 to-transparent rounded-tr-[28px] pointer-events-none opacity-40" />
+
+              {/* Glowing hover indicator behind the icon container */}
+              <div className={`absolute top-6 w-16 h-16 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500 ${t.glow} pointer-events-none`} />
+
+              {/* Icon Container */}
+              <div className={`relative w-14 h-14 rounded-2xl ${t.bg} border flex items-center justify-center mb-5 transition-all duration-500 group-hover:scale-105 shadow-[0_4px_10px_-2px_rgba(0,0,0,0.02)] z-10`}>
                 {t.icon}
               </div>
-              <p className="text-sm font-heading font-black text-slate-900 leading-tight">{t.label}</p>
-              <p className="text-xs text-slate-400 mt-1 font-sans font-medium">{t.desc}</p>
+
+              {/* Text info */}
+              <p className="text-sm font-heading font-black text-slate-800 tracking-tight leading-tight z-10">{t.label}</p>
+              <p className="text-[11px] text-slate-400 mt-2 font-sans font-semibold leading-relaxed z-10">{t.desc}</p>
             </div>
           ))}
         </div>

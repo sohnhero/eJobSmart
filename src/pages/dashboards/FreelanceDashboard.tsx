@@ -126,7 +126,7 @@ export default function FreelanceDashboard() {
             <div className="relative z-10">
               <h3 className="text-lg font-bold mb-2 text-white">Boostez votre profil Freelance !</h3>
               <p className="text-blue-100 text-sm mb-4 max-w-md">Ajoutez vos dernières réalisations à votre portfolio pour attirer plus d'entreprises.</p>
-              <Button variant="white" size="sm" onClick={() => navigate('/dashboard/candidate/profile')}>Mettre à jour mon portfolio</Button>
+              <Button variant="white" size="sm" onClick={() => navigate('/dashboard/freelance/profile')}>Mettre à jour mon portfolio</Button>
             </div>
             <TrendingUp className="absolute -bottom-6 -right-6 w-32 h-32 text-blue-500/20 rotate-12" />
           </div>

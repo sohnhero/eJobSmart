@@ -22,6 +22,7 @@ interface NavbarProps {
 export default function Navbar({ isLoggedIn, userRole, userName = 'Amadou Diallo' }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -96,7 +97,7 @@ export default function Navbar({ isLoggedIn, userRole, userName = 'Amadou Diallo
                       </button>
                       <div className="border-t border-slate-100 my-1" />
                       <button
-                        onClick={() => navigate('/')}
+                        onClick={() => setShowLogoutConfirm(true)}
                         className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50"
                       >
                         <LogOut className="w-4 h-4" />
@@ -208,7 +209,7 @@ export default function Navbar({ isLoggedIn, userRole, userName = 'Amadou Diallo
                   Tableau de bord
                 </Button>
                 <button
-                  onClick={() => { navigate('/'); setMobileOpen(false) }}
+                  onClick={() => { setShowLogoutConfirm(true); setMobileOpen(false) }}
                   className="w-full py-2.5 rounded-xl border border-red-200 hover:bg-red-50 text-red-600 font-heading font-semibold text-sm flex items-center justify-center gap-2 transition-colors"
                 >
                   <LogOut className="w-4 h-4" />
@@ -242,6 +243,41 @@ export default function Navbar({ isLoggedIn, userRole, userName = 'Amadou Diallo
           </div>
         </div>
       </nav>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-fade-in" onClick={() => setShowLogoutConfirm(false)} />
+          <div className="bg-white rounded-3xl w-full max-w-sm shadow-2xl relative z-10 overflow-hidden border border-slate-100 p-6 text-center animate-slide-up">
+            <div className="w-12 h-12 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <LogOut className="w-6 h-6 animate-pulse" />
+            </div>
+            <h3 className="font-black text-slate-900 text-lg mb-2">Confirmer la déconnexion</h3>
+            <p className="text-sm text-slate-500 mb-6 leading-relaxed">
+              Êtes-vous sûr de vouloir vous déconnecter de votre session ?
+            </p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowLogoutConfirm(false)}
+                className="flex-1 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-semibold transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  navigate('/')
+                  setShowLogoutConfirm(false)
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-750 text-white text-sm font-semibold transition-colors shadow-sm"
+              >
+                Déconnexion
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   )
 }

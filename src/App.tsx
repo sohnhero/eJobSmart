@@ -38,18 +38,30 @@ import CandidateRecommendedJobs from './pages/dashboards/CandidateRecommendedJob
 import AgencyJobs from './pages/dashboards/AgencyJobs'
 import AdminRhCandidates from './pages/dashboards/AdminRhCandidates'
 import AdminBilling from './pages/dashboards/AdminBilling'
+import AdminRhCvDatabase from './pages/dashboards/AdminRhCvDatabase'
+import AdminRhJobs from './pages/dashboards/AdminRhJobs'
+import AdminRhTrainings from './pages/dashboards/AdminRhTrainings'
+import FreelanceJobs from './pages/dashboards/FreelanceJobs'
+import FreelanceProposals from './pages/dashboards/FreelanceProposals'
+import FreelanceProfile from './pages/dashboards/FreelanceProfile'
+import FreelanceTrainings from './pages/dashboards/FreelanceTrainings'
+import FreelanceBilling from './pages/dashboards/FreelanceBilling'
+import AgencyAnalytics from './pages/dashboards/AgencyAnalytics'
+import AgencyBilling from './pages/dashboards/AgencyBilling'
+import AgencyTrainings from './pages/dashboards/AgencyTrainings'
 import Legal from './pages/Legal'
 import Support from './pages/Support'
 import FAQ from './pages/FAQ'
 import NotFound from './pages/NotFound'
 import ScrollToTop from './components/layout/ScrollToTop'
 import Preloader from './components/layout/Preloader'
+import { ToastProvider } from './components/ui/Toast'
 
 export default function App() {
   const [loading, setLoading] = useState(true)
 
   return (
-    <>
+    <ToastProvider>
       {loading && <Preloader onComplete={() => setLoading(false)} />}
       <BrowserRouter>
         <ScrollToTop />
@@ -95,7 +107,11 @@ export default function App() {
 
         {/* Freelance Dashboard */}
         <Route path="/dashboard/freelance" element={<FreelanceDashboard />} />
-        <Route path="/dashboard/freelance/jobs" element={<CandidateRecommendedJobs />} />
+        <Route path="/dashboard/freelance/jobs" element={<FreelanceJobs />} />
+        <Route path="/dashboard/freelance/proposals" element={<FreelanceProposals />} />
+        <Route path="/dashboard/freelance/profile" element={<FreelanceProfile />} />
+        <Route path="/dashboard/freelance/trainings" element={<FreelanceTrainings />} />
+        <Route path="/dashboard/freelance/billing" element={<FreelanceBilling />} />
         <Route path="/dashboard/freelance/messages" element={<Messages role="freelance" />} />
         <Route path="/dashboard/freelance/notifications" element={<Notifications />} />
         <Route path="/dashboard/freelance/*" element={<FreelanceDashboard />} />
@@ -105,15 +121,18 @@ export default function App() {
         <Route path="/dashboard/agency/resources" element={<AgencyResources />} />
         <Route path="/dashboard/agency/jobs" element={<AgencyJobs />} />
         <Route path="/dashboard/agency/messages" element={<Messages role="agency" />} />
-        <Route path="/dashboard/agency/billing" element={<BillingPage role="agency" />} />
-        <Route path="/dashboard/agency/analytics" element={<CompanyAnalytics />} />
+        <Route path="/dashboard/agency/billing" element={<AgencyBilling />} />
+        <Route path="/dashboard/agency/analytics" element={<AgencyAnalytics />} />
+        <Route path="/dashboard/agency/trainings" element={<AgencyTrainings />} />
         <Route path="/dashboard/agency/notifications" element={<Notifications />} />
         <Route path="/dashboard/agency/*" element={<AgencyDashboard />} />
 
         {/* Internal Admin RH Dashboard */}
         <Route path="/dashboard/admin-rh" element={<AdminRhDashboard />} />
-        <Route path="/dashboard/admin-rh/cv-database" element={<CVDatabase />} />
+        <Route path="/dashboard/admin-rh/cv-database" element={<AdminRhCvDatabase />} />
         <Route path="/dashboard/admin-rh/candidates" element={<AdminRhCandidates />} />
+        <Route path="/dashboard/admin-rh/jobs" element={<AdminRhJobs />} />
+        <Route path="/dashboard/admin-rh/trainings" element={<AdminRhTrainings />} />
         <Route path="/dashboard/admin-rh/messages" element={<Messages role="admin-rh" />} />
         <Route path="/dashboard/admin-rh/notifications" element={<Notifications />} />
         <Route path="/dashboard/admin-rh/*" element={<AdminRhDashboard />} />
@@ -136,6 +155,6 @@ export default function App() {
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
-    </>
+    </ToastProvider>
   )
 }

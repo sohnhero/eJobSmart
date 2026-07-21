@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Mail, Lock, Eye, EyeOff, ArrowLeft, ArrowRight, Linkedin, Trophy, Building2, Zap, User, Settings } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, ArrowLeft, ArrowRight, Linkedin, Trophy, Building2, Zap, User, Settings, Briefcase, Users, UserCheck } from 'lucide-react'
 import Button from '../components/ui/Button'
 
 export default function Login() {
@@ -10,7 +10,7 @@ export default function Login() {
   const [showPwd, setShowPwd] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const handleLogin = async (role: 'candidate' | 'company' | 'admin') => {
+  const handleLogin = async (role: 'candidate' | 'company' | 'admin' | 'freelance' | 'agency' | 'admin-rh') => {
     setLoading(true)
     await new Promise(r => setTimeout(r, 800))
     setLoading(false)
@@ -135,24 +135,24 @@ export default function Login() {
         <div className="w-full max-w-md">
           {/* Mobile header */}
           <div className="flex items-center justify-between mb-8 lg:hidden">
-            <Link to="/" className="flex items-center gap-1.5 text-slate-500 hover:text-brand-600 transition-colors">
-              <ArrowLeft className="w-4 h-4" />
+            <Link 
+              to="/" 
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 border border-slate-100 bg-white shadow-sm rounded-full text-slate-600 hover:text-brand-600 hover:border-brand-100 hover:shadow transition-all duration-300 group"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
               <span className="text-xs font-semibold">Retour à l'accueil</span>
-            </Link>
-            <Link to="/register" className="text-xs text-slate-500 hover:text-brand-600 transition-colors">
-              Nouveau ? <span className="font-semibold">S'inscrire</span>
             </Link>
           </div>
 
           {/* Desktop Top Link */}
-          <div className="hidden lg:flex justify-between items-center mb-8 text-xs sm:text-sm text-slate-500">
-            <Link to="/" className="flex items-center gap-1.5 text-slate-500 hover:text-brand-600 transition-colors font-medium">
-              <ArrowLeft className="w-4 h-4" /> Retour à l'accueil
+          <div className="hidden lg:flex justify-between items-center mb-8">
+            <Link 
+              to="/" 
+              className="inline-flex items-center gap-2 px-4 py-2 border border-slate-100 bg-white shadow-sm rounded-full text-slate-600 hover:text-brand-600 hover:border-brand-100 hover:shadow transition-all duration-300 group"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+              <span className="text-xs font-semibold">Retour à l'accueil</span>
             </Link>
-            <span>
-              Nouveau ? &nbsp;
-              <Link to="/register" className="font-semibold text-brand-600 hover:underline">S'inscrire</Link>
-            </span>
           </div>
 
           <h2 className="text-2xl font-bold text-slate-900 mb-1">Connexion</h2>
@@ -166,11 +166,15 @@ export default function Login() {
             <div className="grid grid-cols-3 gap-2">
               {[
                 { label: 'Candidat', role: 'candidate' as const, icon: User },
+                { label: 'Freelance', role: 'freelance' as const, icon: Briefcase },
                 { label: 'Entreprise', role: 'company' as const, icon: Building2 },
+                { label: 'Cabinet RH', role: 'agency' as const, icon: Users },
+                { label: 'Admin RH', role: 'admin-rh' as const, icon: UserCheck },
                 { label: 'Admin', role: 'admin' as const, icon: Settings },
               ].map(item => (
                 <button
                   key={item.role}
+                  type="button"
                   onClick={() => handleLogin(item.role)}
                   className="flex flex-col items-center gap-1.5 text-[10px] font-bold text-brand-700 bg-white border border-brand-200 rounded-xl py-2.5 hover:bg-brand-600 hover:text-white hover:border-brand-600 transition-all group"
                 >

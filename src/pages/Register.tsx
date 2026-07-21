@@ -41,8 +41,11 @@ export default function Register() {
         <div className="w-full max-w-lg my-auto py-4">
           {/* Mobile logo & Top Link */}
           <div className="flex items-center justify-between mb-6 lg:hidden">
-            <Link to="/" className="flex items-center gap-1.5 text-slate-500 hover:text-brand-600 transition-colors">
-              <ArrowLeft className="w-4 h-4" />
+            <Link 
+              to="/" 
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 border border-slate-100 bg-white shadow-sm rounded-full text-slate-600 hover:text-brand-600 hover:border-brand-100 hover:shadow transition-all duration-300 group"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
               <span className="text-xs font-semibold">Retour à l'accueil</span>
             </Link>
             <Link to="/login" className="text-xs text-slate-500 hover:text-brand-600 transition-colors">
@@ -52,8 +55,12 @@ export default function Register() {
 
           {/* Desktop Top Link */}
           <div className="hidden lg:flex justify-between items-center mb-4 text-xs sm:text-sm text-slate-500">
-            <Link to="/" className="flex items-center gap-1.5 text-slate-500 hover:text-brand-600 transition-colors font-medium">
-              <ArrowLeft className="w-4 h-4" /> Retour à l'accueil
+            <Link 
+              to="/" 
+              className="inline-flex items-center gap-2 px-4 py-2 border border-slate-100 bg-white shadow-sm rounded-full text-slate-600 hover:text-brand-600 hover:border-brand-100 hover:shadow transition-all duration-300 group"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+              <span className="text-xs font-semibold">Retour à l'accueil</span>
             </Link>
             <span>
               Déjà inscrit ? &nbsp;<Link to="/login" className="font-semibold text-brand-600 hover:underline">Se connecter</Link>

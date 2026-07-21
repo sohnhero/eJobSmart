@@ -6,7 +6,7 @@ import {
   Zap, Shield, Clock, ChevronRight, Laptop, Landmark,
   Stethoscope, HardHat, Sprout, Hotel, Truck, Megaphone,
   ShoppingCart, Scale, Palette, Home, Leaf, Building, User,
-  Handshake, BarChart3, Globe, BookOpen
+  Handshake, BarChart3, Globe, BookOpen, ArrowUp
 } from 'lucide-react'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
@@ -82,21 +82,45 @@ const features = [
     icon: Zap, title: 'Matching Intelligent', color: 'text-brand-600', bg: 'bg-brand-50', borderColor: 'border-brand-100',
     gradient: 'from-brand-500/10 to-blue-500/10',
     desc: 'Notre algorithme analyse 6 critères pour calculer un score de compatibilité entre votre profil et les offres disponibles.',
+    hoverShadow: 'hover:shadow-[0_20px_40px_-12px_rgba(37,99,235,0.18)]',
+    hoverBorder: 'hover:border-blue-200/80',
+    hoverText: 'group-hover:text-brand-600',
+    linkText: 'group-hover:text-brand-600',
+    arrowBg: 'group-hover:bg-brand-50 group-hover:text-brand-600',
+    glowBg: 'bg-brand-400/20',
   },
   {
     icon: Shield, title: 'Profils vérifiés', color: 'text-emerald-600', bg: 'bg-emerald-50', borderColor: 'border-emerald-100',
     gradient: 'from-emerald-500/10 to-teal-500/10',
     desc: 'Chaque entreprise et cabinet RH est vérifié manuellement (NINEA, RC, agréments) avant de pouvoir publier des offres.',
+    hoverShadow: 'hover:shadow-[0_20px_40px_-12px_rgba(16,185,129,0.18)]',
+    hoverBorder: 'hover:border-emerald-200/80',
+    hoverText: 'group-hover:text-emerald-600',
+    linkText: 'group-hover:text-emerald-600',
+    arrowBg: 'group-hover:bg-emerald-50 group-hover:text-emerald-600',
+    glowBg: 'bg-emerald-400/20',
   },
   {
     icon: Clock, title: 'Recrutement rapide', color: 'text-purple-600', bg: 'bg-purple-50', borderColor: 'border-purple-100',
     gradient: 'from-purple-500/10 to-pink-500/10',
     desc: 'Délai moyen de placement de 18 jours. Notifications en temps réel à chaque étape du processus de recrutement.',
+    hoverShadow: 'hover:shadow-[0_20px_40px_-12px_rgba(139,92,246,0.18)]',
+    hoverBorder: 'hover:border-purple-200/80',
+    hoverText: 'group-hover:text-purple-600',
+    linkText: 'group-hover:text-purple-600',
+    arrowBg: 'group-hover:bg-purple-50 group-hover:text-purple-600',
+    glowBg: 'bg-purple-400/20',
   },
   {
     icon: Handshake, title: 'Conseil RH Expert', color: 'text-amber-600', bg: 'bg-amber-50', borderColor: 'border-amber-100',
     gradient: 'from-amber-500/10 to-orange-500/10',
     desc: 'Des experts RH vous accompagnent : audit, stratégie de recrutement, conformité droit du travail sénégalais.',
+    hoverShadow: 'hover:shadow-[0_20px_40px_-12px_rgba(245,158,11,0.18)]',
+    hoverBorder: 'hover:border-amber-200/80',
+    hoverText: 'group-hover:text-amber-600',
+    linkText: 'group-hover:text-amber-600',
+    arrowBg: 'group-hover:bg-amber-50 group-hover:text-amber-600',
+    glowBg: 'bg-amber-400/20',
   },
 ]
 
@@ -105,26 +129,56 @@ const services = [
   {
     icon: Briefcase, title: 'Agence Intérim', desc: 'Placement de travailleurs temporaires dans le BTP, hôtellerie, industrie et services.',
     gradient: 'from-emerald-500 to-teal-600',
+    hoverShadow: 'hover:shadow-[0_20px_40px_-12px_rgba(16,185,129,0.18)]',
+    hoverBorder: 'hover:border-emerald-200/80',
+    hoverText: 'group-hover:text-emerald-600',
+    linkText: 'text-emerald-600',
+    glowBg: 'bg-emerald-400/20',
   },
   {
     icon: Globe, title: 'Marketplace RH', desc: 'Plateforme multi-acteurs : entreprises, cabinets, freelances et candidats sur un seul espace.',
     gradient: 'from-brand-500 to-blue-700',
+    hoverShadow: 'hover:shadow-[0_20px_40px_-12px_rgba(37,99,235,0.18)]',
+    hoverBorder: 'hover:border-blue-200/80',
+    hoverText: 'group-hover:text-brand-600',
+    linkText: 'text-brand-600',
+    glowBg: 'bg-brand-400/20',
   },
   {
     icon: Search, title: 'Offres d\'Emploi', desc: 'CDI, CDD, interim, freelance, stage et alternance. La source d\'offres la plus complète du Sénégal.',
-    gradient: 'from-blue-500 to-brand-700',
+    gradient: 'from-rose-500 to-red-650',
+    hoverShadow: 'hover:shadow-[0_20px_40px_-12px_rgba(244,63,94,0.18)]',
+    hoverBorder: 'hover:border-rose-200/80',
+    hoverText: 'group-hover:text-rose-600',
+    linkText: 'text-rose-600',
+    glowBg: 'bg-rose-400/20',
   },
   {
     icon: Users, title: 'Base CV & Talents', desc: 'Vivier de 500 000+ profils vérifiés. Recherche et filtrage avancés pour les recruteurs.',
     gradient: 'from-violet-500 to-purple-700',
+    hoverShadow: 'hover:shadow-[0_20px_40px_-12px_rgba(139,92,246,0.18)]',
+    hoverBorder: 'hover:border-purple-200/80',
+    hoverText: 'group-hover:text-violet-600',
+    linkText: 'text-violet-600',
+    glowBg: 'bg-violet-400/20',
   },
   {
     icon: BookOpen, title: 'Formation & E-Learning', desc: 'Programmes certifiants en RH, management et compétences numériques pour booster l\'employabilité.',
     gradient: 'from-amber-500 to-orange-600',
+    hoverShadow: 'hover:shadow-[0_20px_40px_-12px_rgba(245,158,11,0.18)]',
+    hoverBorder: 'hover:border-amber-200/80',
+    hoverText: 'group-hover:text-amber-600',
+    linkText: 'text-amber-600',
+    glowBg: 'bg-amber-400/20',
   },
   {
     icon: BarChart3, title: 'Conseil RH', desc: 'Missions de conseil, audit organisationnel et accompagnement stratégique des DRH.',
     gradient: 'from-slate-500 to-slate-700',
+    hoverShadow: 'hover:shadow-[0_20px_40px_-12px_rgba(100,116,139,0.18)]',
+    hoverBorder: 'hover:border-slate-300/80',
+    hoverText: 'group-hover:text-slate-700',
+    linkText: 'text-slate-650',
+    glowBg: 'bg-slate-400/20',
   },
 ]
 
@@ -170,6 +224,19 @@ export default function Landing() {
   const [searchQuery, setSearchQuery] = useState('')
   const [searchLocation, setSearchLocation] = useState('')
   const [activeTab, setActiveTab] = useState<'candidate' | 'company'>('candidate')
+  const [showScrollTop, setShowScrollTop] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
   const featuredJobs = jobs.filter(j => j.isFeatured).slice(0, 6)
   const featuredTrainings = trainings.filter(t => t.isFeatured).slice(0, 3)
   const topSectors = sectors.slice(0, 12)
@@ -437,24 +504,33 @@ export default function Landing() {
                 key={service.title}
                 onMouseMove={handleCardTilt}
                 onMouseLeave={resetCardTilt}
-                className={`group service-card cursor-pointer relative overflow-hidden hover-glow ${index >= 4 ? 'hidden sm:block' : 'block'} scroll-reveal reveal-zoom-in reveal-delay-${(index % 3) * 150}`}
+                className={`group cursor-pointer relative overflow-hidden bg-white border border-slate-100/90 rounded-[28px] p-5 sm:p-6 transition-all duration-500 hover:-translate-y-1.5 shadow-[0_8px_30px_rgba(0,0,0,0.01)] ${service.hoverShadow} ${service.hoverBorder} ${index >= 4 ? 'hidden sm:block' : 'block'} scroll-reveal reveal-zoom-in reveal-delay-${(index % 3) * 150} hover-glow`}
               >
-                {/* Gradient accent top */}
-                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${service.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                {/* Subtle top-right abstract shape */}
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-slate-50 to-transparent rounded-tr-[28px] pointer-events-none opacity-40" />
 
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 mb-2 sm:mb-4">
-                  <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
-                    <service.icon className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+                {/* Glowing hover background indicator behind the icon container */}
+                <div className={`absolute top-6 left-6 w-16 h-16 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500 ${service.glowBg} pointer-events-none`} />
+
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-3 sm:mb-4 z-10 relative">
+                  {/* Icon Container */}
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
+                    <service.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </div>
                   <div className="flex-1 min-w-0 pt-0.5">
-                    <h3 className="font-heading font-bold text-slate-900 text-xs sm:text-base leading-tight group-hover:text-brand-700 transition-colors">
+                    {/* Coherent hover text */}
+                    <h3 className={`font-heading font-black text-slate-800 text-xs sm:text-base leading-tight transition-colors duration-300 ${service.hoverText}`}>
                       {service.title}
                     </h3>
                   </div>
                 </div>
-                <p className="text-[10px] sm:text-sm text-slate-500 leading-normal sm:leading-relaxed line-clamp-3 sm:line-clamp-none">{service.desc}</p>
-                <div className="mt-2 sm:mt-4 flex items-center gap-1 text-[10px] sm:text-xs font-heading font-semibold text-brand-600 opacity-0 sm:group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300 hidden sm:flex">
-                  En savoir plus <ArrowRight className="w-3 h-3" />
+
+                <p className="text-[10px] sm:text-sm text-slate-500 leading-normal sm:leading-relaxed font-sans font-semibold mb-4 z-10 relative line-clamp-3 sm:line-clamp-none">{service.desc}</p>
+                
+                {/* En savoir plus */}
+                <div className={`mt-2 flex items-center gap-1 text-[10px] sm:text-xs font-heading font-black uppercase tracking-wider opacity-0 sm:group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300 hidden sm:flex ${service.linkText} z-10 relative`}>
+                  En savoir plus 
+                  <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform" />
                 </div>
               </div>
             ))}
@@ -666,31 +742,35 @@ export default function Landing() {
                 key={feature.title}
                 onMouseMove={handleCardTilt}
                 onMouseLeave={resetCardTilt}
-                className={`group relative bg-white p-3.5 sm:p-8 rounded-2xl sm:rounded-[32px] border transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(15,30,58,0.08)] cursor-pointer flex flex-col justify-between hover-glow scroll-reveal reveal-flip-x reveal-delay-${(index % 4) * 100}`}
-                style={{ borderColor: '#E6F2FF' }}
+                className={`group relative bg-white p-5 sm:p-8 rounded-[28px] sm:rounded-[32px] border border-slate-100/90 transition-all duration-500 hover:-translate-y-1.5 shadow-[0_8px_30px_rgba(0,0,0,0.01)] hover-glow cursor-pointer flex flex-col justify-between scroll-reveal reveal-flip-x reveal-delay-${(index % 4) * 100} ${feature.hoverShadow} ${feature.hoverBorder}`}
               >
+                {/* Subtle top-right abstract shape */}
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-slate-50 to-transparent rounded-tr-[28px] sm:rounded-tr-[32px] pointer-events-none opacity-40" />
 
-                <div>
+                {/* Glowing hover background indicator behind the icon container */}
+                <div className={`absolute top-6 left-6 w-16 h-16 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500 ${feature.glowBg} pointer-events-none`} />
+
+                <div className="z-10 relative">
                   {/* Glowing Icon Container */}
-                  <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl ${feature.bg} flex items-center justify-center mb-3 sm:mb-6 group-hover:scale-110 transition-transform duration-300 relative`}>
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl ${feature.bg} flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 relative shadow-sm`}>
                     {/* Inner glass overlay */}
-                    <div className="absolute inset-0.5 rounded-lg sm:rounded-xl bg-white opacity-80" />
-                    <feature.icon className={`w-4 h-4 sm:w-6 sm:h-6 ${feature.color} relative z-10`} />
+                    <div className="absolute inset-0.5 rounded-xl bg-white opacity-80" />
+                    <feature.icon className={`w-5 h-5 sm:w-6 sm:h-6 ${feature.color} relative z-10`} />
                   </div>
 
-                  <h3 className="text-xs sm:text-base font-heading font-black text-slate-900 mb-1.5 sm:mb-3 group-hover:text-brand-600 transition-colors">
+                  <h3 className={`text-sm sm:text-base font-heading font-black text-slate-800 mb-2 transition-colors duration-300 ${feature.hoverText}`}>
                     {feature.title}
                   </h3>
-                  <p className="text-slate-500 leading-normal sm:leading-relaxed text-[10px] sm:text-sm">
+                  <p className="text-slate-500 leading-relaxed font-sans font-semibold text-[11px] sm:text-sm">
                     {feature.desc}
                   </p>
                 </div>
 
                 {/* Sleek bottom interactive link */}
-                <div className="mt-3 sm:mt-6 pt-2.5 sm:pt-5 border-t border-slate-50 flex items-center justify-between text-[10px] sm:text-xs font-heading font-bold text-slate-400 group-hover:text-brand-600 transition-colors hidden sm:flex">
+                <div className={`mt-5 sm:mt-6 pt-4 border-t border-slate-50 flex items-center justify-between text-xs font-heading font-black uppercase tracking-wider text-slate-400 transition-colors duration-300 ${feature.linkText} z-10 relative hidden sm:flex`}>
                   <span>En savoir plus</span>
-                  <div className="w-7 h-7 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-brand-50 group-hover:text-brand-600 transition-colors">
-                    <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+                  <div className={`w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center transition-all duration-300 ${feature.arrowBg}`}>
+                    <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
                   </div>
                 </div>
               </div>
@@ -970,6 +1050,15 @@ export default function Landing() {
       </section>
 
       <Footer />
+
+      {/* Floating Scroll to Top Button */}
+      <button
+        onClick={scrollToTop}
+        className={`fixed bottom-6 right-6 z-50 p-3.5 bg-gradient-to-r from-brand-600 to-blue-600 text-white rounded-full shadow-lg shadow-brand-500/25 border border-brand-400/20 hover:shadow-xl hover:shadow-brand-500/35 hover:-translate-y-1 active:scale-95 transition-all duration-300 group ${showScrollTop ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-12 opacity-0 scale-75 pointer-events-none'}`}
+        aria-label="Retour en haut"
+      >
+        <ArrowUp className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" />
+      </button>
     </div>
   )
 }

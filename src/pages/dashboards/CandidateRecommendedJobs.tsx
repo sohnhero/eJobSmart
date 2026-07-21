@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Search, Filter, MapPin, Briefcase,
   Clock, Heart, Share2, ChevronRight,
@@ -9,10 +9,20 @@ import DashboardLayout from '../../components/layout/DashboardLayout'
 import Button from '../../components/ui/Button'
 import Badge, { ContractBadge } from '../../components/ui/Badge'
 import MatchScore from '../../components/ui/MatchScore'
+import { useToast } from '../../components/ui/Toast'
+import Skeleton from '../../components/ui/Skeleton'
 import { jobs } from '../../data/jobs'
 
 export default function CandidateRecommendedJobs() {
   const navigate = useNavigate()
+  const toast = useToast()
+  
+  // Skeleton loading simulation
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 900)
+    return () => clearTimeout(timer)
+  }, [])
   
   // State for search and filters
   const [searchQuery, setSearchQuery] = useState('')
@@ -43,9 +53,15 @@ export default function CandidateRecommendedJobs() {
   })
 
   const toggleFavorite = (id: number) => {
+    const isFav = favorites.includes(id)
     setFavorites(prev => 
       prev.includes(id) ? prev.filter(fav => fav !== id) : [...prev, id]
     )
+    if (isFav) {
+      toast.info('Offre retirée de vos favoris.')
+    } else {
+      toast.success('Offre ajoutée à vos favoris !')
+    }
   }
 
   const handleApplySubmit = async (e: React.FormEvent) => {
@@ -55,6 +71,10 @@ export default function CandidateRecommendedJobs() {
     await new Promise(resolve => setTimeout(resolve, 1200))
     setIsSubmitting(false)
     setIsSuccess(true)
+    toast.success(`Candidature envoyée avec succès pour le poste chez ${applyingJob?.company} !`)
+    setTimeout(() => {
+      closeApplyModal()
+    }, 1500)
   }
 
   const closeApplyModal = () => {
@@ -101,70 +121,76 @@ export default function CandidateRecommendedJobs() {
             </div>
           </div>
 
-          {filteredJobs.map((job, index) => (
-            <div 
-              key={job.id} 
-              className="card p-5 group hover:border-brand-500 transition-all relative overflow-hidden flex flex-col md:flex-row md:items-start gap-4"
-            >
-              {/* Matching indicator at top-right */}
-              <div className="absolute top-0 right-0 p-4">
-                <MatchScore score={98 - index * 3} />
-              </div>
-
-              <div className="w-14 h-14 rounded-2xl bg-white border border-slate-100 flex items-center justify-center p-2 flex-shrink-0 shadow-sm group-hover:scale-105 transition-transform">
-                <img src={job.companyLogo} alt={job.company} className="w-full h-full object-contain" />
-              </div>
-
-              <div className="flex-1 min-w-0 pr-16">
-                <h3 
-                  onClick={() => navigate(`/jobs/${job.id}`)}
-                  className="font-bold text-lg text-slate-900 group-hover:text-brand-600 cursor-pointer transition-colors leading-tight mb-1 truncate"
-                >
-                  {job.title}
-                </h3>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-3">
-                  <p className="text-sm font-semibold text-slate-600 flex items-center gap-1.5">
-                    <Briefcase className="w-4 h-4 text-slate-400" /> {job.company}
-                  </p>
-                  <p className="text-sm text-slate-500 flex items-center gap-1.5">
-                    <MapPin className="w-4 h-4 text-slate-400" /> {job.city}
-                  </p>
-                  <ContractBadge type={job.contractType} />
-                </div>
-                
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {['React', 'Node.js', 'TypeScript', 'Tailwind'].map(skill => (
-                    <span key={skill} className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] font-bold rounded-lg border border-slate-200">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="flex items-center justify-between pt-4 border-t border-slate-50">
-                  <div className="flex items-center gap-4">
-                     <span className="text-xs font-bold text-emerald-600">
-                       {job.salaryMin.toLocaleString('fr-FR')} - {job.salaryMax.toLocaleString('fr-FR')} {job.currency} / mois
-                     </span>
-                     <span className="text-xs text-slate-400 flex items-center gap-1"><Clock className="w-3 h-3" /> Il y a 2h</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button 
-                      onClick={() => toggleFavorite(job.id)}
-                      className={`p-2 rounded-lg transition-colors ${favorites.includes(job.id) ? 'text-red-500 bg-red-50' : 'text-slate-400 hover:text-red-500 hover:bg-slate-50'}`}
-                    >
-                      <Heart className="w-4 h-4" />
-                    </button>
-                    <Button 
-                      size="sm"
-                      onClick={() => setApplyingJob(job)}
-                    >
-                      Postuler
-                    </Button>
-                  </div>
-                </div>
-              </div>
+          {loading ? (
+            <div className="space-y-4">
+              <Skeleton variant="card" count={3} />
             </div>
-          ))}
+          ) : (
+            filteredJobs.map((job, index) => (
+              <div 
+                key={job.id} 
+                className="card p-5 group hover:border-brand-500 transition-all relative overflow-hidden flex flex-col md:flex-row md:items-start gap-4 animate-fade-in"
+              >
+                {/* Matching indicator at top-right */}
+                <div className="absolute top-0 right-0 p-4">
+                  <MatchScore score={98 - index * 3} />
+                </div>
+
+                <div className="w-14 h-14 rounded-2xl bg-white border border-slate-100 flex items-center justify-center p-2 flex-shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+                  <img src={job.companyLogo} alt={job.company} className="w-full h-full object-contain" />
+                </div>
+
+                <div className="flex-1 min-w-0 pr-16">
+                  <h3 
+                    onClick={() => navigate(`/jobs/${job.id}`)}
+                    className="font-bold text-lg text-slate-900 group-hover:text-brand-600 cursor-pointer transition-colors leading-tight mb-1 truncate"
+                  >
+                    {job.title}
+                  </h3>
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-3">
+                    <p className="text-sm font-semibold text-slate-600 flex items-center gap-1.5">
+                      <Briefcase className="w-4 h-4 text-slate-400" /> {job.company}
+                    </p>
+                    <p className="text-sm text-slate-500 flex items-center gap-1.5">
+                      <MapPin className="w-4 h-4 text-slate-400" /> {job.city}
+                    </p>
+                    <ContractBadge type={job.contractType} />
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {['React', 'Node.js', 'TypeScript', 'Tailwind'].map(skill => (
+                      <span key={skill} className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] font-bold rounded-lg border border-slate-200">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center justify-between pt-4 border-t border-slate-50">
+                    <div className="flex items-center gap-4">
+                       <span className="text-xs font-bold text-emerald-600">
+                         {job.salaryMin.toLocaleString('fr-FR')} - {job.salaryMax.toLocaleString('fr-FR')} {job.currency} / mois
+                       </span>
+                       <span className="text-xs text-slate-400 flex items-center gap-1"><Clock className="w-3 h-3" /> Il y a 2h</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button 
+                        onClick={() => toggleFavorite(job.id)}
+                        className={`p-2 rounded-lg transition-colors ${favorites.includes(job.id) ? 'text-red-500 bg-red-50' : 'text-slate-400 hover:text-red-500 hover:bg-slate-50'}`}
+                      >
+                        <Heart className="w-4 h-4" />
+                      </button>
+                      <Button 
+                        size="sm"
+                        onClick={() => setApplyingJob(job)}
+                      >
+                        Postuler
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
 
           {filteredJobs.length === 0 && (
             <div className="card p-12 text-center text-slate-400">

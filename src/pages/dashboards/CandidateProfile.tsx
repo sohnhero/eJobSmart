@@ -8,6 +8,7 @@ import {
 import DashboardLayout from '../../components/layout/DashboardLayout'
 import Button from '../../components/ui/Button'
 import Badge from '../../components/ui/Badge'
+import { useToast } from '../../components/ui/Toast'
 
 type Tab = 'info' | 'experience' | 'skills' | 'cv'
 
@@ -25,6 +26,7 @@ const LANGUAGES_LIST = [
 export default function CandidateProfile() {
   const navigate = useNavigate()
   const location = useLocation()
+  const toast = useToast()
   
   const [activeTab, setActiveTab] = useState<Tab>(() => {
     return (location.state as any)?.activeTab || 'info'
@@ -121,6 +123,7 @@ export default function CandidateProfile() {
         current: expCurrent,
         desc: expDesc
       } : exp))
+      toast.success('Expérience modifiée avec succès !')
     } else {
       // Add
       const newExp = {
@@ -133,6 +136,7 @@ export default function CandidateProfile() {
         desc: expDesc
       }
       setExperiences(prev => [...prev, newExp])
+      toast.success('Expérience ajoutée avec succès !')
     }
     setShowExpModal(false)
   }
@@ -140,6 +144,7 @@ export default function CandidateProfile() {
   // Handle deleting experience
   const handleDeleteExp = (id: number) => {
     setExperiences(prev => prev.filter(exp => exp.id !== id))
+    toast.success('Expérience supprimée.')
   }
 
   // Open education modal for addition
@@ -176,6 +181,7 @@ export default function CandidateProfile() {
         year: eduYear,
         mention: eduMention
       } : edu))
+      toast.success('Formation modifiée avec succès !')
     } else {
       // Add
       const newEdu = {
@@ -186,6 +192,7 @@ export default function CandidateProfile() {
         mention: eduMention
       }
       setEducations(prev => [...prev, newEdu])
+      toast.success('Formation ajoutée avec succès !')
     }
     setShowEduModal(false)
   }
@@ -193,6 +200,7 @@ export default function CandidateProfile() {
   // Handle deleting education
   const handleDeleteEdu = (id: number) => {
     setEducations(prev => prev.filter(edu => edu.id !== id))
+    toast.success('Formation supprimée.')
   }
 
   const [cvUploaded, setCvUploaded] = useState(() => {
@@ -249,7 +257,10 @@ export default function CandidateProfile() {
 
   const handleSave = async () => {
     setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+    setTimeout(() => {
+      setSaved(false)
+      toast.success('Profil mis à jour avec succès !')
+    }, 2000)
   }
 
   const tabs: { id: Tab; label: string; icon: typeof User }[] = [
@@ -594,6 +605,7 @@ export default function CandidateProfile() {
                         onClick={() => {
                           localStorage.setItem('cv_uploaded', 'true')
                           setCvUploaded(true)
+                          toast.success('Votre CV a été téléversé avec succès !')
                         }}
                         className="border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center hover:border-brand-400 transition-colors cursor-pointer group"
                       >
@@ -605,6 +617,7 @@ export default function CandidateProfile() {
                             e.stopPropagation()
                             localStorage.setItem('cv_uploaded', 'true')
                             setCvUploaded(true)
+                            toast.success('Votre CV a été téléversé avec succès !')
                           }}
                           className="mt-4 text-sm font-semibold text-brand-600 hover:text-brand-800 transition-colors"
                         >
@@ -627,6 +640,7 @@ export default function CandidateProfile() {
                             onClick={() => {
                               localStorage.setItem('cv_uploaded', 'true')
                               setCvUploaded(true)
+                              toast.success('Votre CV a été remplacé avec succès !')
                             }}
                             className="text-xs text-brand-600 font-semibold hover:text-brand-800"
                           >
@@ -636,6 +650,7 @@ export default function CandidateProfile() {
                             onClick={() => {
                               localStorage.setItem('cv_uploaded', 'false')
                               setCvUploaded(false)
+                              toast.info('Votre CV a été supprimé.')
                             }}
                             className="text-xs text-red-600 font-semibold hover:text-red-800"
                           >

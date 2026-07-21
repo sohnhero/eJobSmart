@@ -91,6 +91,7 @@ const roleConfig = {
 
 export default function DashboardLayout({ children, role = 'candidate', userName = 'Amadou Diallo', userTitle }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
   const config = roleConfig[role]
@@ -144,7 +145,7 @@ export default function DashboardLayout({ children, role = 'candidate', userName
       {/* Bottom */}
       <div className="px-3 py-4 border-t border-slate-100 space-y-1">
         <button
-          onClick={() => navigate('/')}
+          onClick={() => setShowLogoutConfirm(true)}
           className="sidebar-link w-full text-red-600 hover:bg-red-50 hover:text-red-700"
         >
           <LogOut className="w-4 h-4" />
@@ -206,6 +207,41 @@ export default function DashboardLayout({ children, role = 'candidate', userName
           {children}
         </main>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-fade-in" onClick={() => setShowLogoutConfirm(false)} />
+          <div className="bg-white rounded-3xl w-full max-w-sm shadow-2xl relative z-10 overflow-hidden border border-slate-100 p-6 text-center animate-slide-up">
+            <div className="w-12 h-12 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <LogOut className="w-6 h-6 animate-pulse" />
+            </div>
+            <h3 className="font-black text-slate-900 text-lg mb-2">Confirmer la déconnexion</h3>
+            <p className="text-sm text-slate-500 mb-6 leading-relaxed">
+              Êtes-vous sûr de vouloir vous déconnecter de votre session ?
+            </p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowLogoutConfirm(false)}
+                className="flex-1 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-semibold transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  navigate('/')
+                  setShowLogoutConfirm(false)
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-750 text-white text-sm font-semibold transition-colors shadow-sm"
+              >
+                Déconnexion
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

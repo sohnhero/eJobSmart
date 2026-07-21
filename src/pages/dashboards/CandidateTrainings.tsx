@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   BookOpen, Clock, Play, Award,
   ChevronRight, Search, Filter, Loader2,
@@ -7,11 +7,20 @@ import { useNavigate } from 'react-router-dom'
 import DashboardLayout from '../../components/layout/DashboardLayout'
 import Badge from '../../components/ui/Badge'
 import Button from '../../components/ui/Button'
+import { useToast } from '../../components/ui/Toast'
+import Skeleton from '../../components/ui/Skeleton'
 import { trainings } from '../../data/trainings'
 
 export default function CandidateTrainings() {
   const navigate = useNavigate()
+  const toast = useToast()
   const [downloadingId, setDownloadingId] = useState<number | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 900)
+    return () => clearTimeout(timer)
+  }, [])
 
   const handleDownloadCert = (e: React.MouseEvent, id: number, title: string) => {
     e.stopPropagation()
@@ -25,6 +34,7 @@ export default function CandidateTrainings() {
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
+      toast.success(`Certificat pour "${title}" téléchargé avec succès !`)
     }, 1500)
   }
 
@@ -53,70 +63,78 @@ export default function CandidateTrainings() {
             <Play className="w-5 h-5 text-brand-600" /> En cours d'apprentissage
           </h2>
           <div className="space-y-4">
-            {myTrainings.filter(t => t.progress < 100).map(training => (
-              <div 
-                key={training.id} 
-                onClick={() => navigate(`/trainings/${training.id}`)}
-                className="card p-5 flex flex-col sm:flex-row gap-5 hover:border-brand-200 transition-colors cursor-pointer group"
-              >
-                <div className="w-full sm:w-32 h-20 rounded-xl overflow-hidden flex-shrink-0">
-                  <img src={training.thumbnail} alt={training.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-slate-800 line-clamp-1 group-hover:text-brand-600 transition-colors">{training.title}</h3>
-                  <p className="text-xs text-slate-400 mb-3">{training.instructor} · {training.lastAccessed}</p>
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                      <div className="bg-brand-600 h-full rounded-full" style={{ width: `${training.progress}%` }} />
+            {loading ? (
+              <Skeleton variant="list" count={2} className="h-28" />
+            ) : (
+              myTrainings.filter(t => t.progress < 100).map(training => (
+                <div 
+                  key={training.id} 
+                  onClick={() => navigate(`/trainings/${training.id}`)}
+                  className="card p-5 flex flex-col sm:flex-row gap-5 hover:border-brand-200 transition-colors cursor-pointer group"
+                >
+                  <div className="w-full sm:w-32 h-20 rounded-xl overflow-hidden flex-shrink-0">
+                    <img src={training.thumbnail} alt={training.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-slate-800 line-clamp-1 group-hover:text-brand-600 transition-colors">{training.title}</h3>
+                    <p className="text-xs text-slate-400 mb-3">{training.instructor} · {training.lastAccessed}</p>
+                    <div className="flex items-center gap-4">
+                      <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="bg-brand-600 h-full rounded-full" style={{ width: `${training.progress}%` }} />
+                      </div>
+                      <span className="text-xs font-bold text-slate-600">{training.progress}%</span>
                     </div>
-                    <span className="text-xs font-bold text-slate-600">{training.progress}%</span>
+                  </div>
+                  <div className="flex items-center justify-end">
+                    <Button 
+                      size="sm" 
+                      variant="secondary" 
+                      rightIcon={<ChevronRight className="w-4 h-4" />}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/trainings/${training.id}`);
+                      }}
+                    >
+                      Continuer
+                    </Button>
                   </div>
                 </div>
-                <div className="flex items-center justify-end">
-                  <Button 
-                    size="sm" 
-                    variant="secondary" 
-                    rightIcon={<ChevronRight className="w-4 h-4" />}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/trainings/${training.id}`);
-                    }}
-                  >
-                    Continuer
-                  </Button>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
           <h2 className="font-bold text-slate-900 pt-4 flex items-center gap-2">
             <Award className="w-5 h-5 text-emerald-600" /> Formations terminées
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {myTrainings.filter(t => t.progress === 100).map(training => (
-              <div key={training.id} className="card p-4 flex gap-4">
-                <div className="w-16 h-16 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
-                  <Award className="w-8 h-8" />
+            {loading ? (
+              <Skeleton variant="list" count={2} />
+            ) : (
+              myTrainings.filter(t => t.progress === 100).map(training => (
+                <div key={training.id} className="card p-4 flex gap-4 animate-fade-in">
+                  <div className="w-16 h-16 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
+                    <Award className="w-8 h-8" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-slate-800 text-sm line-clamp-1">{training.title}</h3>
+                    <p className="text-[10px] text-slate-400 mb-2">Terminé le 12 Avril 2026</p>
+                    <button 
+                      disabled={downloadingId === training.id}
+                      onClick={(e) => handleDownloadCert(e, training.id, training.title)}
+                      className="text-[10px] font-bold text-brand-600 hover:underline flex items-center gap-1 disabled:text-slate-400 disabled:no-underline"
+                    >
+                      {downloadingId === training.id ? (
+                        <>
+                          <Loader2 className="w-3 h-3 animate-spin" /> Téléchargement...
+                        </>
+                      ) : (
+                        'Télécharger le certificat'
+                      )}
+                    </button>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-slate-800 text-sm line-clamp-1">{training.title}</h3>
-                  <p className="text-[10px] text-slate-400 mb-2">Terminé le 12 Avril 2026</p>
-                  <button 
-                    disabled={downloadingId === training.id}
-                    onClick={(e) => handleDownloadCert(e, training.id, training.title)}
-                    className="text-[10px] font-bold text-brand-600 hover:underline flex items-center gap-1 disabled:text-slate-400 disabled:no-underline"
-                  >
-                    {downloadingId === training.id ? (
-                      <>
-                        <Loader2 className="w-3 h-3 animate-spin" /> Téléchargement...
-                      </>
-                    ) : (
-                      'Télécharger le certificat'
-                    )}
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
