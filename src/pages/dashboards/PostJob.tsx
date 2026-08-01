@@ -1,21 +1,23 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  ArrowLeft, Upload, Save, ChevronDown, Plus, X, AlertCircle,
-  Eye, Send, CheckCircle, Briefcase, MapPin, Clock, DollarSign,
+  ArrowLeft, Save, Plus, X, AlertCircle,
+  Send, CheckCircle, MapPin, Clock, DollarSign,
   ClipboardList, Coins, FileText, Layout, Lightbulb, Zap, ArrowRight,
 } from 'lucide-react'
 import DashboardLayout from '../../components/layout/DashboardLayout'
 import Button from '../../components/ui/Button'
-import { sectors } from '../../data/sectors'
-import type { ContractType, RemoteType, ExperienceLevel } from '../../data/jobs'
-
-type JobStatus = 'draft' | 'published'
+import { useAuth } from '../../context/AuthContext'
+import { useToast } from '../../components/ui/Toast'
+import { sectorsService } from '../../lib/services/sectors'
+import { jobsService } from '../../lib/services/jobs'
+import { extractApiErrorMessage } from '../../lib/api'
+import type { ContractType, RemoteType, ExperienceLevel, Sector, CreateJobPayload } from '../../lib/types'
 
 interface JobFormData {
   title: string
   contractType: ContractType | ''
-  sectorId: number | ''
+  sector: string
   city: string
   country: string
   remoteType: RemoteType | ''
@@ -31,45 +33,55 @@ interface JobFormData {
   languages: string[]
   deadline: string
   positions: string
-  benefits: string
-  preselectQuestions: string[]
+  benefits: string[]
 }
 
 const contractTypes: ContractType[] = ['CDI', 'CDD', 'Intérim', 'Freelance', 'Stage', 'Alternance']
 const remoteModes: RemoteType[] = ['Sur site', 'Télétravail', 'Hybride']
 const experienceLevels: ExperienceLevel[] = ['Junior', 'Confirmé', 'Senior', 'Expert']
 const currencies = ['FCFA', 'EUR', 'USD', 'GNF', 'XOF']
-const countries = ['Sénégal', 'Côte d\'Ivoire', 'Mali', 'Guinée', 'Burkina Faso', 'Niger', 'Togo', 'Bénin', 'Cameroun', 'Congo']
+const countries = ['Sénégal', "Côte d'Ivoire", 'Mali', 'Guinée', 'Burkina Faso', 'Niger', 'Togo', 'Bénin', 'Cameroun', 'Congo']
 
 const defaultForm: JobFormData = {
-  title: '', contractType: '', sectorId: '', city: '', country: 'Sénégal',
+  title: '', contractType: '', sector: '', city: '', country: 'Sénégal',
   remoteType: '', salaryMin: '', salaryMax: '', currency: 'FCFA', showSalary: true,
   experienceLevel: '', description: '', missions: [''], requirements: [''],
   skills: [], languages: ['Français'], deadline: '', positions: '1',
-  benefits: '', preselectQuestions: [],
+  benefits: [],
 }
 
 export default function PostJob() {
   const navigate = useNavigate()
+  const { user } = useAuth()
+  const toast = useToast()
   const [form, setForm] = useState<JobFormData>(defaultForm)
   const [step, setStep] = useState(1)
   const [published, setPublished] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [savingDraft, setSavingDraft] = useState(false)
   const [skillInput, setSkillInput] = useState('')
+  const [sectors, setSectors] = useState<Sector[]>([])
 
   const totalSteps = 4
+
+  useEffect(() => {
+    void sectorsService.list().then(setSectors).catch(() => setSectors([]))
+  }, [])
 
   const updateField = <K extends keyof JobFormData>(key: K, value: JobFormData[K]) =>
     setForm(prev => ({ ...prev, [key]: value }))
 
-  const updateListItem = (key: 'missions' | 'requirements' | 'preselectQuestions', index: number, value: string) =>
-    updateField(key, form[key].map((item, i) => i === index ? value : item) as never)
+  const updateListItem = (key: 'missions' | 'requirements', index: number, value: string) =>
+    updateField(key, form[key].map((item, i) => i === index ? value : item))
 
-  const addListItem = (key: 'missions' | 'requirements' | 'preselectQuestions') =>
-    updateField(key, [...form[key], ''] as never)
+  const addListItem = (key: 'missions' | 'requirements') =>
+    updateField(key, [...form[key], ''])
 
-  const removeListItem = (key: 'missions' | 'requirements' | 'preselectQuestions', index: number) =>
-    updateField(key, form[key].filter((_, i) => i !== index) as never)
+  const removeListItem = (key: 'missions' | 'requirements', index: number) =>
+    updateField(key, form[key].filter((_, i) => i !== index))
+
+  const toggleBenefit = (b: string) =>
+    updateField('benefits', form.benefits.includes(b) ? form.benefits.filter(x => x !== b) : [...form.benefits, b])
 
   const addSkill = () => {
     if (skillInput.trim() && !form.skills.includes(skillInput.trim())) {
@@ -78,20 +90,67 @@ export default function PostJob() {
     }
   }
 
+  const buildPayload = (): CreateJobPayload => ({
+    title: form.title,
+    contractType: form.contractType as ContractType,
+    sector: form.sector,
+    city: form.city,
+    country: form.country,
+    remoteType: form.remoteType as RemoteType,
+    experienceLevel: form.experienceLevel as ExperienceLevel,
+    description: form.description,
+    missions: form.missions.filter(Boolean),
+    requirements: form.requirements.filter(Boolean),
+    skills: form.skills,
+    languages: form.languages,
+    benefits: form.benefits,
+    positions: form.positions ? Number(form.positions) : 1,
+    salaryMin: form.salaryMin ? Number(form.salaryMin) : undefined,
+    salaryMax: form.salaryMax ? Number(form.salaryMax) : undefined,
+    currency: form.currency,
+    isSalaryVisible: form.showSalary,
+    expiresAt: form.deadline || undefined,
+  })
+
+  const isFormValid = !!(form.title && form.contractType && form.sector && form.city && form.remoteType && form.experienceLevel && form.description && form.missions.some(Boolean) && form.requirements.some(Boolean))
+
+  const handleSaveDraft = async () => {
+    setSavingDraft(true)
+    try {
+      await jobsService.create(buildPayload())
+      toast.success('Brouillon enregistré')
+      navigate('/dashboard/company/jobs')
+    } catch (err) {
+      toast.error(extractApiErrorMessage(err, "Impossible d'enregistrer le brouillon"))
+    } finally {
+      setSavingDraft(false)
+    }
+  }
+
   const handlePublish = async () => {
+    if (!isFormValid) {
+      toast.error('Complétez tous les champs requis avant de publier')
+      return
+    }
     setLoading(true)
-    await new Promise(r => setTimeout(r, 1200))
-    setLoading(false)
-    setPublished(true)
+    try {
+      const created = await jobsService.create(buildPayload())
+      await jobsService.publish(created._id)
+      setPublished(true)
+    } catch (err) {
+      toast.error(extractApiErrorMessage(err, "Impossible de publier l'offre"))
+    } finally {
+      setLoading(false)
+    }
   }
 
   const completionPercent = Math.round(
-    ([form.title, form.contractType, form.sectorId, form.city, form.remoteType, form.experienceLevel, form.description].filter(Boolean).length / 7) * 100
+    ([form.title, form.contractType, form.sector, form.city, form.remoteType, form.experienceLevel, form.description].filter(Boolean).length / 7) * 100
   )
 
   if (published) {
     return (
-      <DashboardLayout role="company" userName="Sonatel Digital" userTitle="Compte Entreprise">
+      <DashboardLayout role="company">
         <div className="max-w-lg mx-auto py-16 text-center">
           <div className="w-20 h-20 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-10 h-10 text-emerald-600" />
@@ -119,7 +178,7 @@ export default function PostJob() {
   }
 
   return (
-    <DashboardLayout role="company" userName="Sonatel Digital" userTitle="Compte Entreprise">
+    <DashboardLayout role="company">
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
         <button onClick={() => navigate(-1)} className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
@@ -130,7 +189,7 @@ export default function PostJob() {
           <p className="text-sm text-slate-400">Étape {step}/{totalSteps}</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm" leftIcon={<Save className="w-3.5 h-3.5" />}>
+          <Button variant="secondary" size="sm" loading={savingDraft} leftIcon={<Save className="w-3.5 h-3.5" />} onClick={handleSaveDraft}>
             Sauvegarder brouillon
           </Button>
           {step < totalSteps && (
@@ -181,9 +240,9 @@ export default function PostJob() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-1.5">Secteur d'activité *</label>
-                  <select value={form.sectorId} onChange={e => updateField('sectorId', Number(e.target.value))} className="input-field">
+                  <select value={form.sector} onChange={e => updateField('sector', e.target.value)} className="input-field">
                     <option value="">Sélectionner</option>
-                    {sectors.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                    {sectors.map(s => <option key={s._id} value={s._id}>{s.name}</option>)}
                   </select>
                 </div>
               </div>
@@ -266,14 +325,13 @@ export default function PostJob() {
                   {['Mutuelle santé', 'Véhicule de fonction', 'Logement', 'Téléphone', 'Prime annuelle', 'Formation continue', 'Tickets repas'].map(b => (
                     <button
                       key={b}
-                      onClick={() => updateField('benefits', form.benefits.includes(b) ? form.benefits.replace(`, ${b}`, '').replace(b, '') : form.benefits ? `${form.benefits}, ${b}` : b)}
+                      onClick={() => toggleBenefit(b)}
                       className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-colors border ${form.benefits.includes(b) ? 'bg-brand-600 text-white border-brand-600' : 'bg-white text-slate-600 border-slate-200 hover:border-brand-300'}`}
                     >
                       {b}
                     </button>
                   ))}
                 </div>
-                <input type="text" placeholder="Autres avantages..." value={form.benefits} onChange={e => updateField('benefits', e.target.value)} className="input-field" />
               </div>
 
               <div>
@@ -377,7 +435,7 @@ export default function PostJob() {
                   <input
                     type="text" placeholder="Ajouter une compétence..."
                     value={skillInput} onChange={e => setSkillInput(e.target.value)}
-                    onKeyDown={e => e.key === 'Enter' && addSkill()}
+                    onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addSkill() } }}
                     className="input-field flex-1"
                   />
                   <Button size="sm" variant="secondary" onClick={addSkill}>Ajouter</Button>
@@ -397,11 +455,11 @@ export default function PostJob() {
               <div className="bg-slate-50 rounded-2xl p-5 mb-6 border-2 border-dashed border-slate-300">
                 <div className="flex items-start gap-3 mb-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-brand-600 to-brand-800 rounded-xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
-                    S
+                    {(user?.companyName ?? user?.firstName ?? '?').charAt(0)}
                   </div>
                   <div>
                     <h3 className="font-bold text-slate-900">{form.title || 'Titre du poste'}</h3>
-                    <p className="text-sm text-slate-500">Sonatel Digital</p>
+                    <p className="text-sm text-slate-500">{user?.companyName ?? `${user?.firstName} ${user?.lastName}`}</p>
                   </div>
                 </div>
 
@@ -428,7 +486,7 @@ export default function PostJob() {
                 {[
                   { label: 'Titre du poste', done: !!form.title },
                   { label: 'Type de contrat', done: !!form.contractType },
-                  { label: 'Secteur d\'activité', done: !!form.sectorId },
+                  { label: "Secteur d'activité", done: !!form.sector },
                   { label: 'Localisation', done: !!form.city },
                   { label: 'Mode de travail', done: !!form.remoteType },
                   { label: 'Description du poste', done: !!form.description },
@@ -446,7 +504,7 @@ export default function PostJob() {
               </div>
 
               <div className="flex gap-3">
-                <Button variant="secondary" size="lg" leftIcon={<Save className="w-4 h-4" />} onClick={() => navigate('/dashboard/company')}>
+                <Button variant="secondary" size="lg" loading={savingDraft} leftIcon={<Save className="w-4 h-4" />} onClick={handleSaveDraft}>
                   Enregistrer brouillon
                 </Button>
                 <Button size="lg" loading={loading} rightIcon={<Send className="w-4 h-4" />} onClick={handlePublish} className="flex-1">
@@ -494,7 +552,7 @@ export default function PostJob() {
               {[
                 'Un titre précis attire 3× plus de candidats qualifiés',
                 'Mentionnez la fourchette salariale pour +40% de candidatures',
-                'Décrivez la culture d\'entreprise pour réduire le turnover',
+                "Décrivez la culture d'entreprise pour réduire le turnover",
                 'Listez 5-8 missions, pas plus',
               ].map((tip, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-slate-500">
@@ -511,8 +569,7 @@ export default function PostJob() {
               <Zap className="w-5 h-5 text-amber-500 fill-amber-500" />
               <h3 className="font-semibold text-slate-900">Booster l'offre</h3>
             </div>
-            <p className="text-xs text-slate-600 mb-3">Mettez votre offre en avant pour 3× plus de visibilité. Disponible après publication.</p>
-            <span className="text-xs font-bold text-amber-600 bg-amber-200/50 px-2.5 py-1 rounded-full">Inclus dans votre plan Business</span>
+            <p className="text-xs text-slate-600 mb-3">Mettez votre offre en avant pour plus de visibilité. Disponible depuis "Mes offres" une fois l'offre publiée et active.</p>
           </div>
         </div>
       </div>

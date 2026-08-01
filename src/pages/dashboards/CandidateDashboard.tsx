@@ -1,38 +1,85 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  Briefcase, FileText, TrendingUp, Eye, Bell, Star,
-  ChevronRight, Clock, MapPin, Building2, BookOpen, ArrowUpRight, Sparkles,
+  Briefcase, FileText, Bell,
+  ChevronRight, Clock, MapPin, Building2, BookOpen, Sparkles,
 } from 'lucide-react'
 import DashboardLayout from '../../components/layout/DashboardLayout'
 import StatCard from '../../components/ui/StatCard'
 import Badge, { ContractBadge, StatusBadge } from '../../components/ui/Badge'
 import MatchScore from '../../components/ui/MatchScore'
 import Button from '../../components/ui/Button'
-import { jobs } from '../../data/jobs'
-import { myApplications } from '../../data/candidates'
-import { dashboardStats } from '../../data/stats'
-import { trainings } from '../../data/trainings'
+import { useAuth } from '../../context/AuthContext'
+import { applicationsService } from '../../lib/services/applications'
+import { matchingService } from '../../lib/services/matching'
+import { profilesService } from '../../lib/services/profiles'
+import { jobAlertsService } from '../../lib/services/job-alerts'
+import { jobsService } from '../../lib/services/jobs'
+import { trainingsService, enrollmentsService } from '../../lib/services/trainings'
+import { TRAINING_FORMAT_LABELS, trainingCoverImage } from '../../lib/training-labels'
+import type { Application, JobMatch, JobAlert, Profile, Training } from '../../lib/types'
+
+const IN_PROGRESS_STATUSES = ["En cours d'examen", 'Présélectionnée', 'Test envoyé', 'Offre émise']
 
 export default function CandidateDashboard() {
   const navigate = useNavigate()
-  const stats = dashboardStats.candidate
-  const recommendedJobs = jobs.slice(0, 5)
+  const { user } = useAuth()
 
-  const [cvUploaded, setCvUploaded] = useState(() => {
-    return localStorage.getItem('cv_uploaded') === 'true'
-  })
-  const [alertsConfigured, setAlertsConfigured] = useState(() => {
-    return localStorage.getItem('alerts_configured') !== 'false'
-  })
+  const [applications, setApplications] = useState<Application[]>([])
+  const [recommended, setRecommended] = useState<JobMatch[]>([])
+  const [profile, setProfile] = useState<Profile | null>(null)
+  const [alerts, setAlerts] = useState<JobAlert[]>([])
+  const [alertMatches, setAlertMatches] = useState<Record<string, number>>({})
+  const [suggestedTraining, setSuggestedTraining] = useState<Training | null>(null)
+  const [enrollmentsCount, setEnrollmentsCount] = useState(0)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+    Promise.all([
+      applicationsService.mine().catch(() => []),
+      matchingService.recommendedJobs(5).catch(() => []),
+      profilesService.me().catch(() => null),
+      jobAlertsService.list().catch(() => []),
+      trainingsService.list({ limit: 1 }).then(res => res.items[0] ?? null).catch(() => null),
+      enrollmentsService.mine().catch(() => []),
+    ]).then(([apps, jobs, prof, jobAlerts, training, enrollments]) => {
+      if (cancelled) return
+      setApplications(apps)
+      setRecommended(jobs)
+      setProfile(prof)
+      setAlerts(jobAlerts)
+      setSuggestedTraining(training)
+      setEnrollmentsCount(enrollments.length)
+      setLoading(false)
+
+      jobAlerts.slice(0, 3).forEach((alert) => {
+        void jobsService
+          .list({
+            sector: alert.sectors.map((s) => (typeof s === 'string' ? s : s._id)),
+            contractType: alert.contractTypes.length ? alert.contractTypes : undefined,
+            city: alert.city,
+            country: alert.country,
+            remoteType: alert.remoteType,
+            experienceLevel: alert.experienceLevel,
+            q: alert.keywords,
+            limit: 1,
+          })
+          .then((res) => {
+            if (!cancelled) setAlertMatches((prev) => ({ ...prev, [alert._id]: res.total }))
+          })
+          .catch(() => {})
+      })
+    })
+    return () => { cancelled = true }
+  }, [])
 
   const profileCompletion = [
-    { label: 'Photo de profil', done: true, tab: 'info' },
-    { label: 'Informations personnelles', done: true, tab: 'info' },
-    { label: 'Expériences professionnelles', done: true, tab: 'experience' },
-    { label: 'CV uploadé', done: cvUploaded, tab: 'cv' },
-    { label: 'Compétences renseignées', done: true, tab: 'skills' },
-    { label: 'Alertes emploi configurées', done: alertsConfigured, href: '/dashboard/candidate/alerts' },
+    { label: 'Informations personnelles', done: !!profile?.headline, tab: 'info' },
+    { label: 'Expériences professionnelles', done: (profile?.experiences.length ?? 0) > 0, tab: 'experience' },
+    { label: 'CV uploadé', done: !!profile?.cvUrl, tab: 'cv' },
+    { label: 'Compétences renseignées', done: (profile?.skills.length ?? 0) > 0, tab: 'skills' },
+    { label: 'Alertes emploi configurées', done: alerts.length > 0, href: '/dashboard/candidate/alerts' },
   ]
 
   const completionPct = Math.round((profileCompletion.filter(c => c.done).length / profileCompletion.length) * 100)
@@ -54,14 +101,17 @@ export default function CandidateDashboard() {
     }
   }
 
+  const inReview = applications.filter(a => IN_PROGRESS_STATUSES.includes(a.status)).length
+  const interviews = applications.filter(a => a.status === 'Entretien planifié').length
+
   return (
-    <DashboardLayout role="candidate" userName="Amadou Diallo">
+    <DashboardLayout role="candidate">
       {/* Welcome */}
       <div className="bg-gradient-to-r from-brand-600 to-brand-800 rounded-2xl p-6 text-white mb-6 relative overflow-hidden">
         <div className="absolute right-0 top-0 w-48 h-48 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
         <p className="text-blue-200 text-sm font-medium flex items-center gap-2">Bonjour <Sparkles className="w-3.5 h-3.5" /></p>
-        <h1 className="text-2xl font-black mt-1 mb-2">Amadou Diallo</h1>
-        <p className="text-blue-200 text-sm">Développeur Full Stack · Dakar, Sénégal</p>
+        <h1 className="text-2xl font-black mt-1 mb-2">{user ? `${user.firstName} ${user.lastName}` : '—'}</h1>
+        {profile?.headline && <p className="text-blue-200 text-sm">{profile.headline}{profile.city ? ` · ${profile.city}` : ''}</p>}
         <div className="flex items-center gap-4 mt-4">
           <div>
             <p className="text-3xl font-black">{completionPct}%</p>
@@ -71,15 +121,15 @@ export default function CandidateDashboard() {
             <div className="bg-amber-400 h-full rounded-full" style={{ width: `${completionPct}%` }} />
           </div>
         </div>
-        <p className="text-xs text-blue-200 mt-1.5">{stats.matchingJobs} offres correspondent à votre profil</p>
+        <p className="text-xs text-blue-200 mt-1.5">{recommended.length} offres correspondent à votre profil</p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatCard title="Candidatures" value={stats.applicationsSent} icon={FileText} trend={12} trendLabel="ce mois" iconBg="bg-blue-50" iconColor="text-blue-600" />
-        <StatCard title="En examen" value={stats.inReview} icon={Clock} iconBg="bg-amber-50" iconColor="text-amber-600" />
-        <StatCard title="Entretiens" value={stats.interviews} icon={Briefcase} iconBg="bg-emerald-50" iconColor="text-emerald-600" />
-        <StatCard title="Vues profil" value={stats.profileViews} icon={Eye} trend={34} trendLabel="7 jours" iconBg="bg-purple-50" iconColor="text-purple-600" />
+        <StatCard title="Candidatures" value={applications.length} icon={FileText} iconBg="bg-blue-50" iconColor="text-blue-600" />
+        <StatCard title="En examen" value={inReview} icon={Clock} iconBg="bg-amber-50" iconColor="text-amber-600" />
+        <StatCard title="Entretiens" value={interviews} icon={Briefcase} iconBg="bg-emerald-50" iconColor="text-emerald-600" />
+        <StatCard title="Formations suivies" value={enrollmentsCount} icon={BookOpen} iconBg="bg-purple-50" iconColor="text-purple-600" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -93,56 +143,69 @@ export default function CandidateDashboard() {
                 Toutes <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
-            <div className="space-y-3">
-              {myApplications.slice(0, 4).map(app => (
-                <div key={app.id} className="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group cursor-pointer">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
-                    {app.company.charAt(0)}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="font-semibold text-sm text-slate-900 group-hover:text-brand-600 transition-colors">{app.jobTitle}</p>
-                      <StatusBadge status={app.status} />
+            {loading ? (
+              <p className="text-sm text-slate-400 py-6 text-center">Chargement…</p>
+            ) : applications.length === 0 ? (
+              <p className="text-sm text-slate-400 py-6 text-center">Aucune candidature pour l'instant</p>
+            ) : (
+              <div className="space-y-3">
+                {applications.slice(0, 4).map(app => {
+                  const job = typeof app.job === 'string' ? null : app.job
+                  return (
+                    <div key={app._id} onClick={() => navigate('/dashboard/candidate/applications')} className="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group cursor-pointer">
+                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+                        {job?.companyName?.charAt(0) ?? '?'}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2">
+                          <p className="font-semibold text-sm text-slate-900 group-hover:text-brand-600 transition-colors">{job?.title ?? 'Offre'}</p>
+                          <StatusBadge status={app.status} />
+                        </div>
+                        <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
+                          <Building2 className="w-3 h-3" />{job?.companyName ?? '—'}
+                          <span className="text-slate-300 mx-1">·</span>
+                          <Clock className="w-3 h-3" />{new Date(app.createdAt).toLocaleDateString('fr-FR')}
+                        </p>
+                      </div>
                     </div>
-                    <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
-                      <Building2 className="w-3 h-3" />{app.company}
-                      <span className="text-slate-300 mx-1">·</span>
-                      <Clock className="w-3 h-3" />{new Date(app.appliedAt).toLocaleDateString('fr-FR')}
-                    </p>
-                    {app.nextStep && (
-                      <p className="text-xs text-slate-400 mt-1 truncate">{app.nextStep}</p>
-                    )}
-                  </div>
-                  <MatchScore score={app.matchScore} size="sm" showLabel={false} />
-                </div>
-              ))}
-            </div>
+                  )
+                })}
+              </div>
+            )}
           </div>
 
           {/* Recommended jobs */}
           <div className="card p-5">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-bold text-slate-900">Offres recommandées</h2>
-              <button onClick={() => navigate('/jobs')} className="text-xs text-brand-600 font-medium flex items-center gap-1">
+              <button onClick={() => navigate('/dashboard/candidate/jobs')} className="text-xs text-brand-600 font-medium flex items-center gap-1">
                 Voir tout <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
-            <div className="space-y-3">
-              {recommendedJobs.map((job, i) => (
-                <div key={job.id} onClick={() => navigate(`/jobs/${job.id}`)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group">
-                  <img src={job.companyLogo} alt={job.company} className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm text-slate-900 group-hover:text-brand-600 transition-colors truncate">{job.title}</p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <p className="text-xs text-slate-500">{job.company}</p>
-                      <ContractBadge type={job.contractType} />
+            {loading ? (
+              <p className="text-sm text-slate-400 py-6 text-center">Chargement…</p>
+            ) : recommended.length === 0 ? (
+              <p className="text-sm text-slate-400 py-6 text-center">Complétez votre profil pour recevoir des recommandations</p>
+            ) : (
+              <div className="space-y-3">
+                {recommended.map(({ job, score }) => (
+                  <div key={job._id} onClick={() => navigate(`/jobs/${job._id}`)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group">
+                    <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                      {job.companyLogo ? <img src={job.companyLogo} alt={job.companyName} className="w-full h-full object-cover" /> : <Building2 className="w-4 h-4 text-slate-300" />}
                     </div>
-                    <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5"><MapPin className="w-2.5 h-2.5" />{job.city}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-sm text-slate-900 group-hover:text-brand-600 transition-colors truncate">{job.title}</p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <p className="text-xs text-slate-500">{job.companyName}</p>
+                        <ContractBadge type={job.contractType} />
+                      </div>
+                      <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5"><MapPin className="w-2.5 h-2.5" />{job.city}</p>
+                    </div>
+                    <MatchScore score={Math.round(score * 100)} size="sm" />
                   </div>
-                  <MatchScore score={95 - i * 3} size="sm" />
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -151,10 +214,10 @@ export default function CandidateDashboard() {
           {/* Profile completion */}
           <div className="card p-5">
             <h2 className="font-bold text-slate-900 mb-1">Complétez votre profil</h2>
-            <p className="text-xs text-slate-400 mb-4">Un profil complet reçoit 3× plus de vues</p>
+            <p className="text-xs text-slate-400 mb-4">Un profil complet reçoit plus de vues</p>
             <div className="space-y-2.5">
               {profileCompletion.map(item => (
-                <div 
+                <div
                   key={item.label}
                   onClick={() => handleCompletionClick(item)}
                   className="flex items-center gap-2.5 cursor-pointer hover:bg-slate-50 p-1 rounded-lg transition-colors group animate-fade-in"
@@ -180,55 +243,53 @@ export default function CandidateDashboard() {
               <Bell className="w-4 h-4 text-brand-600" />
               <h2 className="font-bold text-slate-900">Alertes emploi</h2>
             </div>
-            <div className="space-y-2.5">
-              {[
-                { label: 'React Developer', count: 12, sector: 'Tech' },
-                { label: 'Full Stack + Dakar', count: 8, sector: 'Tech' },
-                { label: 'CDI + Télétravail', count: 23, sector: 'Tous' },
-              ].map(alert => (
-                <div key={alert.label} onClick={() => navigate('/dashboard/candidate/alerts')} className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-brand-50 transition-colors cursor-pointer">
-                  <div>
-                    <p className="text-sm font-medium text-slate-800">{alert.label}</p>
-                    <p className="text-xs text-slate-400">{alert.sector}</p>
+            {alerts.length === 0 ? (
+              <p className="text-xs text-slate-400 mb-3">Aucune alerte configurée</p>
+            ) : (
+              <div className="space-y-2.5">
+                {alerts.slice(0, 3).map(alert => (
+                  <div key={alert._id} onClick={() => navigate('/dashboard/candidate/alerts')} className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-brand-50 transition-colors cursor-pointer">
+                    <div>
+                      <p className="text-sm font-medium text-slate-800">{alert.name || alert.keywords || 'Alerte'}</p>
+                      <p className="text-xs text-slate-400">{alert.city || alert.country || 'Tous lieux'}</p>
+                    </div>
+                    {alertMatches[alert._id] !== undefined && (
+                      <span className="text-xs font-bold text-brand-600 bg-brand-100 px-2 py-0.5 rounded-full">
+                        {alertMatches[alert._id]} offres
+                      </span>
+                    )}
                   </div>
-                  <span className="text-xs font-bold text-brand-600 bg-brand-100 px-2 py-0.5 rounded-full">
-                    {alert.count} nouvelles
-                  </span>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
             <Button fullWidth size="sm" variant="secondary" className="mt-3" onClick={() => navigate('/dashboard/candidate/alerts')}>
-              <Bell className="w-3.5 h-3.5" /> Créer une alerte
+              <Bell className="w-3.5 h-3.5" /> {alerts.length > 0 ? 'Gérer mes alertes' : 'Créer une alerte'}
             </Button>
           </div>
 
           {/* Suggested training */}
-          <div className="card p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <BookOpen className="w-4 h-4 text-purple-600" />
-              <h2 className="font-bold text-slate-900">Formation recommandée</h2>
-            </div>
-            {trainings.slice(0, 1).map(t => (
-              <div key={t.id} onClick={() => navigate(`/trainings/${t.id}`)} className="cursor-pointer group">
+          {suggestedTraining && (
+            <div className="card p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <BookOpen className="w-4 h-4 text-purple-600" />
+                <h2 className="font-bold text-slate-900">Formation recommandée</h2>
+              </div>
+              <div onClick={() => navigate(`/trainings/${suggestedTraining._id}`)} className="cursor-pointer group">
                 <div className="relative h-28 rounded-xl overflow-hidden mb-3">
-                  <div className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform" style={{ backgroundImage: `url(${t.thumbnail})` }} />
+                  <div className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform" style={{ backgroundImage: `url(${trainingCoverImage(suggestedTraining)})` }} />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-2 left-2 flex items-center gap-1">
-                    <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-                    <span className="text-xs text-white font-semibold">{t.rating}</span>
-                  </div>
                 </div>
-                <p className="font-semibold text-sm text-slate-900 group-hover:text-brand-600 transition-colors line-clamp-2">{t.title}</p>
-                <p className="text-xs text-slate-400 mt-1">{t.instructor}</p>
+                <p className="font-semibold text-sm text-slate-900 group-hover:text-brand-600 transition-colors line-clamp-2">{suggestedTraining.title}</p>
+                <p className="text-xs text-slate-400 mt-1">{suggestedTraining.instructorName}</p>
                 <div className="flex items-center justify-between mt-2">
-                  <Badge variant="blue" size="sm">{t.format}</Badge>
+                  <Badge variant="blue" size="sm">{TRAINING_FORMAT_LABELS[suggestedTraining.format]}</Badge>
                   <span className="text-sm font-bold text-slate-900">
-                    {t.price === 0 ? <span className="text-emerald-600">Gratuit</span> : `${t.price.toLocaleString('fr-FR')} FCFA`}
+                    {suggestedTraining.price === 0 ? <span className="text-emerald-600">Gratuit</span> : `${suggestedTraining.price.toLocaleString('fr-FR')} ${suggestedTraining.currency}`}
                   </span>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </DashboardLayout>

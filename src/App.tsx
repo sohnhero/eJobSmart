@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { useState } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Landing from './pages/Landing'
 import Jobs from './pages/Jobs'
 import JobDetail from './pages/JobDetail'
@@ -8,6 +8,8 @@ import TrainingDetail from './pages/TrainingDetail'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
+import OAuthCallback from './pages/OAuthCallback'
 import Contact from './pages/Contact'
 import Pricing from './pages/Pricing'
 import Companies from './pages/Companies'
@@ -42,6 +44,7 @@ import AdminBilling from './pages/dashboards/AdminBilling'
 import AdminRhCvDatabase from './pages/dashboards/AdminRhCvDatabase'
 import AdminRhJobs from './pages/dashboards/AdminRhJobs'
 import AdminRhTrainings from './pages/dashboards/AdminRhTrainings'
+import AdminRhSettings from './pages/dashboards/AdminRhSettings'
 import FreelanceJobs from './pages/dashboards/FreelanceJobs'
 import FreelanceProposals from './pages/dashboards/FreelanceProposals'
 import FreelanceProfile from './pages/dashboards/FreelanceProfile'
@@ -50,6 +53,7 @@ import FreelanceBilling from './pages/dashboards/FreelanceBilling'
 import AgencyAnalytics from './pages/dashboards/AgencyAnalytics'
 import AgencyBilling from './pages/dashboards/AgencyBilling'
 import AgencyTrainings from './pages/dashboards/AgencyTrainings'
+import AgencySettings from './pages/dashboards/AgencySettings'
 import Legal from './pages/Legal'
 import Support from './pages/Support'
 import FAQ from './pages/FAQ'
@@ -57,12 +61,15 @@ import NotFound from './pages/NotFound'
 import ScrollToTop from './components/layout/ScrollToTop'
 import Preloader from './components/layout/Preloader'
 import { ToastProvider } from './components/ui/Toast'
+import { AuthProvider } from './context/AuthContext'
+import ProtectedRoute from './components/auth/ProtectedRoute'
 
 export default function App() {
   const [loading, setLoading] = useState(true)
 
   return (
     <ToastProvider>
+      <AuthProvider>
       {loading && <Preloader onComplete={() => setLoading(false)} />}
       <BrowserRouter>
         <ScrollToTop />
@@ -82,72 +89,88 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/oauth-callback" element={<OAuthCallback />} />
 
         {/* Candidate Dashboard */}
-        <Route path="/dashboard/candidate" element={<CandidateDashboard />} />
-        <Route path="/dashboard/candidate/profile" element={<CandidateProfile />} />
-        <Route path="/dashboard/candidate/applications" element={<CandidateApplications />} />
-        <Route path="/dashboard/candidate/trainings" element={<CandidateTrainings />} />
-        <Route path="/dashboard/candidate/messages" element={<Messages role="candidate" />} />
-        <Route path="/dashboard/candidate/alerts" element={<JobAlerts />} />
-        <Route path="/dashboard/candidate/notifications" element={<Notifications />} />
-        <Route path="/dashboard/candidate/jobs" element={<CandidateRecommendedJobs />} />
-        <Route path="/dashboard/candidate/*" element={<CandidateDashboard />} />
+        <Route element={<ProtectedRoute roles={['candidate']} />}>
+          <Route path="/dashboard/candidate" element={<CandidateDashboard />} />
+          <Route path="/dashboard/candidate/profile" element={<CandidateProfile />} />
+          <Route path="/dashboard/candidate/applications" element={<CandidateApplications />} />
+          <Route path="/dashboard/candidate/trainings" element={<CandidateTrainings />} />
+          <Route path="/dashboard/candidate/messages" element={<Messages role="candidate" />} />
+          <Route path="/dashboard/candidate/alerts" element={<JobAlerts />} />
+          <Route path="/dashboard/candidate/notifications" element={<Notifications role="candidate" />} />
+          <Route path="/dashboard/candidate/jobs" element={<CandidateRecommendedJobs />} />
+          <Route path="/dashboard/candidate/*" element={<CandidateDashboard />} />
+        </Route>
 
         {/* Company Dashboard */}
-        <Route path="/dashboard/company" element={<CompanyDashboard />} />
-        <Route path="/dashboard/company/jobs" element={<CompanyJobs />} />
-        <Route path="/dashboard/company/jobs/new" element={<PostJob />} />
-        <Route path="/dashboard/company/applications" element={<CompanyApplications />} />
-        <Route path="/dashboard/company/cv-database" element={<CVDatabase />} />
-        <Route path="/dashboard/company/messages" element={<Messages role="company" />} />
-        <Route path="/dashboard/company/billing" element={<BillingPage role="company" />} />
-        <Route path="/dashboard/company/analytics" element={<CompanyAnalytics />} />
-        <Route path="/dashboard/company/settings" element={<CompanySettings />} />
-        <Route path="/dashboard/company/notifications" element={<Notifications />} />
-        <Route path="/dashboard/company/*" element={<CompanyDashboard />} />
+        <Route element={<ProtectedRoute roles={['company']} />}>
+          <Route path="/dashboard/company" element={<CompanyDashboard />} />
+          <Route path="/dashboard/company/jobs" element={<CompanyJobs />} />
+          <Route path="/dashboard/company/jobs/new" element={<PostJob />} />
+          <Route path="/dashboard/company/applications" element={<CompanyApplications />} />
+          <Route path="/dashboard/company/cv-database" element={<CVDatabase role="company" />} />
+          <Route path="/dashboard/company/messages" element={<Messages role="company" />} />
+          <Route path="/dashboard/company/billing" element={<BillingPage role="company" />} />
+          <Route path="/dashboard/company/analytics" element={<CompanyAnalytics />} />
+          <Route path="/dashboard/company/settings" element={<CompanySettings />} />
+          <Route path="/dashboard/company/notifications" element={<Notifications role="company" />} />
+          <Route path="/dashboard/company/*" element={<CompanyDashboard />} />
+        </Route>
 
         {/* Freelance Dashboard */}
-        <Route path="/dashboard/freelance" element={<FreelanceDashboard />} />
-        <Route path="/dashboard/freelance/jobs" element={<FreelanceJobs />} />
-        <Route path="/dashboard/freelance/proposals" element={<FreelanceProposals />} />
-        <Route path="/dashboard/freelance/profile" element={<FreelanceProfile />} />
-        <Route path="/dashboard/freelance/trainings" element={<FreelanceTrainings />} />
-        <Route path="/dashboard/freelance/billing" element={<FreelanceBilling />} />
-        <Route path="/dashboard/freelance/messages" element={<Messages role="freelance" />} />
-        <Route path="/dashboard/freelance/notifications" element={<Notifications />} />
-        <Route path="/dashboard/freelance/*" element={<FreelanceDashboard />} />
+        <Route element={<ProtectedRoute roles={['freelance']} />}>
+          <Route path="/dashboard/freelance" element={<FreelanceDashboard />} />
+          <Route path="/dashboard/freelance/jobs" element={<FreelanceJobs />} />
+          <Route path="/dashboard/freelance/proposals" element={<FreelanceProposals />} />
+          <Route path="/dashboard/freelance/profile" element={<FreelanceProfile />} />
+          <Route path="/dashboard/freelance/trainings" element={<FreelanceTrainings />} />
+          <Route path="/dashboard/freelance/billing" element={<FreelanceBilling />} />
+          <Route path="/dashboard/freelance/messages" element={<Messages role="freelance" />} />
+          <Route path="/dashboard/freelance/notifications" element={<Notifications role="freelance" />} />
+          <Route path="/dashboard/freelance/*" element={<FreelanceDashboard />} />
+        </Route>
 
         {/* Agency Dashboard (Cabinet RH) */}
-        <Route path="/dashboard/agency" element={<AgencyDashboard />} />
-        <Route path="/dashboard/agency/resources" element={<AgencyResources />} />
-        <Route path="/dashboard/agency/jobs" element={<AgencyJobs />} />
-        <Route path="/dashboard/agency/messages" element={<Messages role="agency" />} />
-        <Route path="/dashboard/agency/billing" element={<AgencyBilling />} />
-        <Route path="/dashboard/agency/analytics" element={<AgencyAnalytics />} />
-        <Route path="/dashboard/agency/trainings" element={<AgencyTrainings />} />
-        <Route path="/dashboard/agency/notifications" element={<Notifications />} />
-        <Route path="/dashboard/agency/*" element={<AgencyDashboard />} />
+        <Route element={<ProtectedRoute roles={['agency']} />}>
+          <Route path="/dashboard/agency" element={<AgencyDashboard />} />
+          <Route path="/dashboard/agency/resources" element={<AgencyResources />} />
+          <Route path="/dashboard/agency/jobs" element={<AgencyJobs />} />
+          <Route path="/dashboard/agency/messages" element={<Messages role="agency" />} />
+          <Route path="/dashboard/agency/billing" element={<AgencyBilling />} />
+          <Route path="/dashboard/agency/analytics" element={<AgencyAnalytics />} />
+          <Route path="/dashboard/agency/trainings" element={<AgencyTrainings />} />
+          <Route path="/dashboard/agency/settings" element={<AgencySettings />} />
+          <Route path="/dashboard/agency/notifications" element={<Notifications role="agency" />} />
+          <Route path="/dashboard/agency/*" element={<AgencyDashboard />} />
+        </Route>
 
         {/* Internal Admin RH Dashboard */}
-        <Route path="/dashboard/admin-rh" element={<AdminRhDashboard />} />
-        <Route path="/dashboard/admin-rh/cv-database" element={<AdminRhCvDatabase />} />
-        <Route path="/dashboard/admin-rh/candidates" element={<AdminRhCandidates />} />
-        <Route path="/dashboard/admin-rh/jobs" element={<AdminRhJobs />} />
-        <Route path="/dashboard/admin-rh/trainings" element={<AdminRhTrainings />} />
-        <Route path="/dashboard/admin-rh/messages" element={<Messages role="admin-rh" />} />
-        <Route path="/dashboard/admin-rh/notifications" element={<Notifications />} />
-        <Route path="/dashboard/admin-rh/*" element={<AdminRhDashboard />} />
+        <Route element={<ProtectedRoute roles={['admin_rh']} />}>
+          <Route path="/dashboard/admin-rh" element={<AdminRhDashboard />} />
+          <Route path="/dashboard/admin-rh/cv-database" element={<AdminRhCvDatabase />} />
+          <Route path="/dashboard/admin-rh/candidates" element={<AdminRhCandidates />} />
+          <Route path="/dashboard/admin-rh/jobs" element={<AdminRhJobs />} />
+          <Route path="/dashboard/admin-rh/trainings" element={<AdminRhTrainings />} />
+          <Route path="/dashboard/admin-rh/messages" element={<Messages role="admin-rh" />} />
+          <Route path="/dashboard/admin-rh/settings" element={<AdminRhSettings />} />
+          <Route path="/dashboard/admin-rh/notifications" element={<Notifications role="admin-rh" />} />
+          <Route path="/dashboard/admin-rh/*" element={<AdminRhDashboard />} />
+        </Route>
 
         {/* Super Admin Dashboard */}
-        <Route path="/dashboard/admin" element={<AdminDashboard />} />
-        <Route path="/dashboard/admin/users" element={<UsersManagement />} />
-        <Route path="/dashboard/admin/settings" element={<PlatformSettings />} />
-        <Route path="/dashboard/admin/cv-database" element={<CVDatabase />} />
-        <Route path="/dashboard/admin/billing" element={<AdminBilling />} />
-        <Route path="/dashboard/admin/analytics" element={<AnalyticsPage />} />
-        <Route path="/dashboard/admin/notifications" element={<Notifications />} />
-        <Route path="/dashboard/admin/*" element={<AdminDashboard />} />
+        <Route element={<ProtectedRoute roles={['super_admin']} />}>
+          <Route path="/dashboard/admin" element={<AdminDashboard />} />
+          <Route path="/dashboard/admin/users" element={<UsersManagement />} />
+          <Route path="/dashboard/admin/settings" element={<PlatformSettings />} />
+          <Route path="/dashboard/admin/cv-database" element={<CVDatabase role="admin" />} />
+          <Route path="/dashboard/admin/billing" element={<AdminBilling />} />
+          <Route path="/dashboard/admin/analytics" element={<AnalyticsPage />} />
+          <Route path="/dashboard/admin/notifications" element={<Notifications role="admin" />} />
+          <Route path="/dashboard/admin/*" element={<AdminDashboard />} />
+        </Route>
 
         {/* System */}
         <Route path="/legal" element={<Legal />} />
@@ -156,7 +179,8 @@ export default function App() {
         <Route path="/404" element={<NotFound />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
+      </AuthProvider>
     </ToastProvider>
   )
 }

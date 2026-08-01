@@ -2,6 +2,11 @@ import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Check, User, Building2, Users, Trophy, Zap } from 'lucide-react'
 import Button from '../components/ui/Button'
+import { useAuth } from '../context/AuthContext'
+import { useToast } from '../components/ui/Toast'
+import { extractApiErrorMessage } from '../lib/api'
+import { authService } from '../lib/auth-service'
+import { roleToDashboardPath } from '../lib/roles'
 
 type Role = 'candidate' | 'company' | 'agency'
 type Step = 1 | 2 | 3
@@ -15,6 +20,8 @@ const roles = [
 export default function Register() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { register } = useAuth()
+  const toast = useToast()
   const defaultRole = (searchParams.get('type') as Role) || 'candidate'
   const [step, setStep] = useState<Step>(1)
   const [role, setRole] = useState<Role>(defaultRole)
@@ -23,9 +30,24 @@ export default function Register() {
 
   const handleSubmit = async () => {
     setLoading(true)
-    await new Promise(r => setTimeout(r, 1000))
-    setLoading(false)
-    navigate(`/dashboard/${role}`)
+    try {
+      const user = await register({
+        email: form.email,
+        password: form.password,
+        role,
+        firstName: form.firstName,
+        lastName: form.lastName,
+      })
+      if ((role === 'company' || role === 'agency') && form.company) {
+        await authService.updateMe({ companyName: form.company })
+      }
+      navigate(roleToDashboardPath(user.role))
+    } catch (err) {
+      toast.error(extractApiErrorMessage(err, "Impossible de créer le compte"))
+      setStep(2)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const steps = [
@@ -164,6 +186,16 @@ export default function Register() {
                     <>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-1.5">Prénom du contact *</label>
+                          <input value={form.firstName} onChange={e => setForm({ ...form, firstName: e.target.value })} placeholder="Moussa" className="input-field" required />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-1.5">Nom du contact *</label>
+                          <input value={form.lastName} onChange={e => setForm({ ...form, lastName: e.target.value })} placeholder="Sow" className="input-field" required />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
                           <label className="block text-sm font-semibold text-slate-700 mb-1.5">Nom de l'entreprise *</label>
                           <input value={form.company} onChange={e => setForm({ ...form, company: e.target.value })} placeholder="Sonatel S.A." className="input-field" required />
                         </div>
@@ -194,6 +226,16 @@ export default function Register() {
                   {/* Agency Fields (Nom & Email side-by-side, Mot de passe full-width) */}
                   {role === 'agency' && (
                     <>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-1.5">Prénom du contact *</label>
+                          <input value={form.firstName} onChange={e => setForm({ ...form, firstName: e.target.value })} placeholder="Aïcha" className="input-field" required />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-1.5">Nom du contact *</label>
+                          <input value={form.lastName} onChange={e => setForm({ ...form, lastName: e.target.value })} placeholder="Ba" className="input-field" required />
+                        </div>
+                      </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
                           <label className="block text-sm font-semibold text-slate-700 mb-1.5">Nom du cabinet *</label>
