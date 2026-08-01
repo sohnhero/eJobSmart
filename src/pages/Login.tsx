@@ -1,20 +1,80 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Mail, Lock, Eye, EyeOff, ArrowLeft, ArrowRight, Linkedin, Trophy, Building2, Zap, User, Settings, Briefcase, Users, UserCheck } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, ArrowLeft, ArrowRight, Linkedin, Trophy, Building2, Zap, User, Settings, Briefcase, Users, UserCheck, ShieldCheck } from 'lucide-react'
 import Button from '../components/ui/Button'
+import { useAuth } from '../context/AuthContext'
+import { useToast } from '../components/ui/Toast'
+import { extractApiErrorMessage } from '../lib/api'
+import { roleToDashboardPath } from '../lib/roles'
+import { isTwoFactorChallenge } from '../lib/types'
+
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api/v1'
+
+// Comptes créés par `npm run seed:demo-users` côté backend (voir seed-demo-users.ts)
+const DEMO_ACCOUNTS = {
+  candidate: 'demo-candidat@ejobsmart.africa',
+  freelance: 'demo-freelance@ejobsmart.africa',
+  company: 'demo-entreprise@ejobsmart.africa',
+  agency: 'demo-cabinet@ejobsmart.africa',
+  'admin-rh': 'demo-adminrh@ejobsmart.africa',
+  admin: 'demo-superadmin@ejobsmart.africa',
+} as const
+const DEMO_PASSWORD = 'Demo1234!'
 
 export default function Login() {
   const navigate = useNavigate()
+  const { login, verifyTwoFactorLogin } = useAuth()
+  const toast = useToast()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPwd, setShowPwd] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const handleLogin = async (role: 'candidate' | 'company' | 'admin' | 'freelance' | 'agency' | 'admin-rh') => {
+  // Étape 2FA (uniquement si le compte l'a activé — voir AuthContext.login)
+  const [challengeToken, setChallengeToken] = useState<string | null>(null)
+  const [twoFactorCode, setTwoFactorCode] = useState('')
+
+  const performLogin = async (loginEmail: string, loginPassword: string) => {
     setLoading(true)
-    await new Promise(r => setTimeout(r, 800))
-    setLoading(false)
-    navigate(`/dashboard/${role}`)
+    try {
+      const result = await login(loginEmail, loginPassword)
+      if (isTwoFactorChallenge(result)) {
+        setChallengeToken(result.challengeToken)
+        return
+      }
+      navigate(roleToDashboardPath(result.user.role))
+    } catch (err) {
+      toast.error(extractApiErrorMessage(err, 'Email ou mot de passe incorrect'))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    void performLogin(email, password)
+  }
+
+  const handleDemoLogin = (role: keyof typeof DEMO_ACCOUNTS) => {
+    void performLogin(DEMO_ACCOUNTS[role], DEMO_PASSWORD)
+  }
+
+  const handleVerifyTwoFactor = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!challengeToken) return
+    setLoading(true)
+    try {
+      const user = await verifyTwoFactorLogin(challengeToken, twoFactorCode)
+      navigate(roleToDashboardPath(user.role))
+    } catch (err) {
+      toast.error(extractApiErrorMessage(err, 'Code de vérification invalide'))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleOAuthLogin = (provider: 'google' | 'linkedin') => {
+    window.location.href = `${API_URL}/auth/${provider}`
   }
 
   return (
@@ -158,93 +218,131 @@ export default function Login() {
           <h2 className="text-2xl font-bold text-slate-900 mb-1">Connexion</h2>
           <p className="text-slate-500 text-sm mb-8">Accédez à votre espace personnel</p>
 
-          <div className="bg-brand-50 border border-brand-200 rounded-2xl p-4 mb-6">
-            <p className="flex items-center gap-1.5 text-xs font-semibold text-brand-700 mb-3">
-              <Zap className="w-3 h-3 text-amber-500 fill-amber-500" />
-              Accès démo rapide
-            </p>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { label: 'Candidat', role: 'candidate' as const, icon: User },
-                { label: 'Freelance', role: 'freelance' as const, icon: Briefcase },
-                { label: 'Entreprise', role: 'company' as const, icon: Building2 },
-                { label: 'Cabinet RH', role: 'agency' as const, icon: Users },
-                { label: 'Admin RH', role: 'admin-rh' as const, icon: UserCheck },
-                { label: 'Admin', role: 'admin' as const, icon: Settings },
-              ].map(item => (
+          {challengeToken ? (
+            <>
+              <div className="bg-brand-50 border border-brand-200 rounded-2xl p-4 mb-6 flex items-start gap-3">
+                <ShieldCheck className="w-5 h-5 text-brand-600 flex-shrink-0 mt-0.5" />
+                <p className="text-xs text-brand-700 leading-relaxed">
+                  Vérification en deux étapes activée. Entrez le code à 6 chiffres généré par votre application d'authentification.
+                </p>
+              </div>
+              <form onSubmit={handleVerifyTwoFactor} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Code de vérification</label>
+                  <input
+                    type="text" inputMode="numeric" maxLength={6} value={twoFactorCode}
+                    onChange={e => setTwoFactorCode(e.target.value.replace(/\D/g, ''))}
+                    placeholder="123456"
+                    className="input-field text-center tracking-[0.5em] text-lg font-bold"
+                    required
+                    autoFocus
+                  />
+                </div>
+                <Button type="submit" fullWidth size="lg" loading={loading} rightIcon={<ArrowRight className="w-4 h-4" />}>
+                  Vérifier
+                </Button>
                 <button
-                  key={item.role}
                   type="button"
-                  onClick={() => handleLogin(item.role)}
-                  className="flex flex-col items-center gap-1.5 text-[10px] font-bold text-brand-700 bg-white border border-brand-200 rounded-xl py-2.5 hover:bg-brand-600 hover:text-white hover:border-brand-600 transition-all group"
+                  onClick={() => { setChallengeToken(null); setTwoFactorCode('') }}
+                  className="w-full text-center text-sm text-slate-500 hover:text-brand-600 transition-colors"
                 >
-                  <item.icon className="w-4 h-4 text-brand-500 group-hover:text-white transition-colors" />
-                  {item.label}
+                  Retour à la connexion
                 </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Social login */}
-          <div className="grid grid-cols-2 gap-3 mb-5">
-            <button className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-slate-200 rounded-xl hover:border-slate-300 hover:bg-slate-50 transition-all">
-              <svg className="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" /><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" /><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" /><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" /></svg>
-              <span className="text-sm font-medium text-slate-700">Google</span>
-            </button>
-            <button className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-slate-200 rounded-xl hover:border-slate-300 hover:bg-slate-50 transition-all">
-              <Linkedin className="w-4 h-4 text-blue-700" />
-              <span className="text-sm font-medium text-slate-700">LinkedIn</span>
-            </button>
-          </div>
-
-          <div className="flex items-center gap-3 mb-5">
-            <div className="flex-1 h-px bg-slate-200" />
-            <span className="text-xs text-slate-400 font-medium">ou par email</span>
-            <div className="flex-1 h-px bg-slate-200" />
-          </div>
-
-          {/* Form */}
-          <form onSubmit={e => { e.preventDefault(); handleLogin('candidate') }} className="space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5">Email</label>
-              <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 w-4 h-4 text-slate-400" />
-                <input
-                  type="email" value={email} onChange={e => setEmail(e.target.value)}
-                  placeholder="votre@email.com"
-                  className="input-field pl-11"
-                  required
-                />
+              </form>
+            </>
+          ) : (
+            <>
+              {/* Accès démo rapide — désactivé temporairement pour tester la connexion manuelle.
+              <div className="bg-brand-50 border border-brand-200 rounded-2xl p-4 mb-6">
+                <p className="flex items-center gap-1.5 text-xs font-semibold text-brand-700 mb-3">
+                  <Zap className="w-3 h-3 text-amber-500 fill-amber-500" />
+                  Accès démo rapide
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { label: 'Candidat', role: 'candidate' as const, icon: User },
+                    { label: 'Freelance', role: 'freelance' as const, icon: Briefcase },
+                    { label: 'Entreprise', role: 'company' as const, icon: Building2 },
+                    { label: 'Cabinet RH', role: 'agency' as const, icon: Users },
+                    { label: 'Admin RH', role: 'admin-rh' as const, icon: UserCheck },
+                    { label: 'Admin', role: 'admin' as const, icon: Settings },
+                  ].map(item => (
+                    <button
+                      key={item.role}
+                      type="button"
+                      onClick={() => handleDemoLogin(item.role)}
+                      className="flex flex-col items-center gap-1.5 text-[10px] font-bold text-brand-700 bg-white border border-brand-200 rounded-xl py-2.5 hover:bg-brand-600 hover:text-white hover:border-brand-600 transition-all group"
+                    >
+                      <item.icon className="w-4 h-4 text-brand-500 group-hover:text-white transition-colors" />
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="text-sm font-semibold text-slate-700">Mot de passe</label>
-                <Link to="/forgot-password" className="text-xs text-brand-600 hover:text-brand-800">Mot de passe oublié ?</Link>
-              </div>
-              <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type={showPwd ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="input-field pl-11 pr-11"
-                  required
-                />
-                <button type="button" onClick={() => setShowPwd(!showPwd)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                  {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              */}
+
+              {/* Social login */}
+              <div className="grid grid-cols-2 gap-3 mb-5">
+                <button type="button" onClick={() => handleOAuthLogin('google')} className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-slate-200 rounded-xl hover:border-slate-300 hover:bg-slate-50 transition-all">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" /><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" /><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" /><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" /></svg>
+                  <span className="text-sm font-medium text-slate-700">Google</span>
+                </button>
+                <button type="button" onClick={() => handleOAuthLogin('linkedin')} className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-slate-200 rounded-xl hover:border-slate-300 hover:bg-slate-50 transition-all">
+                  <Linkedin className="w-4 h-4 text-blue-700" />
+                  <span className="text-sm font-medium text-slate-700">LinkedIn</span>
                 </button>
               </div>
-            </div>
 
-            <Button type="submit" fullWidth size="lg" loading={loading} rightIcon={<ArrowRight className="w-4 h-4" />}>
-              Se connecter
-            </Button>
-          </form>
+              <div className="flex items-center gap-3 mb-5">
+                <div className="flex-1 h-px bg-slate-200" />
+                <span className="text-xs text-slate-400 font-medium">ou par email</span>
+                <div className="flex-1 h-px bg-slate-200" />
+              </div>
 
-          <p className="text-center text-sm text-slate-500 mt-6">
-            Pas encore de compte ?{' '}
-            <Link to="/register" className="text-brand-600 font-semibold hover:text-brand-800">Créer un compte</Link>
-          </p>
+              {/* Form */}
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Email</label>
+                  <div className="relative">
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 w-4 h-4 text-slate-400" />
+                    <input
+                      type="email" value={email} onChange={e => setEmail(e.target.value)}
+                      placeholder="votre@email.com"
+                      className="input-field pl-11"
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-sm font-semibold text-slate-700">Mot de passe</label>
+                    <Link to="/forgot-password" className="text-xs text-brand-600 hover:text-brand-800">Mot de passe oublié ?</Link>
+                  </div>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input
+                      type={showPwd ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="input-field pl-11 pr-11"
+                      required
+                    />
+                    <button type="button" onClick={() => setShowPwd(!showPwd)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                      {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <Button type="submit" fullWidth size="lg" loading={loading} rightIcon={<ArrowRight className="w-4 h-4" />}>
+                  Se connecter
+                </Button>
+              </form>
+
+              <p className="text-center text-sm text-slate-500 mt-6">
+                Pas encore de compte ?{' '}
+                <Link to="/register" className="text-brand-600 font-semibold hover:text-brand-800">Créer un compte</Link>
+              </p>
+            </>
+          )}
         </div>
       </div>
     </div>

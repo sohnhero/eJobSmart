@@ -1,119 +1,77 @@
 import { useState, useEffect } from 'react'
 import {
-  Search, Filter, MapPin, Briefcase,
-  Clock, DollarSign, Sparkles, ChevronRight, X, CheckCircle, Flame
+  Search, Filter,
+  CheckCircle, Flame, X
 } from 'lucide-react'
 import DashboardLayout from '../../components/layout/DashboardLayout'
 import Button from '../../components/ui/Button'
 import Badge from '../../components/ui/Badge'
 import Skeleton from '../../components/ui/Skeleton'
 import { useToast } from '../../components/ui/Toast'
-
-interface Mission {
-  id: number
-  title: string
-  company: string
-  budget: number // in FCFA
-  duration: string
-  desc: string
-  tags: string[]
-  clientReputation: number
-  isHot?: boolean
-}
+import { jobsService } from '../../lib/services/jobs'
+import { applicationsService } from '../../lib/services/applications'
+import { extractApiErrorMessage } from '../../lib/api'
+import type { Job } from '../../lib/types'
 
 export default function FreelanceJobs() {
   const toast = useToast()
   const [loading, setLoading] = useState(true)
+  const [missions, setMissions] = useState<Job[]>([])
+  const [appliedIds, setAppliedIds] = useState<Set<string>>(new Set())
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
-  
-  // Bid Modal state
-  const [biddingMission, setBiddingMission] = useState<Mission | null>(null)
+
+  const [biddingMission, setBiddingMission] = useState<Job | null>(null)
   const [bidRate, setBidRate] = useState('')
-  const [deliveryTime, setDeliveryTime] = useState('5 jours')
+  const [deliveryTime, setDeliveryTime] = useState('')
   const [proposalText, setProposalText] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 700)
-    return () => clearTimeout(timer)
-  }, [])
+    setLoading(true)
+    Promise.all([
+      jobsService.list({ contractType: ['Freelance'], q: searchQuery || undefined, limit: 50 }),
+      applicationsService.mine().catch(() => []),
+    ]).then(([res, apps]) => {
+      setMissions(res.items)
+      setAppliedIds(new Set(apps.map(a => typeof a.job === 'string' ? a.job : a.job._id)))
+    }).catch(() => setMissions([])).finally(() => setLoading(false))
+  }, [searchQuery])
 
-  const missions: Mission[] = [
-    {
-      id: 201,
-      title: 'Intégration Maquettes React & Tailwind',
-      company: 'InnoTech Senegal',
-      budget: 450000,
-      duration: '7 jours',
-      desc: 'Recherche intégrateur React expérimenté pour intégrer une quinzaine d\'écrans Figma avec des animations premium en Tailwind CSS.',
-      tags: ['React', 'Tailwind CSS', 'Figma'],
-      clientReputation: 4.8,
-      isHot: true,
-    },
-    {
-      id: 202,
-      title: 'Migration de Base de Données vers AWS Postgres',
-      company: 'Express Logistique',
-      budget: 950000,
-      duration: '15 jours',
-      desc: 'Migration sans interruption d\'une base MySQL de production vers AWS Aurora PostgreSQL. Expérience requise avec AWS DMS.',
-      tags: ['PostgreSQL', 'AWS', 'MySQL'],
-      clientReputation: 4.5,
-    },
-    {
-      id: 203,
-      title: 'Développement d\'un MVP Application Flutter',
-      company: 'TouchPay CI',
-      budget: 1800000,
-      duration: '30 jours',
-      desc: 'Création d\'une application mobile pilote pour la Côte d\'Ivoire permettant d\'agréger plusieurs passerelles de paiement mobile.',
-      tags: ['Flutter', 'Dart', 'API Payment'],
-      clientReputation: 4.9,
-      isHot: true,
-    },
-    {
-      id: 204,
-      title: 'Audit de Performance Frontend Next.js',
-      company: 'Wari Cash',
-      budget: 600000,
-      duration: '4 jours',
-      desc: 'Analyse et amélioration des Core Web Vitals (surtout LCP et INP) sur une application e-commerce Next.js existante.',
-      tags: ['Next.js', 'Vercel', 'Core Web Vitals'],
-      clientReputation: 4.2,
-    }
-  ]
-
-  const filteredMissions = missions.filter(m => {
-    const matchesSearch = m.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          m.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          m.desc.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesTag = !selectedTag || m.tags.includes(selectedTag)
-    return matchesSearch && matchesTag
-  })
-
-  const allTags = Array.from(new Set(missions.flatMap(m => m.tags)))
+  const filteredMissions = missions.filter(m => !selectedTag || m.skills.includes(selectedTag))
+  const allTags = Array.from(new Set(missions.flatMap(m => m.skills)))
 
   const handleBidSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!bidRate.trim()) return
-
+    if (!biddingMission || !bidRate.trim()) return
     setIsSubmitting(true)
-    await new Promise(r => setTimeout(r, 1000))
-    setIsSubmitting(false)
-    setIsSuccess(true)
-    toast.success(`Votre offre de ${Number(bidRate).toLocaleString('fr-FR')} FCFA a été envoyée !`)
-    setTimeout(() => {
-      setBiddingMission(null)
-      setBidRate('')
-      setProposalText('')
-      setIsSuccess(false)
-    }, 1500)
+    try {
+      await applicationsService.apply({
+        job: biddingMission._id,
+        coverLetter: [
+          `Tarif proposé : ${Number(bidRate).toLocaleString('fr-FR')} FCFA`,
+          deliveryTime ? `Délai de réalisation : ${deliveryTime}` : null,
+          proposalText || null,
+        ].filter(Boolean).join('\n'),
+      })
+      setIsSuccess(true)
+      setAppliedIds(prev => new Set(prev).add(biddingMission._id))
+      toast.success(`Votre offre de ${Number(bidRate).toLocaleString('fr-FR')} FCFA a été envoyée !`)
+      setTimeout(() => {
+        setBiddingMission(null)
+        setBidRate(''); setProposalText(''); setDeliveryTime('')
+        setIsSuccess(false)
+      }, 1500)
+    } catch (err) {
+      toast.error(extractApiErrorMessage(err, "Impossible d'envoyer votre proposition"))
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
-    <DashboardLayout role="freelance" userName="Modou Fall" userTitle="Consultant Tech">
+    <DashboardLayout role="freelance">
       <div className="mb-6">
         <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2">
           Trouver des missions <Flame className="w-5 h-5 text-amber-500 fill-amber-500" />
@@ -140,30 +98,36 @@ export default function FreelanceJobs() {
           ) : (
             <div className="space-y-4">
               {filteredMissions.map(m => (
-                <div key={m.id} className="card p-5 hover:border-blue-300 hover:shadow-md transition-all group">
+                <div key={m._id} className="card p-5 hover:border-blue-300 hover:shadow-md transition-all group">
                   <div className="flex items-start justify-between gap-4 mb-3">
                     <div>
                       <div className="flex items-center gap-2">
                         <h3 className="font-bold text-slate-900 group-hover:text-blue-700 transition-colors text-base">{m.title}</h3>
-                        {m.isHot && <Badge variant="amber">Urgent</Badge>}
+                        {m.isBoosted && <Badge variant="amber">Urgent</Badge>}
                       </div>
-                      <p className="text-xs text-slate-500 mt-0.5">{m.company} · Note client: ⭐ {m.clientReputation}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">{m.companyName} · {m.city}</p>
                     </div>
-                    <span className="text-sm font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-100 flex-shrink-0">
-                      {m.budget.toLocaleString('fr-FR')} FCFA
-                    </span>
+                    {m.isSalaryVisible && m.salaryMax && (
+                      <span className="text-sm font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-100 flex-shrink-0">
+                        {m.salaryMax.toLocaleString('fr-FR')} FCFA
+                      </span>
+                    )}
                   </div>
-                  <p className="text-xs text-slate-600 mb-4 leading-relaxed line-clamp-2">{m.desc}</p>
+                  <p className="text-xs text-slate-600 mb-4 leading-relaxed line-clamp-2">{m.description}</p>
                   <div className="flex flex-wrap gap-1.5 mb-4">
-                    {m.tags.map(t => (
+                    {m.skills.map(t => (
                       <span key={t} className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-lg">
                         {t}
                       </span>
                     ))}
                   </div>
                   <div className="flex items-center justify-between border-t border-slate-50 pt-4 text-xs">
-                    <span className="text-slate-400">Durée estimée : <strong>{m.duration}</strong></span>
-                    <Button size="sm" onClick={() => setBiddingMission(m)}>Déposer mon offre</Button>
+                    <span className="text-slate-400">{m.experienceLevel}</span>
+                    {appliedIds.has(m._id) ? (
+                      <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> Déjà proposé</span>
+                    ) : (
+                      <Button size="sm" onClick={() => setBiddingMission(m)}>Déposer mon offre</Button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -184,25 +148,17 @@ export default function FreelanceJobs() {
               <Filter className="w-4 h-4 text-slate-400" /> Technologies populaires
             </h3>
             <div className="flex flex-wrap gap-2">
-              <button 
+              <button
                 onClick={() => setSelectedTag(null)}
-                className={`text-xs px-3 py-1.5 rounded-xl border font-medium transition-colors ${
-                  !selectedTag 
-                    ? 'bg-blue-600 text-white border-blue-600' 
-                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-                }`}
+                className={`text-xs px-3 py-1.5 rounded-xl border font-medium transition-colors ${!selectedTag ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
               >
                 Tous
               </button>
               {allTags.map(tag => (
-                <button 
+                <button
                   key={tag}
                   onClick={() => setSelectedTag(tag)}
-                  className={`text-xs px-3 py-1.5 rounded-xl border font-medium transition-colors ${
-                    selectedTag === tag 
-                      ? 'bg-blue-600 text-white border-blue-600' 
-                      : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-                  }`}
+                  className={`text-xs px-3 py-1.5 rounded-xl border font-medium transition-colors ${selectedTag === tag ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
                 >
                   {tag}
                 </button>
@@ -233,7 +189,7 @@ export default function FreelanceJobs() {
                     <X className="w-5 h-5" />
                   </button>
                 </div>
-                <p className="text-xs text-slate-500">Projet: <strong>{biddingMission.title}</strong> chez {biddingMission.company}</p>
+                <p className="text-xs text-slate-500">Projet: <strong>{biddingMission.title}</strong> chez {biddingMission.companyName}</p>
 
                 <div>
                   <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Votre tarif souhaité (FCFA)</label>
@@ -252,7 +208,6 @@ export default function FreelanceJobs() {
                   <input
                     type="text"
                     placeholder="ex: 6 jours"
-                    required
                     value={deliveryTime}
                     onChange={e => setDeliveryTime(e.target.value)}
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-brand-500/20"

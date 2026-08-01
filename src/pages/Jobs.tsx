@@ -1,8 +1,8 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   Search, MapPin, SlidersHorizontal, X, Bookmark,
-  Building2, Users, Clock, ChevronDown, ChevronUp,
+  Building2, Users, ChevronDown, ChevronUp,
   LayoutGrid, List, Zap, TrendingUp,
 } from 'lucide-react'
 import Navbar from '../components/layout/Navbar'
@@ -10,9 +10,10 @@ import Footer from '../components/layout/Footer'
 import Button from '../components/ui/Button'
 import Badge, { ContractBadge } from '../components/ui/Badge'
 import MatchScore from '../components/ui/MatchScore'
-import { jobs } from '../data/jobs'
-import { sectors } from '../data/sectors'
-import type { ContractType, ExperienceLevel, RemoteType } from '../data/jobs'
+import { jobsService } from '../lib/services/jobs'
+import { sectorsService } from '../lib/services/sectors'
+import { extractApiErrorMessage } from '../lib/api'
+import type { ContractType, ExperienceLevel, Job, RemoteType, Sector } from '../lib/types'
 
 const contractTypes: ContractType[] = ['CDI', 'CDD', 'Intérim', 'Freelance', 'Stage', 'Alternance']
 const experienceLevels: ExperienceLevel[] = ['Junior', 'Confirmé', 'Senior', 'Expert']
@@ -40,13 +41,48 @@ export default function Jobs() {
   const [query, setQuery] = useState(searchParams.get('q') || '')
   const [location, setLocation] = useState(searchParams.get('location') || '')
   const [selectedContracts, setSelectedContracts] = useState<Set<string>>(new Set())
-  const [selectedSectors, setSelectedSectors] = useState<Set<number>>(new Set())
+  const [selectedSectors, setSelectedSectors] = useState<Set<string>>(new Set())
   const [selectedRemote, setSelectedRemote] = useState<Set<string>>(new Set())
   const [selectedExp, setSelectedExp] = useState<Set<string>>(new Set())
   const [sortBy, setSortBy] = useState<'recent' | 'salary' | 'popular'>('recent')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [mobileFilters, setMobileFilters] = useState(false)
-  const [savedJobs, setSavedJobs] = useState<Set<number>>(new Set([5, 7]))
+  const [savedJobs, setSavedJobs] = useState<Set<string>>(new Set())
+
+  const [jobs, setJobs] = useState<Job[]>([])
+  const [sectors, setSectors] = useState<Sector[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    void sectorsService.list().then(setSectors).catch(() => setSectors([]))
+  }, [])
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    setError(null)
+    jobsService
+      .list({
+        q: query || undefined,
+        sector: selectedSectors.size ? [...selectedSectors] : undefined,
+        contractType: selectedContracts.size ? ([...selectedContracts] as ContractType[]) : undefined,
+        limit: 100,
+      })
+      .then((res) => {
+        if (!cancelled) setJobs(res.items)
+      })
+      .catch((err) => {
+        if (!cancelled) setError(extractApiErrorMessage(err, 'Impossible de charger les offres'))
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, selectedSectors, selectedContracts])
 
   const toggle = (set: Set<unknown>, val: unknown, setter: (s: Set<unknown>) => void) => {
     const next = new Set(set)
@@ -56,24 +92,17 @@ export default function Jobs() {
 
   const filtered = useMemo(() => {
     let result = [...jobs]
-    if (query) result = result.filter(j =>
-      j.title.toLowerCase().includes(query.toLowerCase()) ||
-      j.company.toLowerCase().includes(query.toLowerCase()) ||
-      j.skills.some(s => s.toLowerCase().includes(query.toLowerCase()))
-    )
     if (location) result = result.filter(j =>
       j.city.toLowerCase().includes(location.toLowerCase()) ||
       j.country.toLowerCase().includes(location.toLowerCase())
     )
-    if (selectedContracts.size) result = result.filter(j => selectedContracts.has(j.contractType))
-    if (selectedSectors.size) result = result.filter(j => selectedSectors.has(j.sectorId))
     if (selectedRemote.size) result = result.filter(j => selectedRemote.has(j.remoteType))
     if (selectedExp.size) result = result.filter(j => selectedExp.has(j.experienceLevel))
-    if (sortBy === 'recent') result.sort((a, b) => new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime())
-    if (sortBy === 'salary') result.sort((a, b) => b.salaryMax - a.salaryMax)
-    if (sortBy === 'popular') result.sort((a, b) => b.applicants - a.applicants)
+    if (sortBy === 'recent') result.sort((a, b) => new Date(b.postedAt ?? b.createdAt).getTime() - new Date(a.postedAt ?? a.createdAt).getTime())
+    if (sortBy === 'salary') result.sort((a, b) => (b.salaryMax ?? 0) - (a.salaryMax ?? 0))
+    if (sortBy === 'popular') result.sort((a, b) => b.applicantsCount - a.applicantsCount)
     return result
-  }, [query, location, selectedContracts, selectedSectors, selectedRemote, selectedExp, sortBy])
+  }, [jobs, location, selectedRemote, selectedExp, sortBy])
 
   const activeFilterCount = selectedContracts.size + selectedSectors.size + selectedRemote.size + selectedExp.size
 
@@ -130,7 +159,7 @@ export default function Jobs() {
         <h4 className="text-sm font-semibold text-slate-700 mb-3">Secteur d'activité</h4>
         <div className="space-y-2 max-h-48 overflow-y-auto scrollbar-hide">
           {sectors.map(s => (
-            <FilterCheckbox key={s.id} label={`${s.icon} ${s.name}`} checked={selectedSectors.has(s.id)} onChange={() => toggle(selectedSectors, s.id, setSelectedSectors as never)} />
+            <FilterCheckbox key={s._id} label={`${s.icon ?? ''} ${s.name}`} checked={selectedSectors.has(s._id)} onChange={() => toggle(selectedSectors, s._id, setSelectedSectors as never)} />
           ))}
         </div>
       </div>
@@ -146,7 +175,7 @@ export default function Jobs() {
         <div className="absolute inset-0 bg-hero-pattern opacity-10" />
         <div className="absolute top-20 right-0 w-[400px] h-[400px] rounded-full opacity-10 blur-3xl" style={{ background: '#39D5F4' }} />
         <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full opacity-5 blur-3xl" style={{ background: '#2563EB' }} />
-        
+
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center z-10">
           <div className="max-w-3xl mb-8 mx-auto">
             <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[10px] font-heading font-black tracking-widest uppercase border border-cyan-400/30" style={{ backgroundColor: 'rgba(57,213,244,0.1)', color: '#39D5F4' }}>
@@ -256,7 +285,17 @@ export default function Jobs() {
             )}
 
             {/* Jobs Grid */}
-            {filtered.length === 0 ? (
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="card p-5 h-48 animate-pulse bg-slate-100" />
+                ))}
+              </div>
+            ) : error ? (
+              <div className="card p-16 text-center">
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
+            ) : filtered.length === 0 ? (
               <div className="card p-16 text-center">
                 <div className="flex justify-center mb-4">
                   <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
@@ -270,9 +309,9 @@ export default function Jobs() {
               <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : 'space-y-3'}>
                 {filtered.map(job => (
                   <div
-                    key={job.id}
+                    key={job._id}
                     className={`card card-premium card-hover-premium p-5 cursor-pointer relative group ${viewMode === 'list' ? 'sm:flex sm:items-center sm:gap-5' : ''}`}
-                    onClick={() => navigate(`/jobs/${job.id}`)}
+                    onClick={() => navigate(`/jobs/${job._id}`)}
                   >
                     {/* Action Badges */}
                     <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
@@ -282,43 +321,44 @@ export default function Jobs() {
                         </Badge>
                       )}
                       <button
-                        onClick={e => { e.stopPropagation(); setSavedJobs(prev => { const n = new Set(prev); n.has(job.id) ? n.delete(job.id) : n.add(job.id); return n }) }}
+                        onClick={e => { e.stopPropagation(); setSavedJobs(prev => { const n = new Set(prev); n.has(job._id) ? n.delete(job._id) : n.add(job._id); return n }) }}
                         className="p-1.5 bg-white/80 backdrop-blur-sm rounded-lg border border-slate-100 shadow-sm hover:scale-110 transition-all hover:bg-white"
                       >
-                        <Bookmark className={`w-3.5 h-3.5 ${savedJobs.has(job.id) ? 'fill-brand-600 text-brand-600' : 'text-slate-300'}`} />
+                        <Bookmark className={`w-3.5 h-3.5 ${savedJobs.has(job._id) ? 'fill-brand-600 text-brand-600' : 'text-slate-300'}`} />
                       </button>
                     </div>
 
                     {viewMode === 'list' ? (
                       <>
-                        <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center p-2.5 flex-shrink-0 group-hover:shadow-md transition-shadow">
-                          <img src={job.companyLogo} alt={job.company} className="w-full h-full object-contain" />
+                        <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center p-2.5 flex-shrink-0 group-hover:shadow-md transition-shadow overflow-hidden">
+                          {job.companyLogo ? <img src={job.companyLogo} alt={job.companyName} className="w-full h-full object-contain" /> : <Building2 className="w-6 h-6 text-slate-300" />}
                         </div>
                         <div className={`flex-1 min-w-0 ${job.isBoosted ? 'sm:pr-20 pr-12' : 'sm:pr-10 pr-6'}`}>
                           <h3 className="font-bold text-slate-900 text-sm group-hover:text-brand-600 transition-colors line-clamp-1">{job.title}</h3>
-                          <p className="text-xs font-medium text-slate-500 mt-1 flex items-center gap-1.5"><Building2 className="w-3.5 h-3.5 text-slate-400" />{job.company}</p>
+                          <p className="text-xs font-medium text-slate-500 mt-1 flex items-center gap-1.5"><Building2 className="w-3.5 h-3.5 text-slate-400" />{job.companyName}</p>
                           <div className="flex flex-wrap gap-1.5 mt-3">
                             <ContractBadge type={job.contractType} />
                             <Badge variant="slate" className="bg-slate-50 text-slate-600 border border-slate-100">{job.remoteType}</Badge>
                             <Badge variant="slate" className="bg-slate-50 text-slate-600 border border-slate-100"><MapPin className="w-2.5 h-2.5" />{job.city}</Badge>
                           </div>
                         </div>
-                        <div className="hidden md:flex flex-col items-end gap-2 ml-auto flex-shrink-0">
-                          <MatchScore score={Math.floor(70 + Math.random() * 25)} />
-                          <p className="text-[10px] font-bold text-slate-900">
-                            {job.salaryMax.toLocaleString('fr-FR')} <span className="text-slate-400">{job.currency}</span>
-                          </p>
-                        </div>
+                        {job.isSalaryVisible && job.salaryMax && (
+                          <div className="hidden md:flex flex-col items-end gap-2 ml-auto flex-shrink-0">
+                            <p className="text-[10px] font-bold text-slate-900">
+                              {job.salaryMax.toLocaleString('fr-FR')} <span className="text-slate-400">{job.currency}</span>
+                            </p>
+                          </div>
+                        )}
                       </>
                     ) : (
                       <>
                         <div className="flex items-start gap-4 mb-5">
-                          <div className="w-12 h-12 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center p-2 flex-shrink-0 group-hover:shadow-md transition-shadow">
-                            <img src={job.companyLogo} alt={job.company} className="w-full h-full object-contain" />
+                          <div className="w-12 h-12 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center p-2 flex-shrink-0 group-hover:shadow-md transition-shadow overflow-hidden">
+                            {job.companyLogo ? <img src={job.companyLogo} alt={job.companyName} className="w-full h-full object-contain" /> : <Building2 className="w-5 h-5 text-slate-300" />}
                           </div>
                           <div className={`min-w-0 pt-0.5 ${job.isBoosted ? 'pr-16' : ''}`}>
                             <h3 className="font-bold text-slate-900 text-sm leading-tight line-clamp-2 group-hover:text-brand-600 transition-colors">{job.title}</h3>
-                            <p className="text-[11px] font-medium text-slate-500 mt-1 flex items-center gap-1"><Building2 className="w-3 h-3 text-slate-400" />{job.company}</p>
+                            <p className="text-[11px] font-medium text-slate-500 mt-1 flex items-center gap-1"><Building2 className="w-3 h-3 text-slate-400" />{job.companyName}</p>
                           </div>
                         </div>
                         <div className="flex flex-wrap gap-1.5 mb-4">
@@ -336,18 +376,20 @@ export default function Jobs() {
                             <div className="w-7 h-7 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0">
                               <Users className="w-3.5 h-3.5" />
                             </div>
-                            <span className="text-[10px] font-medium">{job.applicants}</span>
+                            <span className="text-[10px] font-medium">{job.applicantsCount}</span>
                           </div>
                         </div>
                         <div className="flex items-center justify-between pt-4 border-t border-slate-50">
-                          <div>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Salaire</p>
-                            <p className="text-xs font-bold text-slate-900">
-                              {job.salaryMin.toLocaleString('fr-FR')} — {job.salaryMax.toLocaleString('fr-FR')}
-                              <span className="text-[10px] font-medium text-slate-400 ml-1">{job.currency}</span>
-                            </p>
-                          </div>
-                          <MatchScore score={Math.floor(70 + job.id * 3 % 25)} size="sm" />
+                          {job.isSalaryVisible && job.salaryMin && job.salaryMax ? (
+                            <div>
+                              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Salaire</p>
+                              <p className="text-xs font-bold text-slate-900">
+                                {job.salaryMin.toLocaleString('fr-FR')} — {job.salaryMax.toLocaleString('fr-FR')}
+                                <span className="text-[10px] font-medium text-slate-400 ml-1">{job.currency}</span>
+                              </p>
+                            </div>
+                          ) : <span />}
+                          {job.isFeatured && <TrendingUp className="w-4 h-4 text-amber-500" />}
                         </div>
                       </>
                     )}

@@ -1,37 +1,78 @@
 import { useState, useEffect } from 'react'
 import {
-  User, Briefcase, DollarSign, Mail, Phone, MapPin, Globe,
-  Github, Linkedin, Plus, Trash2, Save, Sparkles, CheckCircle2
+  User, Briefcase, DollarSign, Globe,
+  Github, Linkedin, Plus, Trash2, Save, Sparkles
 } from 'lucide-react'
 import DashboardLayout from '../../components/layout/DashboardLayout'
 import Button from '../../components/ui/Button'
+import SecuritySettings from '../../components/settings/SecuritySettings'
 import Skeleton from '../../components/ui/Skeleton'
 import { useToast } from '../../components/ui/Toast'
+import { useAuth } from '../../context/AuthContext'
+import { profilesService } from '../../lib/services/profiles'
+import { authService } from '../../lib/auth-service'
+import { extractApiErrorMessage } from '../../lib/api'
 
 export default function FreelanceProfile() {
   const toast = useToast()
+  const { user, refreshUser } = useAuth()
   const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
 
-  // Profile data state
-  const [name, setName] = useState('Modou Fall')
-  const [title, setTitle] = useState('Consultant Fullstack React / Node')
-  const [tjm, setTjm] = useState('150000') // TJM in FCFA
-  const [experience, setExperience] = useState('5 ans')
-  const [email, setEmail] = useState('mfall@freelance.sn')
-  const [phone, setPhone] = useState('+221 77 123 45 67')
-  const [location, setLocation] = useState('Dakar, Sénégal')
-  const [bio, setBio] = useState('Développeur passionné par la création de produits Web robustes et scalables. Expertise principale sur l\'écosystème JavaScript/TypeScript, React, Next.js, Node.js et les architectures cloud.')
-  const [skills, setSkills] = useState<string[]>(['TypeScript', 'React', 'Next.js', 'Node.js', 'PostgreSQL', 'Tailwind CSS', 'AWS'])
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [headline, setHeadline] = useState('')
+  const [dailyRate, setDailyRate] = useState('')
+  const [experienceYears, setExperienceYears] = useState('')
+  const [city, setCity] = useState('')
+  const [country, setCountry] = useState('')
+  const [bio, setBio] = useState('')
+  const [skills, setSkills] = useState<string[]>([])
   const [newSkill, setNewSkill] = useState('')
+  const [portfolio, setPortfolio] = useState('')
+  const [github, setGithub] = useState('')
+  const [linkedin, setLinkedin] = useState('')
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 500)
-    return () => clearTimeout(timer)
+    if (user) { setFirstName(user.firstName); setLastName(user.lastName) }
+  }, [user])
+
+  useEffect(() => {
+    profilesService.me().then((profile) => {
+      setHeadline(profile.headline ?? '')
+      setDailyRate(profile.dailyRate?.toString() ?? '')
+      setExperienceYears(profile.experienceYears?.toString() ?? '')
+      setCity(profile.city ?? '')
+      setCountry(profile.country ?? '')
+      setBio(profile.bio ?? '')
+      setSkills(profile.skills ?? [])
+      setPortfolio(profile.portfolio ?? '')
+      setGithub(profile.github ?? '')
+      setLinkedin(profile.linkedin ?? '')
+    }).catch(() => {}).finally(() => setLoading(false))
   }, [])
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
-    toast.success('Profil freelance mis à jour avec succès !')
+    setSaving(true)
+    try {
+      await Promise.all([
+        authService.updateMe({ firstName, lastName }),
+        profilesService.updateMe({
+          headline, bio,
+          city: city || undefined, country: country || undefined,
+          dailyRate: dailyRate ? Number(dailyRate) : undefined,
+          experienceYears: experienceYears ? Number(experienceYears) : undefined,
+          skills, portfolio: portfolio || undefined, github: github || undefined, linkedin: linkedin || undefined,
+        }),
+      ])
+      await refreshUser()
+      toast.success('Profil freelance mis à jour avec succès !')
+    } catch (err) {
+      toast.error(extractApiErrorMessage(err, 'Impossible de sauvegarder le profil'))
+    } finally {
+      setSaving(false)
+    }
   }
 
   const handleAddSkill = (e: React.FormEvent) => {
@@ -46,7 +87,7 @@ export default function FreelanceProfile() {
   }
 
   return (
-    <DashboardLayout role="freelance" userName={name} userTitle="Consultant Tech">
+    <DashboardLayout role="freelance">
       <div className="mb-6">
         <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2">
           Mon profil Freelance <Sparkles className="w-5 h-5 text-blue-600 fill-blue-600" />
@@ -67,19 +108,20 @@ export default function FreelanceProfile() {
               <form onSubmit={handleSave} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Nom Complet</label>
-                    <input 
-                      type="text" value={name} onChange={e => setName(e.target.value)} required
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/20"
-                    />
+                    <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Prénom</label>
+                    <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} required
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/20" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Intitulé de Poste / Spécialisation</label>
-                    <input 
-                      type="text" value={title} onChange={e => setTitle(e.target.value)} required
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/20"
-                    />
+                    <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Nom</label>
+                    <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} required
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/20" />
                   </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Intitulé de Poste / Spécialisation</label>
+                  <input type="text" value={headline} onChange={e => setHeadline(e.target.value)} placeholder="ex: Consultant Fullstack React / Node"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/20" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -87,38 +129,35 @@ export default function FreelanceProfile() {
                     <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Taux Journalier Moyen (TJM) · FCFA</label>
                     <div className="relative">
                       <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                      <input 
-                        type="number" value={tjm} onChange={e => setTjm(e.target.value)} required
-                        className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/20"
-                      />
+                      <input type="number" value={dailyRate} onChange={e => setDailyRate(e.target.value)}
+                        className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/20" />
                     </div>
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Années d'expérience</label>
-                    <input 
-                      type="text" value={experience} onChange={e => setExperience(e.target.value)} required
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/20"
-                    />
+                    <input type="number" value={experienceYears} onChange={e => setExperienceYears(e.target.value)}
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/20" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Ville / Pays</label>
-                    <input 
-                      type="text" value={location} onChange={e => setLocation(e.target.value)} required
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/20"
-                    />
+                    <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Ville</label>
+                    <input type="text" value={city} onChange={e => setCity(e.target.value)}
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/20" />
                   </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Pays</label>
+                  <input type="text" value={country} onChange={e => setCountry(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/20" />
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Description / Présentation (Bio)</label>
-                  <textarea 
-                    rows={4} value={bio} onChange={e => setBio(e.target.value)} required
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/20 resize-none"
-                  />
+                  <textarea rows={4} value={bio} onChange={e => setBio(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/20 resize-none" />
                 </div>
 
                 <div className="flex justify-end pt-2">
-                  <Button type="submit" leftIcon={<Save className="w-4 h-4" />}>Enregistrer les modifications</Button>
+                  <Button type="submit" loading={saving} leftIcon={<Save className="w-4 h-4" />}>Enregistrer les modifications</Button>
                 </div>
               </form>
             </div>
@@ -131,7 +170,7 @@ export default function FreelanceProfile() {
                 <Briefcase className="w-4 h-4 text-blue-600" /> Compétences
               </h3>
               <form onSubmit={handleAddSkill} className="flex gap-2 mb-4">
-                <input 
+                <input
                   type="text" placeholder="Ajouter un tag" value={newSkill} onChange={e => setNewSkill(e.target.value)}
                   className="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none"
                 />
@@ -152,18 +191,20 @@ export default function FreelanceProfile() {
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-xs">
                   <Globe className="w-4 h-4 text-slate-400" />
-                  <input type="url" placeholder="https://mon-portfolio.sn" className="flex-1 bg-slate-50 border border-slate-200 px-2 py-1.5 rounded-lg text-xs outline-none" />
+                  <input type="url" value={portfolio} onChange={e => setPortfolio(e.target.value)} placeholder="https://mon-portfolio.sn" className="flex-1 bg-slate-50 border border-slate-200 px-2 py-1.5 rounded-lg text-xs outline-none" />
                 </div>
                 <div className="flex items-center gap-2 text-xs">
                   <Github className="w-4 h-4 text-slate-400" />
-                  <input type="url" placeholder="https://github.com/modou" className="flex-1 bg-slate-50 border border-slate-200 px-2 py-1.5 rounded-lg text-xs outline-none" />
+                  <input type="url" value={github} onChange={e => setGithub(e.target.value)} placeholder="https://github.com/..." className="flex-1 bg-slate-50 border border-slate-200 px-2 py-1.5 rounded-lg text-xs outline-none" />
                 </div>
                 <div className="flex items-center gap-2 text-xs">
                   <Linkedin className="w-4 h-4 text-slate-400" />
-                  <input type="url" placeholder="https://linkedin.com/in/modou" className="flex-1 bg-slate-50 border border-slate-200 px-2 py-1.5 rounded-lg text-xs outline-none" />
+                  <input type="url" value={linkedin} onChange={e => setLinkedin(e.target.value)} placeholder="https://linkedin.com/in/..." className="flex-1 bg-slate-50 border border-slate-200 px-2 py-1.5 rounded-lg text-xs outline-none" />
                 </div>
               </div>
             </div>
+
+            <SecuritySettings />
           </div>
         </div>
       )}

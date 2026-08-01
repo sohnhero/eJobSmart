@@ -70,6 +70,19 @@ export function StatusBadge({ status }: { status: string }) {
     'active': 'green',
     'suspended': 'amber',
     'closed': 'red',
+    'Brouillon': 'slate',
+    'En attente de modération': 'amber',
+    'Active': 'green',
+    'Suspendue': 'amber',
+    'Clôturée': 'red',
+    'Expirée': 'slate',
+    'pending': 'amber',
+    'accepted': 'green',
+    'declined': 'red',
+    'approved': 'green',
+    'rejected': 'red',
+    'resolved': 'green',
+    'dismissed': 'slate',
   }
   return <Badge variant={map[status] ?? 'slate'} dot>{status}</Badge>
 }

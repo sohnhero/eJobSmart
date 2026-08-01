@@ -1,9 +1,13 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Mail, ArrowLeft, ArrowRight, Zap, CheckCircle, Trophy } from 'lucide-react'
+import { Mail, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react'
 import Button from '../components/ui/Button'
+import { useToast } from '../components/ui/Toast'
+import { authService } from '../lib/auth-service'
+import { extractApiErrorMessage } from '../lib/api'
 
 export default function ForgotPassword() {
+  const toast = useToast()
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
@@ -11,10 +15,14 @@ export default function ForgotPassword() {
   const handleResetRequest = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    // Simulate API call
-    await new Promise(r => setTimeout(r, 1200))
-    setLoading(false)
-    setSubmitted(true)
+    try {
+      await authService.forgotPassword(email)
+      setSubmitted(true)
+    } catch (err) {
+      toast.error(extractApiErrorMessage(err, 'Impossible de traiter votre demande pour le moment'))
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (

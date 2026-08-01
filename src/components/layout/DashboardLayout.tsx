@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import clsx from 'clsx'
 import Avatar from '../ui/Avatar'
+import { useAuth } from '../../context/AuthContext'
 
 interface NavItem {
   icon: React.ElementType
@@ -54,6 +55,7 @@ const agencyNav: NavItem[] = [
   { icon: BookOpen, label: 'Formations', href: '/dashboard/agency/trainings' },
   { icon: MessageSquare, label: 'Messagerie', href: '/dashboard/agency/messages' },
   { icon: CreditCard, label: 'Facturation', href: '/dashboard/agency/billing' },
+  { icon: Settings, label: 'Paramètres', href: '/dashboard/agency/settings' },
 ]
 
 const adminRhNav: NavItem[] = [
@@ -63,6 +65,7 @@ const adminRhNav: NavItem[] = [
   { icon: Briefcase, label: 'Modération offres', href: '/dashboard/admin-rh/jobs' },
   { icon: BookOpen, label: 'Gestion formations', href: '/dashboard/admin-rh/trainings' },
   { icon: MessageSquare, label: 'Messagerie Interne', href: '/dashboard/admin-rh/messages' },
+  { icon: Settings, label: 'Paramètres', href: '/dashboard/admin-rh/settings' },
 ]
 
 const adminNav: NavItem[] = [
@@ -89,12 +92,21 @@ const roleConfig = {
   admin: { nav: adminNav, title: 'Super Admin', color: 'text-slate-900', badge: 'Super Admin' },
 }
 
-export default function DashboardLayout({ children, role = 'candidate', userName = 'Amadou Diallo', userTitle }: DashboardLayoutProps) {
+export default function DashboardLayout({ children, role = 'candidate', userName, userTitle }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
+  const [loggingOut, setLoggingOut] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
+  const { user, logout } = useAuth()
   const config = roleConfig[role]
+  const displayName = user ? `${user.firstName} ${user.lastName}` : (userName ?? 'Utilisateur')
+
+  const handleLogout = async () => {
+    setLoggingOut(true)
+    await logout()
+    navigate('/login')
+  }
 
   const SidebarContent = () => (
     <>
@@ -108,9 +120,9 @@ export default function DashboardLayout({ children, role = 'candidate', userName
       {/* User info */}
       <div className="px-4 py-4 border-b border-slate-100">
         <div className="flex items-center gap-3">
-          <Avatar name={userName} size="md" />
+          <Avatar name={displayName} size="md" />
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-slate-800 truncate">{userName}</p>
+            <p className="text-sm font-semibold text-slate-800 truncate">{displayName}</p>
             <span className="text-xs text-slate-400">{userTitle || config.badge}</span>
           </div>
         </div>
@@ -198,7 +210,7 @@ export default function DashboardLayout({ children, role = 'candidate', userName
               <Bell className="w-4.5 h-4.5 w-4 h-4" />
               <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full" />
             </button>
-            <Avatar name={userName} size="sm" />
+            <Avatar name={displayName} size="sm" />
           </div>
         </header>
 
@@ -230,11 +242,9 @@ export default function DashboardLayout({ children, role = 'candidate', userName
               </button>
               <button
                 type="button"
-                onClick={() => {
-                  navigate('/')
-                  setShowLogoutConfirm(false)
-                }}
-                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-750 text-white text-sm font-semibold transition-colors shadow-sm"
+                disabled={loggingOut}
+                onClick={handleLogout}
+                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-750 disabled:opacity-60 text-white text-sm font-semibold transition-colors shadow-sm"
               >
                 Déconnexion
               </button>
