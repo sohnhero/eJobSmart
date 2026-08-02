@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Menu, X, Bell, ChevronDown, LogOut, User, LayoutDashboard } from 'lucide-react'
 import clsx from 'clsx'
 import Button from '../ui/Button'
 import Avatar from '../ui/Avatar'
 import { useAuth } from '../../context/AuthContext'
+import { notificationsService } from '../../lib/services/notifications'
 import type { BackendRole } from '../../lib/types'
 
 const navLinks = [
@@ -36,6 +37,21 @@ export default function Navbar() {
   const isLoggedIn = isAuthenticated
   const userRole = user?.role
   const userName = user ? (user.companyName || `${user.firstName} ${user.lastName}`) : ''
+  const dashboardHome = dashboardPath[userRole || 'candidate']
+
+  const [unreadNotifications, setUnreadNotifications] = useState(0)
+  useEffect(() => {
+    if (!isAuthenticated) { setUnreadNotifications(0); return }
+    let cancelled = false
+    const load = () => {
+      notificationsService.unreadCount()
+        .then(count => { if (!cancelled) setUnreadNotifications(count) })
+        .catch(() => {})
+    }
+    load()
+    const interval = setInterval(load, 30000)
+    return () => { cancelled = true; clearInterval(interval) }
+  }, [isAuthenticated])
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200">
@@ -70,9 +86,14 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             {isLoggedIn ? (
               <>
-                <button className="relative p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+                <button
+                  onClick={() => navigate(`${dashboardHome}/notifications`)}
+                  className="relative p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                >
                   <Bell className="w-5 h-5" />
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
+                  {unreadNotifications > 0 && (
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
+                  )}
                 </button>
                 <div className="relative">
                   <button
@@ -89,7 +110,7 @@ export default function Navbar() {
                   {profileOpen && (
                     <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl border border-slate-200 shadow-lg py-1 z-50">
                       <button
-                        onClick={() => { navigate(dashboardPath[userRole || 'candidate']); setProfileOpen(false) }}
+                        onClick={() => { navigate(dashboardHome); setProfileOpen(false) }}
                         className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50"
                       >
                         <LayoutDashboard className="w-4 h-4 text-slate-400" />
@@ -206,7 +227,7 @@ export default function Navbar() {
                 <Button
                   fullWidth
                   variant="primary"
-                  onClick={() => { navigate(dashboardPath[userRole || 'candidate']); setMobileOpen(false) }}
+                  onClick={() => { navigate(dashboardHome); setMobileOpen(false) }}
                   className="rounded-xl flex items-center justify-center gap-2"
                 >
                   <LayoutDashboard className="w-4 h-4" />
