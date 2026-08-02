@@ -9,6 +9,7 @@ import clsx from 'clsx'
 import Avatar from '../ui/Avatar'
 import { useAuth } from '../../context/AuthContext'
 import { messagesService } from '../../lib/services/messages'
+import { notificationsService } from '../../lib/services/notifications'
 
 interface NavItem {
   icon: React.ElementType
@@ -108,6 +109,19 @@ export default function DashboardLayout({ children, role = 'candidate', userName
     const load = () => {
       messagesService.conversations()
         .then(convs => { if (!cancelled) setUnreadMessages(convs.reduce((sum, c) => sum + c.unreadCount, 0)) })
+        .catch(() => {})
+    }
+    load()
+    const interval = setInterval(load, 30000)
+    return () => { cancelled = true; clearInterval(interval) }
+  }, [])
+
+  const [unreadNotifications, setUnreadNotifications] = useState(0)
+  useEffect(() => {
+    let cancelled = false
+    const load = () => {
+      notificationsService.unreadCount()
+        .then(count => { if (!cancelled) setUnreadNotifications(count) })
         .catch(() => {})
     }
     load()
@@ -220,9 +234,14 @@ export default function DashboardLayout({ children, role = 'candidate', userName
 
           {/* Top-right actions */}
           <div className="flex items-center gap-2">
-            <button className="relative p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+            <button
+              onClick={() => navigate(`/dashboard/${role}/notifications`)}
+              className="relative p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+            >
               <Bell className="w-4.5 h-4.5 w-4 h-4" />
-              <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full" />
+              {unreadNotifications > 0 && (
+                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full" />
+              )}
             </button>
             <Avatar name={displayName} size="sm" />
           </div>
