@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Briefcase, Users, FileText, BookOpen,
@@ -8,40 +8,40 @@ import {
 import clsx from 'clsx'
 import Avatar from '../ui/Avatar'
 import { useAuth } from '../../context/AuthContext'
+import { messagesService } from '../../lib/services/messages'
 
 interface NavItem {
   icon: React.ElementType
   label: string
   href: string
-  badge?: number
 }
 
 const candidateNav: NavItem[] = [
   { icon: LayoutDashboard, label: 'Tableau de bord', href: '/dashboard/candidate' },
   { icon: Search, label: 'Offres recommandées', href: '/dashboard/candidate/jobs' },
-  { icon: FileText, label: 'Mes candidatures', href: '/dashboard/candidate/applications', badge: 5 },
+  { icon: FileText, label: 'Mes candidatures', href: '/dashboard/candidate/applications' },
   { icon: Users, label: 'Mon profil & CV', href: '/dashboard/candidate/profile' },
   { icon: BookOpen, label: 'Mes formations', href: '/dashboard/candidate/trainings' },
-  { icon: MessageSquare, label: 'Messagerie', href: '/dashboard/candidate/messages', badge: 3 },
+  { icon: MessageSquare, label: 'Messagerie', href: '/dashboard/candidate/messages' },
   { icon: Bell, label: 'Alertes emploi', href: '/dashboard/candidate/alerts' },
 ]
 
 const freelanceNav: NavItem[] = [
   { icon: LayoutDashboard, label: 'Tableau de bord', href: '/dashboard/freelance' },
   { icon: Search, label: 'Rechercher missions', href: '/dashboard/freelance/jobs' },
-  { icon: FileText, label: 'Mes propositions', href: '/dashboard/freelance/proposals', badge: 2 },
+  { icon: FileText, label: 'Mes propositions', href: '/dashboard/freelance/proposals' },
   { icon: Users, label: 'Mon portfolio & CV', href: '/dashboard/freelance/profile' },
   { icon: BookOpen, label: 'Formations RH', href: '/dashboard/freelance/trainings' },
-  { icon: MessageSquare, label: 'Messagerie', href: '/dashboard/freelance/messages', badge: 4 },
+  { icon: MessageSquare, label: 'Messagerie', href: '/dashboard/freelance/messages' },
   { icon: CreditCard, label: 'Mes factures', href: '/dashboard/freelance/billing' },
 ]
 
 const companyNav: NavItem[] = [
   { icon: LayoutDashboard, label: 'Tableau de bord', href: '/dashboard/company' },
   { icon: Briefcase, label: 'Mes offres', href: '/dashboard/company/jobs' },
-  { icon: Users, label: 'Candidatures', href: '/dashboard/company/applications', badge: 23 },
+  { icon: Users, label: 'Candidatures', href: '/dashboard/company/applications' },
   { icon: UserCheck, label: 'Base CV', href: '/dashboard/company/cv-database' },
-  { icon: MessageSquare, label: 'Messagerie', href: '/dashboard/company/messages', badge: 7 },
+  { icon: MessageSquare, label: 'Messagerie', href: '/dashboard/company/messages' },
   { icon: BarChart3, label: 'Statistiques', href: '/dashboard/company/analytics' },
   { icon: CreditCard, label: 'Abonnement', href: '/dashboard/company/billing' },
   { icon: Settings, label: 'Paramètres', href: '/dashboard/company/settings' },
@@ -102,6 +102,19 @@ export default function DashboardLayout({ children, role = 'candidate', userName
   const config = roleConfig[role]
   const displayName = user ? `${user.firstName} ${user.lastName}` : (userName ?? 'Utilisateur')
 
+  const [unreadMessages, setUnreadMessages] = useState(0)
+  useEffect(() => {
+    let cancelled = false
+    const load = () => {
+      messagesService.conversations()
+        .then(convs => { if (!cancelled) setUnreadMessages(convs.reduce((sum, c) => sum + c.unreadCount, 0)) })
+        .catch(() => {})
+    }
+    load()
+    const interval = setInterval(load, 30000)
+    return () => { cancelled = true; clearInterval(interval) }
+  }, [])
+
   const handleLogout = async () => {
     setLoggingOut(true)
     await logout()
@@ -135,6 +148,7 @@ export default function DashboardLayout({ children, role = 'candidate', userName
         </p>
         {config.nav.map(item => {
           const isActive = location.pathname === item.href
+          const badge = item.href.endsWith('/messages') && unreadMessages > 0 ? unreadMessages : undefined
           return (
             <Link
               key={item.href}
@@ -144,9 +158,9 @@ export default function DashboardLayout({ children, role = 'candidate', userName
             >
               <item.icon className="w-4.5 h-4.5 w-4 h-4 flex-shrink-0" />
               <span className="flex-1">{item.label}</span>
-              {item.badge && !isActive && (
+              {badge !== undefined && !isActive && (
                 <span className="w-5 h-5 bg-brand-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                  {item.badge}
+                  {badge}
                 </span>
               )}
             </Link>
