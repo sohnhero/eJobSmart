@@ -4,6 +4,8 @@ import { Menu, X, Bell, ChevronDown, LogOut, User, LayoutDashboard } from 'lucid
 import clsx from 'clsx'
 import Button from '../ui/Button'
 import Avatar from '../ui/Avatar'
+import { useAuth } from '../../context/AuthContext'
+import type { BackendRole } from '../../lib/types'
 
 const navLinks = [
   { label: 'Offres d\'emploi', href: '/jobs' },
@@ -13,25 +15,27 @@ const navLinks = [
   { label: 'Contact', href: '/contact' },
 ]
 
-interface NavbarProps {
-  isLoggedIn?: boolean
-  userRole?: 'candidate' | 'company' | 'agency' | 'admin'
-  userName?: string
+const dashboardPath: Record<BackendRole, string> = {
+  candidate: '/dashboard/candidate',
+  freelance: '/dashboard/freelance',
+  company: '/dashboard/company',
+  agency: '/dashboard/agency',
+  admin_rh: '/dashboard/admin-rh',
+  super_admin: '/dashboard/admin',
+  trainer: '/dashboard/candidate',
 }
 
-export default function Navbar({ isLoggedIn, userRole, userName = 'Amadou Diallo' }: NavbarProps) {
+export default function Navbar() {
+  const { user, isAuthenticated, logout } = useAuth()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
 
-  const dashboardPath = {
-    candidate: '/dashboard/candidate',
-    company: '/dashboard/company',
-    agency: '/dashboard/agency',
-    admin: '/dashboard/admin',
-  }
+  const isLoggedIn = isAuthenticated
+  const userRole = user?.role
+  const userName = user ? (user.companyName || `${user.firstName} ${user.lastName}`) : ''
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200">
@@ -267,8 +271,9 @@ export default function Navbar({ isLoggedIn, userRole, userName = 'Amadou Diallo
               <button
                 type="button"
                 onClick={() => {
-                  navigate('/')
+                  void logout()
                   setShowLogoutConfirm(false)
+                  navigate('/')
                 }}
                 className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-750 text-white text-sm font-semibold transition-colors shadow-sm"
               >

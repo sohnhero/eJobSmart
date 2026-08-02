@@ -322,9 +322,9 @@ export default function Landing() {
 
               {/* Radial gradient to fade out lines in the center content area */}
               <radialGradient id="center-fade" cx="50%" cy="45%" r="45%">
-                <stop offset="0%" stop-color="#000" stop-opacity="1" />
-                <stop offset="55%" stop-color="#000" stop-opacity="0.85" />
-                <stop offset="100%" stop-color="#000" stop-opacity="0" />
+                <stop offset="0%" stopColor="#000" stopOpacity="1" />
+                <stop offset="55%" stopColor="#000" stopOpacity="0.85" />
+                <stop offset="100%" stopColor="#000" stopOpacity="0" />
               </radialGradient>
 
               {/* Mask that applies the fade out */}
