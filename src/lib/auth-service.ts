@@ -1,6 +1,8 @@
 import { api } from './api'
 import type { LoginResult, LoginSuccess, RegisterPayload, User } from './types'
 
+export type OAuthRole = 'candidate' | 'freelance' | 'company' | 'agency'
+
 export const authService = {
   async login(email: string, password: string): Promise<LoginResult> {
     const { data } = await api.post<LoginResult>('/auth/login', { email, password })
@@ -54,5 +56,10 @@ export const authService = {
 
   async resetPassword(token: string, newPassword: string): Promise<void> {
     await api.post('/auth/reset-password', { token, newPassword })
+  },
+
+  async completeOAuthSignup(pendingToken: string, role: OAuthRole): Promise<LoginSuccess> {
+    const { data } = await api.post<LoginSuccess>('/auth/oauth/complete', { pendingToken, role })
+    return data
   },
 }

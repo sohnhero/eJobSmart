@@ -10,6 +10,7 @@ import Register from './pages/Register'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import OAuthCallback from './pages/OAuthCallback'
+import OAuthChooseRole from './pages/OAuthChooseRole'
 import Contact from './pages/Contact'
 import Pricing from './pages/Pricing'
 import Companies from './pages/Companies'
@@ -91,6 +92,7 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/oauth-callback" element={<OAuthCallback />} />
+        <Route path="/oauth-choose-role" element={<OAuthChooseRole />} />
 
         {/* Candidate Dashboard */}
         <Route element={<ProtectedRoute roles={['candidate']} />}>
