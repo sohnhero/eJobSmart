@@ -26,6 +26,18 @@ const dashboardPath: Record<BackendRole, string> = {
   trainer: '/dashboard/candidate',
 }
 
+// Candidat/freelance gèrent leur profil/CV sur une page dédiée ; entreprise/cabinet/admin n'ont
+// pas de "profil" séparé, leurs informations vivent dans Paramètres.
+const profilePath: Record<BackendRole, string> = {
+  candidate: '/dashboard/candidate/profile',
+  freelance: '/dashboard/freelance/profile',
+  company: '/dashboard/company/settings',
+  agency: '/dashboard/agency/settings',
+  admin_rh: '/dashboard/admin-rh/settings',
+  super_admin: '/dashboard/admin/settings',
+  trainer: '/dashboard/candidate/profile',
+}
+
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth()
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -38,6 +50,7 @@ export default function Navbar() {
   const userRole = user?.role
   const userName = user ? (user.companyName || `${user.firstName} ${user.lastName}`) : ''
   const dashboardHome = dashboardPath[userRole || 'candidate']
+  const myProfilePath = profilePath[userRole || 'candidate']
 
   const [unreadNotifications, setUnreadNotifications] = useState(0)
   useEffect(() => {
@@ -116,7 +129,10 @@ export default function Navbar() {
                         <LayoutDashboard className="w-4 h-4 text-slate-400" />
                         Tableau de bord
                       </button>
-                      <button className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50">
+                      <button
+                        onClick={() => { navigate(myProfilePath); setProfileOpen(false) }}
+                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50"
+                      >
                         <User className="w-4 h-4 text-slate-400" />
                         Mon profil
                       </button>
