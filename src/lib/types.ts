@@ -63,6 +63,23 @@ export interface Paginated<T> {
   totalPages: number
 }
 
+// ---------- Vérification KYC entreprise/cabinet ----------
+export type KycStatus = 'not_submitted' | 'pending' | 'approved' | 'rejected'
+
+export interface CompanyVerification {
+  _id?: string
+  user: string | { _id: string; companyName?: string; firstName: string; lastName: string; email: string; role: BackendRole }
+  status: KycStatus
+  ninea?: string
+  rccm?: string
+  nineaDocumentUrl?: string
+  rccmDocumentUrl?: string
+  idDocumentUrl?: string
+  submittedAt?: string
+  reviewedAt?: string
+  rejectionReason?: string
+}
+
 // ---------- Sectors ----------
 export interface Sector {
   _id: string

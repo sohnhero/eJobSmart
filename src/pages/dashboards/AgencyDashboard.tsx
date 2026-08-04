@@ -9,6 +9,7 @@ import DashboardLayout from '../../components/layout/DashboardLayout'
 import StatCard from '../../components/ui/StatCard'
 import Button from '../../components/ui/Button'
 import { StatusBadge } from '../../components/ui/Badge'
+import KycBanner from '../../components/ui/KycBanner'
 import { useAuth } from '../../context/AuthContext'
 import { agencyResourcesService } from '../../lib/services/agency-resources'
 import { jobsService } from '../../lib/services/jobs'
@@ -50,6 +51,7 @@ export default function AgencyDashboard() {
 
   return (
     <DashboardLayout role="agency">
+      <KycBanner role="agency" />
       <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-900">{user?.companyName ?? 'Cabinet RH'}</h1>

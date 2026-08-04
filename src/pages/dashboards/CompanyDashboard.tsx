@@ -11,6 +11,7 @@ import { ContractBadge } from '../../components/ui/Badge'
 import MatchScore from '../../components/ui/MatchScore'
 import Button from '../../components/ui/Button'
 import Avatar from '../../components/ui/Avatar'
+import KycBanner from '../../components/ui/KycBanner'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../../components/ui/Toast'
 import { jobsService } from '../../lib/services/jobs'
@@ -99,6 +100,7 @@ export default function CompanyDashboard() {
 
   return (
     <DashboardLayout role="company">
+      <KycBanner role="company" />
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
