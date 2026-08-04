@@ -68,7 +68,7 @@ export default function CompanySettings() {
     if (!file) return
     setUploadingLogo(true)
     try {
-      const url = await uploadsService.uploadAttachment(file)
+      const url = await uploadsService.uploadLogo(file)
       setCompanyLogo(url)
     } catch (err) {
       toast.error(extractApiErrorMessage(err, "Impossible de téléverser le logo"))

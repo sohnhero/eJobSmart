@@ -33,6 +33,16 @@ export const uploadsService = {
     })
     return data.url
   },
+  // Logo d'entreprise/cabinet : asset public (affiché à tout visiteur sur les pages
+  // offres/entreprises), servi sans authentification — contrairement aux autres uploads ci-dessus.
+  async uploadLogo(file: File): Promise<string> {
+    const form = new FormData()
+    form.append('file', file)
+    const { data } = await api.post<{ url: string }>('/uploads/logo', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    return data.url
+  },
 
   // CV, pièces jointes, justificatifs KYC, attestations : plus servis en public, il faut le
   // token d'auth pour les récupérer — impossible d'attacher un header à une simple navigation
