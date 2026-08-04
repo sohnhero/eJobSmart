@@ -17,6 +17,10 @@ import { sectors } from '../data/sectors'
 import { jobs } from '../data/jobs'
 import { trainings } from '../data/trainings'
 import { platformStats } from '../data/stats'
+import { reviewsService } from '../lib/services/reviews'
+import { statsService } from '../lib/services/stats'
+import { roleToLabel } from '../lib/roles'
+import type { Review } from '../lib/types'
 
 function useCountUp(target: number, duration = 2000, start = false) {
   const [count, setCount] = useState(0)
@@ -56,7 +60,9 @@ function AnimatedStat({ value, label, suffix = '' }: { value: number; label: str
   )
 }
 
-const testimonials = [
+// Affichés uniquement tant qu'aucun avis client réel n'a encore été approuvé (cf. ReviewsModule
+// côté backend) — évite une section vide le temps que les premiers avis soient validés.
+const fallbackTestimonials = [
   {
     name: 'Fatou Mbaye', role: 'DRH, Sonatel',
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150',
@@ -76,6 +82,21 @@ const testimonials = [
     stars: 5, color: '#10B981'
   },
 ]
+
+const TESTIMONIAL_COLORS = ['#39D5F4', '#2563EB', '#10B981']
+
+function reviewToTestimonial(review: Review, index: number) {
+  const author = typeof review.user === 'string' ? null : review.user
+  const name = author?.companyName || (author ? `${author.firstName} ${author.lastName}` : 'Utilisateur EurekaJob')
+  return {
+    name,
+    role: author ? roleToLabel(author.role) : '',
+    avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`,
+    text: review.text,
+    stars: review.rating,
+    color: TESTIMONIAL_COLORS[index % TESTIMONIAL_COLORS.length],
+  }
+}
 
 const features = [
   {
@@ -225,6 +246,8 @@ export default function Landing() {
   const [searchLocation, setSearchLocation] = useState('')
   const [activeTab, setActiveTab] = useState<'candidate' | 'company'>('candidate')
   const [showScrollTop, setShowScrollTop] = useState(false)
+  const [liveReviews, setLiveReviews] = useState<Review[]>([])
+  const [satisfactionRate, setSatisfactionRate] = useState<number | null>(platformStats.satisfactionRate)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -233,6 +256,15 @@ export default function Landing() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useEffect(() => {
+    reviewsService.findPublicApproved(1, 6).then(res => setLiveReviews(res.items)).catch(() => {})
+    statsService.getPlatformStats()
+      .then(s => setSatisfactionRate(s.satisfactionRate ?? platformStats.satisfactionRate))
+      .catch(() => {})
+  }, [])
+
+  const displayTestimonials = liveReviews.length > 0 ? liveReviews.map(reviewToTestimonial) : fallbackTestimonials
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -843,7 +875,7 @@ export default function Landing() {
             {[
               { value: platformStats.avgTimeToHire, label: 'Jours pour recruter en moyenne', suffix: ' j' },
               { value: platformStats.totalAgencies, label: 'Cabinets RH partenaires', suffix: '+' },
-              { value: platformStats.satisfactionRate, label: 'Taux de satisfaction client', suffix: '%' },
+              { value: satisfactionRate ?? platformStats.satisfactionRate, label: 'Taux de satisfaction client', suffix: '%' },
               { value: platformStats.totalTrainings, label: 'Formations disponibles', suffix: '+' },
             ].map((stat, i) => (
               <div key={stat.label} className={`scroll-reveal reveal-zoom-in reveal-delay-${(i % 4) * 150}`}>
@@ -963,9 +995,9 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8">
-            {testimonials.map((t, index) => (
+            {displayTestimonials.map((t, index) => (
               <div
-                key={t.name}
+                key={t.name + index}
                 className={`group relative bg-white border border-slate-100 rounded-2xl sm:rounded-[32px] p-3.5 sm:p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(15,30,58,0.08)] flex flex-col justify-between ${index >= 2 ? 'hidden sm:flex' : 'flex'} scroll-reveal reveal-fade-up reveal-delay-${(index % 3) * 150}`}
               >
                 {/* Large decorative quotation mark */}

@@ -548,6 +548,41 @@ export interface Report {
   createdAt: string
 }
 
+// ---------- Reviews (avis clients / témoignages) ----------
+export type ReviewStatus = 'pending' | 'approved' | 'rejected'
+
+export interface ReviewAuthor {
+  _id: string
+  firstName: string
+  lastName: string
+  companyName?: string
+  role: BackendRole
+  email?: string
+}
+
+export interface Review {
+  _id: string
+  user: ReviewAuthor | string
+  rating: number
+  text: string
+  status: ReviewStatus
+  reviewedBy?: string
+  rejectionReason?: string
+  reviewedAt?: string
+  createdAt: string
+}
+
+export interface PlatformStats {
+  totalJobs: number
+  activeCompanies: number
+  totalCandidates: number
+  successfulPlacements: number
+  totalAgencies: number
+  totalTrainings: number
+  avgTimeToHire: number
+  satisfactionRate: number | null
+}
+
 // ---------- Platform settings ----------
 export interface MatchingWeights {
   skills: number

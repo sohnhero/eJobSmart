@@ -21,3 +21,17 @@ export function roleToDashboardPath(role: BackendRole): string {
 export function roleToDashboardSegment(role: BackendRole): DashboardRole {
   return ROLE_TO_DASHBOARD[role]
 }
+
+const ROLE_LABELS: Record<BackendRole, string> = {
+  candidate: 'Candidat',
+  freelance: 'Freelance',
+  company: 'Entreprise',
+  agency: 'Cabinet RH',
+  admin_rh: 'Admin RH',
+  super_admin: 'Super Admin',
+  trainer: 'Formateur',
+}
+
+export function roleToLabel(role: BackendRole): string {
+  return ROLE_LABELS[role]
+}

@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Briefcase, Users, FileText, BookOpen,
   MessageSquare, Bell, Settings, LogOut, Menu, X,
-  ChevronRight, CreditCard, BarChart3, Search, UserCheck, ShieldCheck,
+  ChevronRight, CreditCard, BarChart3, Search, UserCheck, ShieldCheck, Star,
 } from 'lucide-react'
 import clsx from 'clsx'
 import Avatar from '../ui/Avatar'
@@ -25,6 +25,7 @@ const candidateNav: NavItem[] = [
   { icon: BookOpen, label: 'Mes formations', href: '/dashboard/candidate/trainings' },
   { icon: MessageSquare, label: 'Messagerie', href: '/dashboard/candidate/messages' },
   { icon: Bell, label: 'Alertes emploi', href: '/dashboard/candidate/alerts' },
+  { icon: Star, label: 'Mon avis', href: '/dashboard/candidate/review' },
 ]
 
 const freelanceNav: NavItem[] = [
@@ -35,6 +36,7 @@ const freelanceNav: NavItem[] = [
   { icon: BookOpen, label: 'Formations RH', href: '/dashboard/freelance/trainings' },
   { icon: MessageSquare, label: 'Messagerie', href: '/dashboard/freelance/messages' },
   { icon: CreditCard, label: 'Mes factures', href: '/dashboard/freelance/billing' },
+  { icon: Star, label: 'Mon avis', href: '/dashboard/freelance/review' },
 ]
 
 const companyNav: NavItem[] = [
@@ -46,6 +48,7 @@ const companyNav: NavItem[] = [
   { icon: BarChart3, label: 'Statistiques', href: '/dashboard/company/analytics' },
   { icon: CreditCard, label: 'Abonnement', href: '/dashboard/company/billing' },
   { icon: ShieldCheck, label: 'Vérification', href: '/dashboard/company/verification' },
+  { icon: Star, label: 'Notre avis', href: '/dashboard/company/review' },
   { icon: Settings, label: 'Paramètres', href: '/dashboard/company/settings' },
 ]
 
@@ -58,6 +61,7 @@ const agencyNav: NavItem[] = [
   { icon: MessageSquare, label: 'Messagerie', href: '/dashboard/agency/messages' },
   { icon: CreditCard, label: 'Facturation', href: '/dashboard/agency/billing' },
   { icon: ShieldCheck, label: 'Vérification', href: '/dashboard/agency/verification' },
+  { icon: Star, label: 'Notre avis', href: '/dashboard/agency/review' },
   { icon: Settings, label: 'Paramètres', href: '/dashboard/agency/settings' },
 ]
 
@@ -67,6 +71,7 @@ const adminRhNav: NavItem[] = [
   { icon: Users, label: 'Candidats inscrits', href: '/dashboard/admin-rh/candidates' },
   { icon: Briefcase, label: 'Modération offres', href: '/dashboard/admin-rh/jobs' },
   { icon: ShieldCheck, label: 'Vérifications entreprises', href: '/dashboard/admin-rh/verifications' },
+  { icon: Star, label: 'Avis clients', href: '/dashboard/admin-rh/reviews' },
   { icon: BookOpen, label: 'Gestion formations', href: '/dashboard/admin-rh/trainings' },
   { icon: MessageSquare, label: 'Messagerie Interne', href: '/dashboard/admin-rh/messages' },
   { icon: Settings, label: 'Paramètres', href: '/dashboard/admin-rh/settings' },
