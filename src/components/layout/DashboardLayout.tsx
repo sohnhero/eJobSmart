@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Briefcase, Users, FileText, BookOpen,
   MessageSquare, Bell, Settings, LogOut, Menu, X,
-  ChevronRight, CreditCard, BarChart3, Search, UserCheck,
+  ChevronRight, CreditCard, BarChart3, Search, UserCheck, ShieldCheck,
 } from 'lucide-react'
 import clsx from 'clsx'
 import Avatar from '../ui/Avatar'
@@ -45,6 +45,7 @@ const companyNav: NavItem[] = [
   { icon: MessageSquare, label: 'Messagerie', href: '/dashboard/company/messages' },
   { icon: BarChart3, label: 'Statistiques', href: '/dashboard/company/analytics' },
   { icon: CreditCard, label: 'Abonnement', href: '/dashboard/company/billing' },
+  { icon: ShieldCheck, label: 'Vérification', href: '/dashboard/company/verification' },
   { icon: Settings, label: 'Paramètres', href: '/dashboard/company/settings' },
 ]
 
@@ -56,6 +57,7 @@ const agencyNav: NavItem[] = [
   { icon: BookOpen, label: 'Formations', href: '/dashboard/agency/trainings' },
   { icon: MessageSquare, label: 'Messagerie', href: '/dashboard/agency/messages' },
   { icon: CreditCard, label: 'Facturation', href: '/dashboard/agency/billing' },
+  { icon: ShieldCheck, label: 'Vérification', href: '/dashboard/agency/verification' },
   { icon: Settings, label: 'Paramètres', href: '/dashboard/agency/settings' },
 ]
 
@@ -64,6 +66,7 @@ const adminRhNav: NavItem[] = [
   { icon: UserCheck, label: 'Vivier de talents', href: '/dashboard/admin-rh/cv-database' },
   { icon: Users, label: 'Candidats inscrits', href: '/dashboard/admin-rh/candidates' },
   { icon: Briefcase, label: 'Modération offres', href: '/dashboard/admin-rh/jobs' },
+  { icon: ShieldCheck, label: 'Vérifications entreprises', href: '/dashboard/admin-rh/verifications' },
   { icon: BookOpen, label: 'Gestion formations', href: '/dashboard/admin-rh/trainings' },
   { icon: MessageSquare, label: 'Messagerie Interne', href: '/dashboard/admin-rh/messages' },
   { icon: Settings, label: 'Paramètres', href: '/dashboard/admin-rh/settings' },

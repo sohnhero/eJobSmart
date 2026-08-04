@@ -36,6 +36,7 @@ import CompanyJobs from './pages/dashboards/CompanyJobs'
 import CompanyApplications from './pages/dashboards/CompanyApplications'
 import CompanyAnalytics from './pages/dashboards/CompanyAnalytics'
 import CompanySettings from './pages/dashboards/CompanySettings'
+import CompanyVerification from './pages/dashboards/CompanyVerification'
 import CandidateApplications from './pages/dashboards/CandidateApplications'
 import CandidateTrainings from './pages/dashboards/CandidateTrainings'
 import CandidateRecommendedJobs from './pages/dashboards/CandidateRecommendedJobs'
@@ -44,6 +45,7 @@ import AdminRhCandidates from './pages/dashboards/AdminRhCandidates'
 import AdminBilling from './pages/dashboards/AdminBilling'
 import AdminRhCvDatabase from './pages/dashboards/AdminRhCvDatabase'
 import AdminRhJobs from './pages/dashboards/AdminRhJobs'
+import AdminRhVerifications from './pages/dashboards/AdminRhVerifications'
 import AdminRhTrainings from './pages/dashboards/AdminRhTrainings'
 import AdminRhSettings from './pages/dashboards/AdminRhSettings'
 import FreelanceJobs from './pages/dashboards/FreelanceJobs'
@@ -118,6 +120,7 @@ export default function App() {
           <Route path="/dashboard/company/billing" element={<BillingPage role="company" />} />
           <Route path="/dashboard/company/analytics" element={<CompanyAnalytics />} />
           <Route path="/dashboard/company/settings" element={<CompanySettings />} />
+          <Route path="/dashboard/company/verification" element={<CompanyVerification role="company" />} />
           <Route path="/dashboard/company/notifications" element={<Notifications role="company" />} />
           <Route path="/dashboard/company/*" element={<CompanyDashboard />} />
         </Route>
@@ -145,6 +148,7 @@ export default function App() {
           <Route path="/dashboard/agency/analytics" element={<AgencyAnalytics />} />
           <Route path="/dashboard/agency/trainings" element={<AgencyTrainings />} />
           <Route path="/dashboard/agency/settings" element={<AgencySettings />} />
+          <Route path="/dashboard/agency/verification" element={<CompanyVerification role="agency" />} />
           <Route path="/dashboard/agency/notifications" element={<Notifications role="agency" />} />
           <Route path="/dashboard/agency/*" element={<AgencyDashboard />} />
         </Route>
@@ -155,6 +159,7 @@ export default function App() {
           <Route path="/dashboard/admin-rh/cv-database" element={<AdminRhCvDatabase />} />
           <Route path="/dashboard/admin-rh/candidates" element={<AdminRhCandidates />} />
           <Route path="/dashboard/admin-rh/jobs" element={<AdminRhJobs />} />
+          <Route path="/dashboard/admin-rh/verifications" element={<AdminRhVerifications />} />
           <Route path="/dashboard/admin-rh/trainings" element={<AdminRhTrainings />} />
           <Route path="/dashboard/admin-rh/messages" element={<Messages role="admin-rh" />} />
           <Route path="/dashboard/admin-rh/settings" element={<AdminRhSettings />} />
