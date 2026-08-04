@@ -3,6 +3,9 @@ import { Mail, Phone, MapPin, Clock, Send, CheckCircle, MessageSquare, Headphone
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import Button from '../components/ui/Button'
+import { useToast } from '../components/ui/Toast'
+import { contactService } from '../lib/services/contact'
+import { extractApiErrorMessage } from '../lib/api'
 
 const contactReasons = [
   'Demande d\'information générale',
@@ -26,7 +29,7 @@ const contactChannels = [
   {
     icon: Mail,
     title: 'Email',
-    desc: 'contact@ejobsmart.sn',
+    desc: 'contact@eureka-jobs.com',
     action: 'Envoyer un email',
     color: 'text-purple-600',
     bg: 'bg-purple-50',
@@ -53,6 +56,7 @@ const contactChannels = [
 ]
 
 export default function Contact() {
+  const toast = useToast()
   const [form, setForm] = useState({ name: '', email: '', company: '', reason: '', message: '' })
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -60,9 +64,14 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    await new Promise(r => setTimeout(r, 1200))
-    setLoading(false)
-    setSent(true)
+    try {
+      await contactService.submit(form)
+      setSent(true)
+    } catch (err) {
+      toast.error(extractApiErrorMessage(err, "Impossible d'envoyer votre message. Réessayez ou contactez-nous par téléphone."))
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -210,7 +219,7 @@ export default function Contact() {
                 </div>
                 <div className="flex items-center gap-2.5 text-slate-600">
                   <Mail className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                  <a href="mailto:contact@ejobsmart.sn" className="hover:text-brand-600 transition-colors">contact@ejobsmart.sn</a>
+                  <a href="mailto:contact@eureka-jobs.com" className="hover:text-brand-600 transition-colors">contact@eureka-jobs.com</a>
                 </div>
                 <div className="flex items-start gap-2.5 text-slate-600">
                   <Clock className="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0" />
