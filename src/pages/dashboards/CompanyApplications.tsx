@@ -13,6 +13,7 @@ import { jobsService } from '../../lib/services/jobs'
 import { applicationsService } from '../../lib/services/applications'
 import { profilesService } from '../../lib/services/profiles'
 import { messagesService } from '../../lib/services/messages'
+import { uploadsService } from '../../lib/services/uploads'
 import { extractApiErrorMessage } from '../../lib/api'
 import type { Application, Job, Profile } from '../../lib/types'
 
@@ -251,14 +252,18 @@ export default function CompanyApplications() {
                     {selected.application.cvUrl && (
                       <div>
                         <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider mb-3">Curriculum Vitae</h4>
-                        <a href={selected.application.cvUrl} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl hover:bg-slate-100 transition-colors">
+                        <button
+                          type="button"
+                          onClick={() => uploadsService.openFile(selected.application.cvUrl!).catch(err => toast.error(extractApiErrorMessage(err, "Impossible d'ouvrir le CV")))}
+                          className="w-full flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl hover:bg-slate-100 transition-colors text-left"
+                        >
                           <div className="w-10 h-10 bg-red-100 text-red-600 flex items-center justify-center font-bold text-xs rounded-xl">
                             CV
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-xs font-bold text-slate-800 truncate">{selected.application.cvUrl.split('/').pop()}</p>
                           </div>
-                        </a>
+                        </button>
                       </div>
                     )}
                   </div>

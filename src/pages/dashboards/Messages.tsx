@@ -249,14 +249,13 @@ export default function Messages({ role = 'candidate' }: MessagesProps) {
                           <div className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${isMe ? 'bg-brand-600 text-white rounded-br-md' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-md'}`}>
                             {msg.content && <p>{msg.content}</p>}
                             {msg.attachmentUrl && (
-                              <a
-                                href={msg.attachmentUrl}
-                                target="_blank"
-                                rel="noreferrer"
+                              <button
+                                type="button"
+                                onClick={() => uploadsService.openFile(msg.attachmentUrl!).catch(err => toast.error(extractApiErrorMessage(err, "Impossible d'ouvrir la pièce jointe")))}
                                 className={`flex items-center gap-1.5 text-xs font-medium underline mt-1 ${isMe ? 'text-white' : 'text-brand-600'}`}
                               >
                                 <FileText className="w-3.5 h-3.5 flex-shrink-0" /> Pièce jointe
-                              </a>
+                              </button>
                             )}
                           </div>
                           <div className={`flex items-center gap-1 ${isMe ? 'flex-row-reverse' : ''}`}>

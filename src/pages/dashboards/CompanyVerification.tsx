@@ -9,6 +9,10 @@ import { companyVerificationService } from '../../lib/services/company-verificat
 import { extractApiErrorMessage } from '../../lib/api'
 import type { CompanyVerification as CompanyVerificationData } from '../../lib/types'
 
+function openDocument(url: string, onError: (message: string) => void) {
+  uploadsService.openFile(url).catch((err) => onError(extractApiErrorMessage(err, "Impossible d'ouvrir le document")))
+}
+
 interface Props {
   role: 'company' | 'agency'
 }
@@ -27,6 +31,7 @@ function Dropzone({ label, hint, url, uploading, onFile }: {
   uploading: boolean
   onFile: (file: File | null) => void
 }) {
+  const toast = useToast()
   return (
     <div>
       <h3 className="font-semibold text-slate-900 mb-2 text-sm">{label}</h3>
@@ -42,7 +47,7 @@ function Dropzone({ label, hint, url, uploading, onFile }: {
         <div className="bg-brand-50 border border-brand-200 rounded-2xl p-4 flex items-center gap-3">
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-slate-900 truncate">{url.split('/').pop()}</p>
-            <a href={url} target="_blank" rel="noreferrer" className="text-xs text-brand-600 hover:underline">Voir le fichier</a>
+            <button type="button" onClick={() => openDocument(url, toast.error)} className="text-xs text-brand-600 hover:underline">Voir le fichier</button>
           </div>
           <label className="text-xs text-brand-600 font-semibold hover:text-brand-800 cursor-pointer flex-shrink-0">
             {uploading ? 'Envoi…' : 'Remplacer'}
@@ -192,7 +197,7 @@ export default function CompanyVerification({ role }: Props) {
             ].map(doc => (
               <div key={doc.label} className="flex items-center justify-between bg-slate-50 rounded-xl p-3">
                 <span className="text-sm text-slate-700">{doc.label}</span>
-                <a href={doc.url} target="_blank" rel="noreferrer" className="text-xs text-brand-600 font-semibold hover:underline">Voir le fichier</a>
+                <button type="button" onClick={() => openDocument(doc.url, toast.error)} className="text-xs text-brand-600 font-semibold hover:underline">Voir le fichier</button>
               </div>
             ))}
           </div>

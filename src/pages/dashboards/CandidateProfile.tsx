@@ -682,7 +682,7 @@ export default function CandidateProfile() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-slate-900 truncate">{form.cvUrl.split('/').pop()}</p>
-                          <a href={form.cvUrl} target="_blank" rel="noreferrer" className="text-xs text-brand-600 hover:underline">Voir le fichier</a>
+                          <button type="button" onClick={() => uploadsService.openFile(form.cvUrl).catch(err => toast.error(extractApiErrorMessage(err, "Impossible d'ouvrir le CV")))} className="text-xs text-brand-600 hover:underline">Voir le fichier</button>
                         </div>
                         <div className="flex items-center gap-3">
                           <label className="text-xs text-brand-600 font-semibold hover:text-brand-800 cursor-pointer">

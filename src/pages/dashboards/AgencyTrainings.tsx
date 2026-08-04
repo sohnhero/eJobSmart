@@ -7,6 +7,7 @@ import Button from '../../components/ui/Button'
 import Skeleton from '../../components/ui/Skeleton'
 import { useToast } from '../../components/ui/Toast'
 import { trainingsService, enrollmentsService } from '../../lib/services/trainings'
+import { uploadsService } from '../../lib/services/uploads'
 import { formatDurationHours } from '../../lib/training-labels'
 import { extractApiErrorMessage } from '../../lib/api'
 import type { Training, TrainingEnrollment } from '../../lib/types'
@@ -102,13 +103,18 @@ export default function AgencyTrainings() {
                 {completed.map(e => {
                   const training = typeof e.training === 'string' ? null : e.training
                   return (
-                    <a key={e._id} href={e.certificateUrl} target="_blank" rel="noreferrer" className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex gap-2 hover:border-amber-300 transition-colors">
+                    <button
+                      key={e._id}
+                      type="button"
+                      onClick={() => uploadsService.openFile(e.certificateUrl!).catch(err => toast.error(extractApiErrorMessage(err, "Impossible d'ouvrir l'attestation")))}
+                      className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl flex gap-2 hover:border-amber-300 transition-colors text-left"
+                    >
                       <Award className="w-5 h-5 text-amber-500 flex-shrink-0" />
                       <div>
                         <p className="text-xs font-bold text-slate-800">{training?.title ?? 'Formation'}</p>
                         {e.completedAt && <p className="text-[10px] text-slate-400 mt-0.5">Obtenu le {new Date(e.completedAt).toLocaleDateString('fr-FR')}</p>}
                       </div>
-                    </a>
+                    </button>
                   )
                 })}
               </div>

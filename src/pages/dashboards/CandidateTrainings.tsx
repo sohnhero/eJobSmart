@@ -7,13 +7,17 @@ import { useNavigate } from 'react-router-dom'
 import DashboardLayout from '../../components/layout/DashboardLayout'
 import Button from '../../components/ui/Button'
 import Skeleton from '../../components/ui/Skeleton'
+import { useToast } from '../../components/ui/Toast'
 import { enrollmentsService } from '../../lib/services/trainings'
 import { trainingsService } from '../../lib/services/trainings'
+import { uploadsService } from '../../lib/services/uploads'
 import { trainingCoverImage, formatDurationHours } from '../../lib/training-labels'
+import { extractApiErrorMessage } from '../../lib/api'
 import type { Training, TrainingEnrollment } from '../../lib/types'
 
 export default function CandidateTrainings() {
   const navigate = useNavigate()
+  const toast = useToast()
   const [loading, setLoading] = useState(true)
   const [enrollments, setEnrollments] = useState<TrainingEnrollment[]>([])
   const [recommended, setRecommended] = useState<Training[]>([])
@@ -116,9 +120,13 @@ export default function CandidateTrainings() {
                         <p className="text-[10px] text-slate-400 mb-2">Terminé le {new Date(enrollment.completedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                       )}
                       {enrollment.certificateUrl ? (
-                        <a href={enrollment.certificateUrl} target="_blank" rel="noreferrer" className="text-[10px] font-bold text-brand-600 hover:underline">
+                        <button
+                          type="button"
+                          onClick={() => uploadsService.openFile(enrollment.certificateUrl!).catch(err => toast.error(extractApiErrorMessage(err, "Impossible d'ouvrir l'attestation")))}
+                          className="text-[10px] font-bold text-brand-600 hover:underline"
+                        >
                           Télécharger le certificat
-                        </a>
+                        </button>
                       ) : (
                         <span className="text-[10px] text-slate-400">Certificat non disponible</span>
                       )}

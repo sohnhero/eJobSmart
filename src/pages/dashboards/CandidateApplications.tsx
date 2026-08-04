@@ -8,6 +8,7 @@ import DashboardLayout from '../../components/layout/DashboardLayout'
 import { StatusBadge } from '../../components/ui/Badge'
 import Button from '../../components/ui/Button'
 import { applicationsService } from '../../lib/services/applications'
+import { uploadsService } from '../../lib/services/uploads'
 import { useToast } from '../../components/ui/Toast'
 import { extractApiErrorMessage } from '../../lib/api'
 import type { Application, ApplicationStatus, Job } from '../../lib/types'
@@ -253,12 +254,16 @@ export default function CandidateApplications() {
                     {selectedApp.cvUrl && (
                       <div>
                         <h4 className="font-bold text-slate-800 text-sm mb-3">Documents transmis</h4>
-                        <a href={selectedApp.cvUrl} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 bg-slate-50 hover:bg-slate-100/80 transition-colors border border-slate-100 rounded-xl">
+                        <button
+                          type="button"
+                          onClick={() => uploadsService.openFile(selectedApp.cvUrl!).catch(err => toast.error(extractApiErrorMessage(err, "Impossible d'ouvrir le CV")))}
+                          className="w-full flex items-center gap-3 p-3 bg-slate-50 hover:bg-slate-100/80 transition-colors border border-slate-100 rounded-xl text-left"
+                        >
                           <FileText className="w-8 h-8 text-red-500" />
                           <div className="flex-1 min-w-0">
                             <p className="text-xs font-semibold text-slate-800 truncate">{selectedApp.cvUrl.split('/').pop()}</p>
                           </div>
-                        </a>
+                        </button>
                       </div>
                     )}
                   </div>

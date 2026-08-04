@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { ArrowRight, Check, User, Building2, Users } from 'lucide-react'
 import Button from '../components/ui/Button'
@@ -18,14 +18,37 @@ const roles = [
 // Cible de redirection de GET /auth/google/callback et /auth/linkedin/callback côté backend quand
 // aucun compte n'existait déjà pour cet email (voir AuthController.redirectAfterOAuth) : impossible
 // de deviner candidat/entreprise/cabinet RH sans lui demander, donc le compte n'est pas encore créé.
+// Un code opaque à usage unique arrive en query param, à échanger contre le pendingToken réel
+// (jamais transmis en clair dans l'URL — cf. audit sécurité).
 export default function OAuthChooseRole() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const { refreshUser } = useAuth()
   const toast = useToast()
-  const pendingToken = searchParams.get('pendingToken')
+  const code = searchParams.get('code')
+  const [pendingToken, setPendingToken] = useState<string | null>(null)
+  const [exchanging, setExchanging] = useState(true)
   const [role, setRole] = useState<OAuthRole>('candidate')
   const [loading, setLoading] = useState(false)
+  const ran = useRef(false)
+
+  useEffect(() => {
+    if (ran.current) return
+    ran.current = true
+    if (!code) {
+      setExchanging(false)
+      return
+    }
+    authService
+      .exchangeOAuthCode(code)
+      .then((result) => {
+        if ('pendingToken' in result) {
+          setPendingToken(result.pendingToken)
+        }
+      })
+      .catch(() => {})
+      .finally(() => setExchanging(false))
+  }, [code])
 
   const handleConfirm = async () => {
     if (!pendingToken) return
@@ -40,6 +63,14 @@ export default function OAuthChooseRole() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (exchanging) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="w-8 h-8 border-2 border-brand-600 border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
   }
 
   if (!pendingToken) {

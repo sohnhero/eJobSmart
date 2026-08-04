@@ -4,9 +4,11 @@ import { useAuth } from '../context/AuthContext'
 import { tokenStorage } from '../lib/token-storage'
 import { roleToDashboardPath } from '../lib/roles'
 import { useToast } from '../components/ui/Toast'
+import { authService } from '../lib/auth-service'
 
 // Cible de redirection de GET /auth/google/callback et /auth/linkedin/callback côté backend
-// (voir AuthController.redirectWithTokens) : les tokens arrivent en query params.
+// (voir AuthController.redirectAfterOAuth) : un code opaque à usage unique arrive en query param,
+// à échanger immédiatement contre les vrais tokens (jamais transmis en clair dans l'URL).
 export default function OAuthCallback() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
@@ -18,17 +20,20 @@ export default function OAuthCallback() {
     if (ran.current) return
     ran.current = true
 
-    const accessToken = searchParams.get('accessToken')
-    const refreshToken = searchParams.get('refreshToken')
+    const code = searchParams.get('code')
 
     async function finish() {
-      if (!accessToken || !refreshToken) {
+      if (!code) {
         toast.error('Connexion via le fournisseur externe impossible')
         navigate('/login', { replace: true })
         return
       }
-      tokenStorage.setTokens({ accessToken, refreshToken })
       try {
+        const result = await authService.exchangeOAuthCode(code)
+        if (!('tokens' in result)) {
+          throw new Error('Réponse OAuth inattendue')
+        }
+        tokenStorage.setTokens(result.tokens)
         const me = await refreshUser()
         navigate(roleToDashboardPath(me.role), { replace: true })
       } catch {

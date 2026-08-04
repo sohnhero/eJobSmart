@@ -1,6 +1,8 @@
 import { api } from './api'
 import type { LoginResult, LoginSuccess, RegisterPayload, User } from './types'
 
+export type OAuthExchangeResult = LoginSuccess | { pendingToken: string }
+
 export type OAuthRole = 'candidate' | 'freelance' | 'company' | 'agency'
 
 export const authService = {
@@ -60,6 +62,13 @@ export const authService = {
 
   async completeOAuthSignup(pendingToken: string, role: OAuthRole): Promise<LoginSuccess> {
     const { data } = await api.post<LoginSuccess>('/auth/oauth/complete', { pendingToken, role })
+    return data
+  },
+
+  // Le callback OAuth (/oauth-callback, /oauth-choose-role) ne transporte plus que ce code
+  // opaque à usage unique — jamais les tokens en clair dans l'URL (cf. audit sécurité).
+  async exchangeOAuthCode(code: string): Promise<OAuthExchangeResult> {
+    const { data } = await api.post<OAuthExchangeResult>('/auth/oauth/exchange', { code })
     return data
   },
 }

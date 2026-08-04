@@ -5,6 +5,7 @@ import Button from '../../components/ui/Button'
 import Skeleton from '../../components/ui/Skeleton'
 import { useToast } from '../../components/ui/Toast'
 import { companyVerificationService } from '../../lib/services/company-verification'
+import { uploadsService } from '../../lib/services/uploads'
 import { extractApiErrorMessage } from '../../lib/api'
 import type { CompanyVerification } from '../../lib/types'
 
@@ -135,11 +136,16 @@ export default function AdminRhVerifications() {
                 { label: 'Justificatif NINEA', url: viewing.nineaDocumentUrl },
                 { label: 'Justificatif RCCM', url: viewing.rccmDocumentUrl },
                 { label: "Pièce d'identité", url: viewing.idDocumentUrl },
-              ].filter(d => d.url).map(d => (
-                <a key={d.label} href={d.url} target="_blank" rel="noreferrer" className="flex items-center justify-between bg-slate-50 rounded-xl p-3 hover:bg-slate-100 transition-colors">
+              ].filter((d): d is { label: string; url: string } => !!d.url).map(d => (
+                <button
+                  key={d.label}
+                  type="button"
+                  onClick={() => uploadsService.openFile(d.url).catch(err => toast.error(extractApiErrorMessage(err, "Impossible d'ouvrir le document")))}
+                  className="w-full flex items-center justify-between bg-slate-50 rounded-xl p-3 hover:bg-slate-100 transition-colors"
+                >
                   <span className="text-sm text-slate-700">{d.label}</span>
                   <span className="text-xs text-brand-600 font-semibold">Ouvrir</span>
-                </a>
+                </button>
               ))}
             </div>
             <div className="flex gap-3 pt-2">
