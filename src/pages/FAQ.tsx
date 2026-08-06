@@ -17,8 +17,8 @@ interface FAQItem {
 const faqs: FAQItem[] = [
   {
     category: 'Général',
-    question: "Qu'est-ce que eJobSmart ?",
-    answer: "eJobSmart est la première marketplace RH nouvelle génération en Afrique de l'Ouest. Nous connectons les entreprises, les cabinets de recrutement et les talents à travers une plateforme intelligente utilisant le matching IA pour optimiser les processus de recrutement."
+    question: "Qu'est-ce que EurekaJob ?",
+    answer: "EurekaJob est la première marketplace RH nouvelle génération en Afrique de l'Ouest. Nous connectons les entreprises, les cabinets de recrutement et les talents à travers une plateforme intelligente utilisant le matching IA pour optimiser les processus de recrutement."
   },
   {
     category: 'Général',
@@ -33,7 +33,7 @@ const faqs: FAQItem[] = [
   {
     category: 'Candidats',
     question: "Est-ce que l'inscription est gratuite pour les candidats ?",
-    answer: "Oui, l'inscription et la postulation aux offres sont 100% gratuites pour tous les candidats et freelances sur eJobSmart."
+    answer: "Oui, l'inscription et la postulation aux offres sont 100% gratuites pour tous les candidats et freelances sur EurekaJob."
   },
   {
     category: 'Recruteurs',
