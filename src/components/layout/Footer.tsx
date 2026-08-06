@@ -5,23 +5,23 @@ const footerLinks = {
   Plateforme: [
     { label: 'Offres d\'emploi', href: '/jobs' },
     { label: 'Formations', href: '/trainings' },
-    { label: 'Base CV', href: '/cv-database' },
     { label: 'Entreprises', href: '/companies' },
-    { label: 'Cabinets RH', href: '/agencies' },
+    // { label: 'Base CV', href: '/cv-database' }, // pas de page publique dédiée
+    // { label: 'Cabinets RH', href: '/agencies' }, // pas de page publique dédiée
   ],
   Services: [
-    { label: 'Intérim & Placement', href: '/post-job' },
     { label: 'Plans & Tarifs', href: '/pricing' },
     { label: 'Conseil RH', href: '/contact' },
-    { label: 'Recrutement express', href: '/express' },
-    { label: 'API Partenaires', href: '/api' },
+    // { label: 'Intérim & Placement', href: '/post-job' }, // pas de page publique dédiée
+    // { label: 'Recrutement express', href: '/express' }, // pas de page publique dédiée
+    // { label: 'API Partenaires', href: '/api' }, // pas de page publique dédiée
   ],
   Légal: [
-    { label: 'À propos', href: '/about' },
     { label: 'CGU', href: '/legal' },
     { label: 'Confidentialité', href: '/legal' },
     { label: 'Contact', href: '/contact' },
     { label: 'FAQ', href: '/faq' },
+    // { label: 'À propos', href: '/about' }, // pas de page publique dédiée
   ],
 }
 
@@ -60,6 +60,7 @@ export default function Footer() {
                 Dakar, Sénégal
               </div>
             </div>
+            {/* Réseaux sociaux masqués tant que les comptes Eureka Job ne sont pas créés
             <div className="flex items-center gap-2 mt-3 sm:mt-4">
               {[Facebook, Linkedin, Twitter].map((Icon, i) => (
                 <a key={i} href="#" className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 hover:bg-brand-600 hover:text-white transition-all duration-200">
@@ -67,6 +68,7 @@ export default function Footer() {
                 </a>
               ))}
             </div>
+            */}
           </div>
 
           {/* Links */}
