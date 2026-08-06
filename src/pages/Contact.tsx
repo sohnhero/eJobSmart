@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Mail, Phone, MapPin, Clock, Send, CheckCircle, MessageSquare, Headphones, Building2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { Mail, Phone, MapPin, Clock, Send, CheckCircle, Headphones, Building2 } from 'lucide-react'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import Button from '../components/ui/Button'
@@ -17,15 +18,6 @@ const contactReasons = [
 ]
 
 const contactChannels = [
-  {
-    icon: MessageSquare,
-    title: 'Chat en direct',
-    desc: 'Réponse immédiate en heures ouvrées',
-    action: 'Démarrer le chat',
-    color: 'text-brand-600',
-    bg: 'bg-brand-50',
-    border: 'border-brand-200',
-  },
   {
     icon: Mail,
     title: 'Email',
@@ -57,9 +49,24 @@ const contactChannels = [
 
 export default function Contact() {
   const toast = useToast()
+  const navigate = useNavigate()
   const [form, setForm] = useState({ name: '', email: '', company: '', reason: '', message: '' })
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  const handleChannelClick = (title: string) => {
+    switch (title) {
+      case 'Email':
+        window.location.href = 'mailto:contact@eureka-jobs.com'
+        break
+      case 'Téléphone':
+        window.location.href = 'tel:+221338600000'
+        break
+      case 'Support dédié':
+        navigate('/support')
+        break
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -107,16 +114,21 @@ export default function Contact() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
 
         {/* Contact channels */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-14">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-14">
           {contactChannels.map(ch => (
-            <div key={ch.title} className={`card p-5 border-2 ${ch.border} hover:-translate-y-1 transition-all duration-200 cursor-pointer group`}>
+            <button
+              key={ch.title}
+              type="button"
+              onClick={() => handleChannelClick(ch.title)}
+              className={`card p-5 border-2 ${ch.border} hover:-translate-y-1 transition-all duration-200 cursor-pointer group text-left w-full`}
+            >
               <div className={`w-11 h-11 rounded-2xl ${ch.bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                 <ch.icon className={`w-5 h-5 ${ch.color}`} />
               </div>
               <h3 className="font-semibold text-slate-900 text-sm mb-1">{ch.title}</h3>
               <p className="text-xs text-slate-500 mb-3">{ch.desc}</p>
               <span className={`text-xs font-semibold ${ch.color}`}>{ch.action} →</span>
-            </div>
+            </button>
           ))}
         </div>
 
